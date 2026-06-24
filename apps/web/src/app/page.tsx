@@ -24,10 +24,16 @@ export default function Home() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              href="/dashboard"
+              href="/login"
               className="rounded-md bg-emerald-700 px-5 py-3 text-sm font-semibold text-white"
             >
-              مشاهده داشبورد نمونه
+              ورود با شماره موبایل
+            </Link>
+            <Link
+              href="/dashboard"
+              className="rounded-md border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-800"
+            >
+              مشاهده داشبورد
             </Link>
             <a
               href="http://localhost:8000/api/health/"
