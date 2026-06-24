@@ -2,8 +2,8 @@
 
 :root {
   color-scheme: light;
-  background: #f8fafc;
-  color: #172033;
+  background: #f4f8f5;
+  color: #13231c;
 }
 
 * {
@@ -12,17 +12,31 @@
 
 html {
   direction: rtl;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: #f8fafc;
-  color: #172033;
-  font-family: Tahoma, Arial, sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(209, 250, 229, 0.68), transparent 32rem),
+    linear-gradient(180deg, #f8fbf8 0%, #eef7f1 100%);
+  color: #13231c;
+  font-family: "Vazirmatn Variable", Vazirmatn, Tahoma, Arial, sans-serif;
+  font-feature-settings: "ss01";
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+::selection {
+  background: #bbf7d0;
+  color: #123024;
 }
