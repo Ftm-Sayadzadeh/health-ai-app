@@ -1,0 +1,13 @@
+{
+  "name": "health-ai-app",
+  "private": true,
+  "workspaces": [
+    "apps/web"
+  ],
+  "scripts": {
+    "web:dev": "npm --prefix apps/web run dev",
+    "web:build": "npm --prefix apps/web run build",
+    "web:lint": "npm --prefix apps/web run lint",
+    "api:test": "python apps/api/manage.py test"
+  }
+}

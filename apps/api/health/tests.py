@@ -1,0 +1,13 @@
+from django.test import SimpleTestCase
+from django.urls import reverse
+from rest_framework.test import APIClient
+
+
+class HealthCheckTests(SimpleTestCase):
+    def test_health_check_returns_ok(self):
+        client = APIClient()
+
+        response = client.get(reverse("health-check"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "ok", "service": "api"})
