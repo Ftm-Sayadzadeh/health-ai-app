@@ -5,6 +5,7 @@ Persian-first foundation for an AI-assisted health, nutrition, fitness, coach-st
 This repository currently contains only the foundation milestone:
 
 - Django REST Framework API skeleton
+- Backend phone OTP authentication with JWT
 - Next.js + TypeScript + Tailwind CSS web skeleton
 - PostgreSQL configuration
 - Redis + Celery worker skeleton
@@ -18,13 +19,14 @@ This repository currently contains only the foundation milestone:
 Implemented in this milestone:
 
 - `GET /api/health/` health check
+- Backend-only auth endpoints under `/api/auth/`
 - Persian-first RTL web shell
 - Local Docker services for API, web, PostgreSQL, Redis, and Celery worker
 - Documentation for the initial architecture
 
 Not implemented yet:
 
-- Authentication, OTP, or user profiles
+- Frontend login or user profiles
 - AI features
 - Nutrition calculation or meal logging
 - Diet plans or workout plans
@@ -62,12 +64,52 @@ Default local URLs:
 
 - Web: http://localhost:3000
 - API health check: http://localhost:8000/api/health/
+- Auth OTP request: http://localhost:8000/api/auth/request-otp/
+- Auth OTP verify: http://localhost:8000/api/auth/verify-otp/
+- Auth current user: http://localhost:8000/api/auth/me/
 
 Run API tests:
 
 ```powershell
 docker compose run --rm api python manage.py test
 ```
+
+## Backend Auth
+
+The backend supports phone-based OTP login for Iranian mobile numbers. Accepted input formats include:
+
+- `09123456789`
+- `+989123456789`
+- `989123456789`
+
+Phone numbers are normalized to the canonical `+989123456789` format.
+
+Request a local OTP:
+
+```powershell
+curl -X POST http://localhost:8000/api/auth/request-otp/ `
+  -H "Content-Type: application/json" `
+  -d "{\"phone_number\":\"09123456789\"}"
+```
+
+When `DJANGO_DEBUG=True`, the OTP is included in the response for local testing. When `DJANGO_DEBUG=False`, the OTP is never returned and the SMS provider adapter is used.
+
+Verify an OTP:
+
+```powershell
+curl -X POST http://localhost:8000/api/auth/verify-otp/ `
+  -H "Content-Type: application/json" `
+  -d "{\"phone_number\":\"09123456789\",\"otp\":\"123456\"}"
+```
+
+The verify response returns JWT `access` and `refresh` tokens. Use the access token with:
+
+```powershell
+curl http://localhost:8000/api/auth/me/ `
+  -H "Authorization: Bearer <access-token>"
+```
+
+The auth phase does not include frontend login, profiles, onboarding, coach features, or product workflows.
 
 Run web lint:
 

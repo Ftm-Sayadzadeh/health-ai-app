@@ -13,9 +13,12 @@ ALLOWED_HOSTS = [
 ]
 
 INSTALLED_APPS = [
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    "accounts",
     "health",
 ]
 
@@ -64,6 +67,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+AUTH_USER_MODEL = "accounts.User"
 
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
@@ -72,6 +76,9 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
@@ -80,6 +87,12 @@ REST_FRAMEWORK = {
     ],
     "UNAUTHENTICATED_USER": None,
 }
+
+OTP_LENGTH = int(os.getenv("OTP_LENGTH", "6"))
+OTP_EXPIRY_SECONDS = int(os.getenv("OTP_EXPIRY_SECONDS", "300"))
+OTP_RESEND_THROTTLE_SECONDS = int(os.getenv("OTP_RESEND_THROTTLE_SECONDS", "60"))
+OTP_MAX_ATTEMPTS = int(os.getenv("OTP_MAX_ATTEMPTS", "5"))
+SMS_PROVIDER_BACKEND = os.getenv("SMS_PROVIDER_BACKEND", "accounts.sms.NullSMSProvider")
 
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", os.getenv("REDIS_URL", "redis://localhost:6379/0"))
 CELERY_RESULT_BACKEND = os.getenv(
