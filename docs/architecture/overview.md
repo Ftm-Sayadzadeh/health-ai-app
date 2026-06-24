@@ -44,8 +44,11 @@ The web app uses Next.js App Router with TypeScript and Tailwind CSS.
 The UI starts Persian-first and RTL-first:
 
 - The root layout sets `lang="fa"` and `dir="rtl"`.
-- The landing page introduces the product direction without implementing product features.
-- The dashboard route is a placeholder only.
+- The landing page introduces the product direction and links to login.
+- The login page supports OTP authentication against the backend auth API.
+- The dashboard route is guarded client-side and shows only authenticated user identity.
+
+Frontend token storage currently uses browser `localStorage` for development and MVP testing. Production auth storage and refresh-token behavior must be hardened in a later phase.
 
 ## Future Product Boundaries
 

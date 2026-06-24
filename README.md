@@ -20,13 +20,14 @@ Implemented in this milestone:
 
 - `GET /api/health/` health check
 - Backend-only auth endpoints under `/api/auth/`
+- Frontend OTP login page at `/login`
 - Persian-first RTL web shell
 - Local Docker services for API, web, PostgreSQL, Redis, and Celery worker
 - Documentation for the initial architecture
 
 Not implemented yet:
 
-- Frontend login or user profiles
+- Production-hardened token storage or user profiles
 - AI features
 - Nutrition calculation or meal logging
 - Diet plans or workout plans
@@ -67,6 +68,7 @@ Default local URLs:
 - Auth OTP request: http://localhost:8000/api/auth/request-otp/
 - Auth OTP verify: http://localhost:8000/api/auth/verify-otp/
 - Auth current user: http://localhost:8000/api/auth/me/
+- Frontend login: http://localhost:3000/login
 
 Run API tests:
 
@@ -109,7 +111,9 @@ curl http://localhost:8000/api/auth/me/ `
   -H "Authorization: Bearer <access-token>"
 ```
 
-The auth phase does not include frontend login, profiles, onboarding, coach features, or product workflows.
+The auth UI phase adds a Persian OTP login page and guarded dashboard display. Tokens are stored in browser `localStorage` for development and MVP testing only. Production token storage must be hardened before launch.
+
+The auth phase does not include profiles, onboarding, coach features, or product workflows.
 
 Run web lint:
 
