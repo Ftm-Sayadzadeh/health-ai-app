@@ -21,8 +21,21 @@ The API is intentionally minimal:
 - Django project module: `config`
 - Health app: `health`
 - Health endpoint: `GET /api/health/`
+- Accounts app: `accounts`
+- Auth endpoints: `POST /api/auth/request-otp/`, `POST /api/auth/verify-otp/`, `GET /api/auth/me/`
 
 The backend reads database, Redis, and Celery settings from environment variables. Local defaults are suitable only for development.
+
+## Auth Phase
+
+The backend now includes phone OTP authentication with a custom user model and JWT tokens.
+
+- The custom user model uses normalized Iranian mobile numbers as the login identifier.
+- User roles are limited to auth-level values: `normal`, `coach`, and `admin`.
+- OTP codes are stored hashed, expire after 5 minutes, are limited to 5 verification attempts, and are consumed after successful verification.
+- A 60-second resend throttle applies per phone number.
+- In debug mode, OTP codes may be returned for local testing. Outside debug mode, OTP codes are never returned and delivery goes through an SMS provider adapter.
+- Django Admin UI remains intentionally disabled.
 
 ## Frontend
 
