@@ -1,139 +1,282 @@
 import Link from "next/link";
 
-function AvocadoMark() {
+/* eslint-disable @next/next/no-img-element */
+
+function SmilingAvocado({
+  className,
+  imgClassName,
+}: {
+  className?: string;
+  imgClassName?: string;
+}) {
   return (
-    <span className="relative flex h-10 w-10 items-center justify-center rounded-[1.25rem] bg-[#CDEB58] shadow-[0_10px_24px_rgba(142,187,122,0.22)]">
-      <span className="absolute h-6 w-4 rotate-[-18deg] rounded-[70%_70%_58%_58%] bg-[#7EAF6B]" />
-      <span className="absolute mt-1 h-3.5 w-2.5 rotate-[-18deg] rounded-full bg-[#EEF8C7]" />
-      <span className="absolute mt-2 h-1.5 w-1.5 rounded-full bg-[#F27C5B]" />
+    <span
+      className={`relative flex items-center justify-center rounded-[0.85rem] bg-gradient-to-br from-[#D4F24E] to-[#CFE84E] shadow-[0_6px_16px_rgba(134,185,59,0.34)] ring-1 ring-white/40 ${className ?? ""}`}
+    >
+      <img
+        src="/brand-assets/avocado-smiling.png"
+        alt=""
+        className={`object-contain ${imgClassName ?? "h-[1.6rem] w-[1.6rem]"}`}
+      />
     </span>
   );
 }
 
-function AvocadoHero() {
+type FeatureProps = {
+  image: string;
+  alt: string;
+  title: string;
+  tint: string;
+  status: "active" | "soon";
+  children: React.ReactNode;
+};
+
+function FeatureCard({ image, alt, title, tint, status, children }: FeatureProps) {
   return (
-    <div className="relative mx-auto w-full max-w-[20.5rem]">
-      <div className="absolute -right-3 top-7 h-12 w-12 rounded-full bg-[#EEF8C7]" />
-      <div className="absolute -left-1 top-16 h-7 w-7 rounded-full bg-[#FFF3E1]" />
-      <div className="absolute left-7 top-1 h-3 w-3 rounded-full bg-[#F27C5B]/70" />
-      <div className="absolute bottom-8 right-7 h-5 w-5 rotate-12 rounded-full border-[3px] border-[#CDEB58]" />
+    <div className="group relative overflow-hidden rounded-[1.5rem] border border-[#EFEAD9] bg-white/85 p-6 shadow-[0_12px_30px_rgba(85,117,54,0.06)] backdrop-blur transition duration-300 hover:-translate-y-1.5 hover:border-[#DCE9B0] hover:shadow-[0_24px_50px_rgba(85,117,54,0.12)]">
+      <span
+        className={`absolute left-5 top-5 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[0.6rem] font-extrabold ${
+          status === "active"
+            ? "bg-[#EAF7C7] text-[#557536]"
+            : "bg-[#FFF6E8] text-[#7A3A27]"
+        }`}
+      >
+        <span
+          className={`h-1.5 w-1.5 rounded-full ${
+            status === "active" ? "bg-[#86B93B]" : "bg-[#FFB24D]"
+          }`}
+        />
+        {status === "active" ? "فعال" : "به‌زودی"}
+      </span>
 
-      <div className="relative overflow-hidden rounded-[2.35rem] border border-[#E9E5DC] bg-white p-4 shadow-[0_22px_56px_rgba(82,116,64,0.12)]">
-        <div className="rounded-[1.9rem] bg-[#FFF3E1] px-4 pb-4 pt-5">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="rounded-full bg-white/80 px-3 py-1.5 text-xs font-black text-[#6D9D5B]">
-              نسخه در حال ساخت
-            </span>
-            <span className="h-7 w-7 rounded-full bg-[#CDEB58] shadow-[0_8px_18px_rgba(205,235,88,0.36)]" />
-          </div>
-
-          <svg
-            aria-hidden="true"
-            className="mx-auto h-auto w-full max-w-[14.75rem]"
-            viewBox="0 0 320 320"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <ellipse cx="160" cy="282" rx="86" ry="18" fill="#7EAF6B" opacity="0.16" />
-            <path
-              d="M201 43C193 21 163 22 151 41C134 42 111 53 94 79C73 111 67 151 76 191C88 247 119 281 160 281C201 281 232 247 244 191C253 151 247 111 226 79C219 68 210 56 201 43Z"
-              fill="#79AD66"
-            />
-            <path
-              d="M194 62C188 45 164 46 155 62C143 62 125 72 111 94C95 119 90 151 98 184C108 230 132 258 160 258C188 258 212 230 222 184C230 151 225 119 209 94C204 84 199 74 194 62Z"
-              fill="#EFF8C9"
-            />
-            <path
-              d="M160 93C141 110 122 139 123 176C124 221 142 244 160 244C178 244 196 221 197 176C198 139 179 110 160 93Z"
-              fill="#F8FFE2"
-              opacity="0.85"
-            />
-            <circle cx="160" cy="194" r="42" fill="#F27C5B" />
-            <circle cx="151" cy="183" r="14" fill="#FFB39E" opacity="0.55" />
-            <path
-              d="M189 42C198 25 218 21 237 29C226 48 209 56 189 42Z"
-              fill="#8EBB7A"
-            />
-            <path
-              d="M184 48C199 42 216 38 231 32"
-              stroke="#5D8C50"
-              strokeLinecap="round"
-              strokeWidth="5"
-            />
-            <path
-              d="M91 95C78 111 70 133 68 156"
-              stroke="#5D8C50"
-              strokeLinecap="round"
-              strokeWidth="8"
-              opacity="0.28"
-            />
-            <circle cx="236" cy="107" r="7" fill="#CDEB58" />
-            <circle cx="91" cy="232" r="6" fill="#F27C5B" opacity="0.65" />
-          </svg>
-        </div>
-
-        <div className="mt-4 rounded-[1.45rem] bg-[#FFFDF8] p-3.5">
-          <p className="text-sm font-black text-[#171717]">شروعی نرم برای عادت‌های سالم</p>
-          <p className="mt-1.5 text-sm leading-7 text-[#77736B]">
-            فعلا نسخه پایه آماده است؛ تجربه کامل تغذیه و همراهی هوشمند مرحله‌به‌مرحله اضافه می‌شود.
-          </p>
-        </div>
+      <div
+        className={`flex h-14 w-14 items-center justify-center rounded-[1rem] ${tint} shadow-[inset_0_0_0_1px_rgba(255,255,255,0.5)]`}
+      >
+        <img src={image} alt={alt} className="h-9 w-9 object-contain" />
       </div>
+      <h3 className="mt-5 text-[1rem] font-extrabold text-[#25321F]">{title}</h3>
+      <p className="mt-2 text-[0.85rem] leading-7 text-[#6B7A5A]">{children}</p>
+    </div>
+  );
+}
+
+function HeroScene() {
+  return (
+    <div className="relative mx-auto flex aspect-square w-full max-w-[34rem] items-center justify-center">
+      {/* layered ambient glow: lime + peach */}
+      <div className="absolute inset-0 rounded-[3rem] bg-[radial-gradient(circle_at_50%_40%,rgba(212,242,78,0.55),rgba(234,247,199,0.3)_45%,transparent_72%)] blur-2xl" />
+      <div className="absolute inset-x-6 bottom-6 h-2/3 rounded-[3rem] bg-[radial-gradient(circle_at_50%_80%,rgba(255,198,154,0.28),transparent_70%)] blur-2xl" />
+
+      {/* organic lime surface (morphing blob) */}
+      <svg
+        className="animate-blob absolute inset-0 h-full w-full drop-shadow-[0_34px_70px_rgba(85,117,54,0.14)]"
+        viewBox="0 0 400 400"
+        fill="none"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="heroSurface" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#EAF7C7" />
+            <stop offset="60%" stopColor="#F4FBE3" />
+            <stop offset="100%" stopColor="#FFF6E8" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M198 28C254 26 304 54 324 102C350 146 374 190 360 240C346 292 310 338 256 360C205 380 146 374 96 346C46 318 16 268 22 214C28 156 56 108 106 70C140 46 168 30 198 28Z"
+          fill="url(#heroSurface)"
+        />
+      </svg>
+
+      {/* subtle inner ring for depth */}
+      <div className="absolute inset-10 rounded-[3rem] ring-1 ring-white/30" />
+
+      {/* soft shadow under bowl */}
+      <div className="absolute bottom-16 h-5 w-64 rounded-full bg-[#557536]/16 blur-xl" />
+
+      {/* the bowl — strong focal point */}
+      <img
+        src="/brand-assets/healthy-bowl.png"
+        alt="کاسه غذای سالم"
+        className="animate-floaty relative h-[22rem] w-[22rem] object-contain drop-shadow-[0_34px_50px_rgba(85,117,54,0.26)] sm:h-[26rem] sm:w-[26rem] lg:h-[30rem] lg:w-[30rem]"
+      />
     </div>
   );
 }
 
 export default function Home() {
   return (
-    <main className="min-h-screen overflow-hidden px-4 py-3 text-[#171717] sm:px-6">
-      <section className="mx-auto flex min-h-[calc(100vh-1.5rem)] max-w-6xl flex-col gap-5 py-2">
-        <header className="flex items-center justify-between gap-4 rounded-[1.65rem] border border-[#E9E5DC] bg-white/86 px-3.5 py-2.5 shadow-[0_12px_34px_rgba(82,116,64,0.07)] backdrop-blur sm:px-4">
-          <Link href="/" className="flex items-center gap-3">
-            <AvocadoMark />
-            <div>
-              <p className="text-sm font-black sm:text-base">سلامت هوشمند</p>
-              <p className="text-[0.7rem] font-bold text-[#77736B] sm:text-xs">فارسی، آرام، در حال ساخت</p>
-            </div>
-          </Link>
+    <main className="min-h-screen px-4 py-4 text-[#25321F] sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        {/* floating, structured product header */}
+        <header className="sticky top-4 z-30 mb-4">
+          <div className="flex items-center justify-between gap-4 rounded-full border border-[#EFEAD9]/80 bg-white/85 px-4 py-2.5 shadow-[0_14px_34px_rgba(85,117,54,0.1)] backdrop-blur-md sm:px-6 sm:py-3">
+            <Link href="/" className="flex items-center gap-3">
+              <SmilingAvocado className="h-11 w-11" imgClassName="h-[2.6rem] w-[2.6rem]" />
+              <span className="flex flex-col leading-none">
+                <span className="text-[1rem] font-extrabold tracking-tight">
+                  سلامت هوشمند
+                </span>
+                <span className="mt-1 text-[0.66rem] font-medium text-[#8A9A78]">
+                  سلامت و تغذیه، فارسی
+                </span>
+              </span>
+            </Link>
 
-          <Link
-            href="/login"
-            className="rounded-full bg-[#CDEB58] px-5 py-2.5 text-sm font-black text-[#171717] shadow-[0_12px_24px_rgba(205,235,88,0.34)] transition hover:-translate-y-0.5 hover:bg-[#DDF36D] focus:outline-none focus:ring-4 focus:ring-[#EEF8C7]"
-          >
-            ورود
-          </Link>
+            <nav className="hidden items-center gap-1 md:flex">
+              <a
+                href="#features"
+                className="rounded-full px-4 py-2 text-[0.85rem] font-bold text-[#557536] transition hover:bg-[#EAF7C7]/70"
+              >
+                امکانات
+              </a>
+              <a
+                href="#about"
+                className="rounded-full px-4 py-2 text-[0.85rem] font-bold text-[#6B7A5A] transition hover:bg-[#EAF7C7]/70"
+              >
+                درباره ما
+              </a>
+            </nav>
+
+            <div className="flex items-center gap-2">
+              <Link
+                href="/login"
+                className="hidden rounded-full px-4 py-2 text-[0.85rem] font-bold text-[#557536] transition hover:bg-[#EAF7C7]/60 sm:inline-flex"
+              >
+                ورود
+              </Link>
+              <Link
+                href="/login"
+                className="rounded-full bg-[#D4F24E] px-5 py-2.5 text-[0.85rem] font-extrabold text-[#25321F] shadow-[0_10px_22px_rgba(212,242,78,0.38)] transition hover:-translate-y-0.5 hover:bg-[#CFE84E] focus:outline-none focus:ring-4 focus:ring-[#EAF7C7]"
+              >
+                شروع کنید
+              </Link>
+            </div>
+          </div>
         </header>
 
-        <div className="grid flex-1 items-center gap-7 rounded-[2.4rem] border border-[#E9E5DC]/80 bg-white/42 p-5 shadow-[0_18px_58px_rgba(82,116,64,0.06)] sm:p-6 lg:grid-cols-[1.05fr_0.78fr] lg:p-8">
-          <div className="max-w-xl">
-            <p className="mb-4 inline-flex rounded-full bg-[#EEF8C7] px-3.5 py-2 text-xs font-black text-[#5E8D51]">
+        <section className="grid items-center gap-12 py-6 lg:grid-cols-[1fr_1.1fr] lg:gap-12 lg:py-10">
+          <div className="max-w-xl lg:pl-4">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EAF7C7] px-3.5 py-1.5 text-[0.72rem] font-extrabold text-[#557536]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#86B93B]" />
               پلتفرم فارسی سلامت و تغذیه
-            </p>
+            </span>
 
-            <h1 className="max-w-[34rem] text-4xl font-extrabold leading-[1.25] sm:text-5xl lg:text-[3.25rem]">
-              همراه آروم تغذیه و عادت‌های سالم تو
+            <h1 className="mt-5 text-[2.4rem] font-extrabold leading-[1.18] sm:text-5xl lg:text-[3.25rem]">
+              همراه فارسی تو برای
+              <span className="mt-1 block text-[#557536]">عادت‌های سالم‌تر</span>
             </h1>
 
-            <p className="mt-5 max-w-lg text-base leading-8 text-[#77736B] sm:text-lg">
-              در حال ساختیم تا ثبت غذا، پیگیری مسیر و تصمیم‌های سالم‌تر، فارسی و ساده‌تر بشه.
+            <p className="mt-5 max-w-lg text-base leading-8 text-[#5F6F55] sm:text-lg">
+              یه فضای آرام برای ثبت غذا، پیگیری مسیر سلامتی و ساختن عادت‌های بهتر —
+              ساده، فارسی و راست‌چین.
             </p>
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
                 href="/login"
-                className="rounded-full bg-[#CDEB58] px-7 py-3.5 text-center text-base font-black text-[#171717] shadow-[0_18px_32px_rgba(205,235,88,0.36)] transition hover:-translate-y-0.5 hover:bg-[#DDF36D] focus:outline-none focus:ring-4 focus:ring-[#EEF8C7]"
+                className="rounded-full bg-[#D4F24E] px-7 py-3.5 text-center text-base font-extrabold text-[#25321F] shadow-[0_18px_34px_rgba(212,242,78,0.42)] transition hover:-translate-y-0.5 hover:bg-[#CFE84E] focus:outline-none focus:ring-4 focus:ring-[#EAF7C7]"
               >
                 ورود با شماره موبایل
               </Link>
-              <span className="rounded-full bg-white/72 px-4 py-3 text-center text-sm font-bold text-[#8A8479]">
-                نسخه اولیه، بدون قابلیت‌های نمایشی
+              <span className="text-center text-[0.78rem] font-medium text-[#8A9A78]">
+                نسخه اولیه • بدون داده نمایشی
               </span>
             </div>
           </div>
 
-          <AvocadoHero />
-        </div>
-      </section>
+          <HeroScene />
+        </section>
+
+        <section id="features" className="py-10">
+          <div className="mb-7 max-w-md">
+            <p className="text-[0.72rem] font-extrabold tracking-wide text-[#86B93B]">
+              همین الان فعال
+            </p>
+            <h2 className="mt-2 text-2xl font-extrabold sm:text-3xl">
+              چه چیزی آماده است
+            </h2>
+            <p className="mt-2 text-[0.9rem] leading-7 text-[#5F6F55]">
+              بر پایه حساب کاربری واقعی ساخته شده؛ قابلیت‌های بیشتر به‌زودی اضافه
+              می‌شن.
+            </p>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-3">
+            <FeatureCard
+              image="/brand-assets/avocado-half.png"
+              alt="نیمه آووکادو"
+              title="حساب کاربری آماده است"
+              tint="bg-gradient-to-br from-[#FFF6E8] to-[#FFC69A]/40"
+              status="active"
+            >
+              ورود با شماره موبایل، نشست و خروج همین الان فعالن.
+            </FeatureCard>
+            <FeatureCard
+              image="/brand-assets/eafy-greens-cluster.png"
+              alt="سبزیجات leafy"
+              title="تجربه فارسی و راست‌چین"
+              tint="bg-gradient-to-br from-[#EAF7C7] to-[#D4F24E]/40"
+              status="active"
+            >
+              کل رابط فارسی و راست‌چینه؛ راحت و آشنا برای تو.
+            </FeatureCard>
+            <FeatureCard
+              image="/brand-assets/sprout-stage-4.png"
+              alt="جوانه"
+              title="امکانات تغذیه و سلامت به‌زودی"
+              tint="bg-gradient-to-br from-[#FFF6E8] to-[#FFB24D]/30"
+              status="soon"
+            >
+              ثبت غذا، مسیر رشد و همراهی هوشمند در راهن.
+            </FeatureCard>
+          </div>
+        </section>
+
+        <section id="about" className="py-10">
+          <div className="overflow-hidden rounded-[2rem] border border-[#EFEAD9] bg-gradient-to-b from-[#EAF7C7]/70 to-[#FFF6E8]/60 p-8 shadow-[0_18px_50px_rgba(85,117,54,0.08)] sm:p-10">
+            <div className="grid items-center gap-8 sm:grid-cols-[1.4fr_1fr]">
+              <div>
+                <h2 className="text-2xl font-extrabold leading-tight sm:text-3xl">
+                  ساخته‌شده برای آرامش و واقعیت
+                </h2>
+                <p className="mt-3 max-w-xl text-[0.9rem] leading-8 text-[#5F6F55]">
+                  اینجا جای تبلیغات کالری‌های جعلی یا نمودارهای دروغ نیست. یه محیط
+                  ساده و قابل اعتماد برای همین حالا — با حساب کاربری واقعی و
+                  امکاناتی که گام‌به‌گام اضافه می‌شن.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1.5 text-[0.72rem] font-bold text-[#557536] ring-1 ring-white/60">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#86B93B]" />
+                    بدون داده نمایشی
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1.5 text-[0.72rem] font-bold text-[#557536] ring-1 ring-white/60">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#86B93B]" />
+                    فارسی و راست‌چین
+                  </span>
+                </div>
+              </div>
+              <div className="relative mx-auto flex h-40 w-40 items-center justify-center sm:h-48 sm:w-48">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-b from-[#D4F24E]/40 to-[#FFF6E8]" />
+                <img
+                  src="/brand-assets/avocado-half.png"
+                  alt=""
+                  className="relative h-28 w-28 object-contain drop-shadow-[0_10px_18px_rgba(85,117,54,0.18)] sm:h-32 sm:w-32"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer className="flex flex-col items-center justify-between gap-3 border-t border-[#EFEAD9] py-6 sm:flex-row">
+          <div className="flex items-center gap-2">
+            <SmilingAvocado className="h-6 w-6" imgClassName="h-[1rem] w-[1rem]" />
+            <span className="text-[0.78rem] font-bold text-[#557536]">
+              سلامت هوشمند
+            </span>
+          </div>
+          <p className="text-[0.7rem] text-[#8A9A78]">نسخه اولیه • در حال ساخت</p>
+        </footer>
+      </div>
     </main>
   );
 }
