@@ -189,7 +189,7 @@ export default function DashboardPage() {
                 className="animate-soft-pulse relative h-16 w-16 object-contain drop-shadow-[0_8px_14px_rgba(85,117,54,0.18)]"
               />
             </div>
-            <p className="text-sm font-extrabold">
+            <p role="status" aria-live="polite" className="text-sm font-extrabold">
               یه لحظه، داریم ورودت رو بررسی می‌کنیم...
             </p>
             <div className="mt-5 h-2 overflow-hidden rounded-full bg-[#EAF7C7]" dir="ltr">
@@ -348,7 +348,11 @@ export default function DashboardPage() {
             ) : null}
 
             {error ? (
-              <div className="mt-4 rounded-[1rem] border border-[#F5D5C9] bg-[#FFF6E8] px-4 py-3 text-[0.8rem] leading-6 text-[#7A3A27]">
+              <div
+                role="alert"
+                aria-live="polite"
+                className="mt-4 rounded-[1rem] border border-[#F5D5C9] bg-[#FFF6E8] px-4 py-3 text-[0.8rem] leading-6 text-[#7A3A27]"
+              >
                 {error}
               </div>
             ) : null}

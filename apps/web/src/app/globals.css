@@ -129,6 +129,16 @@ input::placeholder {
   animation: soft-pulse 2.4s ease-in-out infinite;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .animate-floaty,
+  .animate-floaty-slow,
+  .animate-blob,
+  .loading-sweep,
+  .animate-soft-pulse {
+    animation: none;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

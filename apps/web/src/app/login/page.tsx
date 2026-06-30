@@ -250,7 +250,11 @@ export default function LoginPage() {
           )}
 
           {error ? (
-            <div className="mt-5 rounded-[1rem] border border-[#F5D5C9] bg-[#FFF6E8] px-4 py-3 text-[0.8rem] leading-6 text-[#7A3A27]">
+            <div
+              role="alert"
+              aria-live="polite"
+              className="mt-5 rounded-[1rem] border border-[#F5D5C9] bg-[#FFF6E8] px-4 py-3 text-[0.8rem] leading-6 text-[#7A3A27]"
+            >
               {error}
             </div>
           ) : null}
