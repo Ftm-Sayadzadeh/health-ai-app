@@ -23,6 +23,8 @@ The API is intentionally minimal:
 - Health endpoint: `GET /api/health/`
 - Accounts app: `accounts`
 - Auth endpoints: `POST /api/auth/request-otp/`, `POST /api/auth/verify-otp/`, `GET /api/auth/me/`
+- Profiles app: `profiles`
+- Health profile endpoint: `GET /api/health-profile/`, `PUT /api/health-profile/`
 
 The backend reads database, Redis, and Celery settings from environment variables. Local defaults are suitable only for development.
 
@@ -49,6 +51,14 @@ The UI starts Persian-first and RTL-first:
 - The dashboard route is guarded client-side and shows only authenticated user identity.
 
 Frontend token storage currently uses browser `localStorage` for development and MVP testing. Production auth storage and refresh-token behavior must be hardened in a later phase.
+
+## Health Profile Phase
+
+Each user may own one health profile containing user-confirmed identity, body measurement, goal, activity, and optional food preference or restriction fields. The endpoint is JWT-protected and always scopes reads and writes to the authenticated user.
+
+The auth user payload includes `has_health_profile`. After OTP verification, normal users without a profile are directed to the Persian RTL onboarding page before dashboard access. Coach and admin roles bypass mandatory onboarding. After profile creation, the frontend refetches `/api/auth/me/` before entering the dashboard so routing never depends on stale client state.
+
+The profile foundation does not calculate BMI, calorie targets, nutrition advice, or other health recommendations.
 
 ## Future Product Boundaries
 

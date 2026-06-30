@@ -5,6 +5,7 @@ export type AuthUser = {
   id: number;
   phone_number: string;
   role: "normal" | "coach" | "admin";
+  has_health_profile: boolean;
 };
 
 export type RequestOtpResponse = {
@@ -51,4 +52,8 @@ export function logout() {
 
 export function hasAccessToken() {
   return Boolean(getAccessToken());
+}
+
+export function needsHealthProfile(user: AuthUser) {
+  return user.role === "normal" && !user.has_health_profile;
 }
