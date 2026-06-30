@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
-import { getCurrentUser, requestOtp, verifyOtp } from "@/lib/auth";
+import { getCurrentUser, needsHealthProfile, requestOtp, verifyOtp } from "@/lib/auth";
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -66,8 +66,8 @@ export default function LoginPage() {
 
     try {
       await verifyOtp(phoneNumber, otp);
-      await getCurrentUser();
-      router.replace("/dashboard");
+      const currentUser = await getCurrentUser();
+      router.replace(needsHealthProfile(currentUser) ? "/onboarding" : "/dashboard");
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : "ورود ناموفق بود.");
     } finally {

@@ -4,7 +4,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { AuthUser, getCurrentUser, hasAccessToken, logout } from "@/lib/auth";
+import {
+  AuthUser,
+  getCurrentUser,
+  hasAccessToken,
+  logout,
+  needsHealthProfile,
+} from "@/lib/auth";
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -150,6 +156,10 @@ export default function DashboardPage() {
 
       try {
         const currentUser = await getCurrentUser();
+        if (needsHealthProfile(currentUser)) {
+          router.replace("/onboarding");
+          return;
+        }
         if (isMounted) {
           setUser(currentUser);
           setIsCheckingAuth(false);
