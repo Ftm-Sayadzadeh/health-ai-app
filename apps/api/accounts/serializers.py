@@ -24,6 +24,11 @@ class VerifyOTPSerializer(PhoneNumberSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    has_health_profile = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ["id", "phone_number", "role"]
+        fields = ["id", "phone_number", "role", "has_health_profile"]
+
+    def get_has_health_profile(self, user):
+        return hasattr(user, "health_profile")

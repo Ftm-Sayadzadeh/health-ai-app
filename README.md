@@ -21,13 +21,15 @@ Implemented in this milestone:
 - `GET /api/health/` health check
 - Backend-only auth endpoints under `/api/auth/`
 - Frontend OTP login page at `/login`
+- Authenticated health profile endpoint at `/api/health-profile/`
+- Persian RTL health profile onboarding at `/onboarding`
 - Persian-first RTL web shell
 - Local Docker services for API, web, PostgreSQL, Redis, and Celery worker
 - Documentation for the initial architecture
 
 Not implemented yet:
 
-- Production-hardened token storage or user profiles
+- Production-hardened token storage or profile editing
 - AI features
 - Nutrition calculation or meal logging
 - Diet plans or workout plans
@@ -68,7 +70,9 @@ Default local URLs:
 - Auth OTP request: http://localhost:8000/api/auth/request-otp/
 - Auth OTP verify: http://localhost:8000/api/auth/verify-otp/
 - Auth current user: http://localhost:8000/api/auth/me/
+- Health profile: http://localhost:8000/api/health-profile/
 - Frontend login: http://localhost:3000/login
+- Frontend onboarding: http://localhost:3000/onboarding
 
 Run API tests:
 
@@ -113,7 +117,7 @@ curl http://localhost:8000/api/auth/me/ `
 
 The auth UI phase adds a Persian OTP login page and guarded dashboard display. Tokens are stored in browser `localStorage` for development and MVP testing only. Production token storage must be hardened before launch.
 
-The auth phase does not include profiles, onboarding, coach features, or product workflows.
+Normal users without a health profile are guided through `/onboarding` after OTP login. The profile endpoint stores only user-confirmed foundational data and does not calculate BMI, calories, nutrition targets, or recommendations. Coach and admin roles are not required to complete onboarding.
 
 Run web lint:
 

@@ -234,6 +234,7 @@ class OTPFlowTests(TestCase):
                 "id": user.id,
                 "phone_number": self.normalized_phone,
                 "role": User.Role.NORMAL,
+                "has_health_profile": False,
             },
         )
 
