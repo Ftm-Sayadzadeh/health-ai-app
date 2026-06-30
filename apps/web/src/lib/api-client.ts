@@ -16,7 +16,7 @@ export class ApiError extends Error {
 type RequestOptions = {
   body?: unknown;
   token?: string | null;
-  method?: "GET" | "POST";
+  method?: "GET" | "POST" | "PUT";
 };
 
 function extractErrorMessage(details: unknown) {
