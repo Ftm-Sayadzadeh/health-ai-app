@@ -13,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl">
-      <body>{children}</body>
+    <html lang="fa" dir="rtl" data-scroll-behavior="smooth">
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }
