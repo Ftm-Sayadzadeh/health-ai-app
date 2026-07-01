@@ -44,11 +44,13 @@ const fieldSteps: Record<string, number> = {
 function SmilingAvocado() {
   return (
     <span className="relative flex h-11 w-11 items-center justify-center rounded-[0.85rem] bg-gradient-to-br from-[#D4F24E] to-[#CFE84E] shadow-[0_6px_16px_rgba(134,185,59,0.34)] ring-1 ring-white/40">
-      <img
-        src="/brand-assets/avocado-smiling.png"
-        alt=""
-        className="h-[2.6rem] w-[2.6rem] scale-[1.15] object-contain"
-      />
+      <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-[0.85rem]">
+        <img
+          src="/brand-assets/avocado-smiling.png"
+          alt=""
+          className="h-20 w-20 max-w-none translate-y-1 object-contain"
+        />
+      </span>
     </span>
   );
 }
