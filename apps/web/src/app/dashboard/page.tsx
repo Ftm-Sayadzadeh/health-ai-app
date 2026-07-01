@@ -31,11 +31,13 @@ function SmilingAvocado({
     <span
       className={`relative flex items-center justify-center rounded-[0.85rem] bg-gradient-to-br from-[#D4F24E] to-[#CFE84E] shadow-[0_6px_16px_rgba(134,185,59,0.34)] ring-1 ring-white/40 ${className ?? ""}`}
     >
-      <img
-        src="/brand-assets/avocado-smiling.png"
-        alt=""
-        className={`object-contain ${imgClassName ?? "h-[1.6rem] w-[1.6rem]"}`}
-      />
+      <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-[0.85rem]">
+        <img
+          src="/brand-assets/avocado-smiling.png"
+          alt=""
+          className={`object-contain ${imgClassName ?? "h-[1.6rem] w-[1.6rem]"}`}
+        />
+      </span>
     </span>
   );
 }
@@ -248,7 +250,7 @@ export default function DashboardPage() {
         <header dir="rtl" className="sticky top-4 z-30 mb-8">
           <div className="flex items-center justify-between gap-4 rounded-full border border-[#EFEAD9]/80 bg-white/85 px-4 py-2.5 shadow-[0_14px_34px_rgba(85,117,54,0.1)] backdrop-blur-md sm:px-6 sm:py-3">
             <Link href="/" className="flex items-center gap-3">
-              <SmilingAvocado className="h-11 w-11" imgClassName="h-[2.6rem] w-[2.6rem] scale-[1.15]" />
+              <SmilingAvocado className="h-11 w-11" imgClassName="h-20 w-20 max-w-none translate-y-1" />
               <span className="flex flex-col leading-none">
                 <span className="text-[1rem] font-extrabold tracking-tight">
                   سلامت هوشمند
