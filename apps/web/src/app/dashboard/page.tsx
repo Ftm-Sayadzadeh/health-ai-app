@@ -248,7 +248,7 @@ export default function DashboardPage() {
         <header dir="rtl" className="sticky top-4 z-30 mb-8">
           <div className="flex items-center justify-between gap-4 rounded-full border border-[#EFEAD9]/80 bg-white/85 px-4 py-2.5 shadow-[0_14px_34px_rgba(85,117,54,0.1)] backdrop-blur-md sm:px-6 sm:py-3">
             <Link href="/" className="flex items-center gap-3">
-              <SmilingAvocado className="h-11 w-11" imgClassName="h-[2.6rem] w-[2.6rem]" />
+              <SmilingAvocado className="h-11 w-11" imgClassName="h-[2.6rem] w-[2.6rem] scale-[1.15]" />
               <span className="flex flex-col leading-none">
                 <span className="text-[1rem] font-extrabold tracking-tight">
                   سلامت هوشمند
@@ -315,18 +315,38 @@ export default function DashboardPage() {
         <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
           {/* account card */}
           <section className="rounded-[2rem] border border-[#EFEAD9] bg-white p-6 shadow-[0_24px_60px_rgba(85,117,54,0.08)] ring-1 ring-black/[0.02] sm:p-7">
-            <div className="mb-5 flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-[0.8rem] bg-[#EAF7C7] text-[#557536]">
-                <AccountIcon />
-              </span>
-              <div>
-                <h2 className="text-lg font-extrabold leading-tight">
-                  اطلاعات حساب
-                </h2>
-                <p className="mt-0.5 text-[0.72rem] font-medium text-[#8A9A78]">
-                  داده‌های واقعی حساب تو
-                </p>
+            <div className="mb-5 flex flex-col items-stretch gap-3 border-b border-[#EFEAD9] pb-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex min-w-0 items-center gap-2.5">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[0.8rem] bg-[#EAF7C7] text-[#557536]">
+                  <AccountIcon />
+                </span>
+                <div>
+                  <h2 className="text-lg font-extrabold leading-tight">
+                    اطلاعات حساب
+                  </h2>
+                  <p className="mt-0.5 text-[0.72rem] font-medium text-[#8A9A78]">
+                    داده‌های واقعی حساب تو
+                  </p>
+                </div>
               </div>
+
+              {user?.has_health_profile ? (
+                <Link
+                  href="/profile"
+                  className="inline-flex w-full shrink-0 items-center justify-center gap-1.5 rounded-[0.8rem] border border-[#DCE9B0] bg-[#F4FBE3] px-3 py-2 text-[0.72rem] font-extrabold text-[#557536] transition hover:border-[#D4F24E] hover:bg-[#EAF7C7] focus:outline-none focus:ring-4 focus:ring-[#EAF7C7] sm:w-auto sm:px-3.5"
+                >
+                  <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none" aria-hidden="true">
+                    <path
+                      d="M12.8 3.2l4 4-8.9 8.9-4.8.8.8-4.8 8.9-8.9Z"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  ویرایش پروفایل سلامت
+                </Link>
+              ) : null}
             </div>
 
             {user ? (

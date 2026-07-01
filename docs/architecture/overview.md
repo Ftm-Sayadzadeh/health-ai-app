@@ -58,6 +58,8 @@ Each user may own one health profile containing user-confirmed identity, body me
 
 The auth user payload includes `has_health_profile`. After OTP verification, normal users without a profile are directed to the Persian RTL onboarding page before dashboard access. Coach and admin roles bypass mandatory onboarding. After profile creation, the frontend refetches `/api/auth/me/` before entering the dashboard so routing never depends on stale client state.
 
+Users with a profile can open `/profile` from the dashboard to retrieve and replace their existing profile through the same `GET/PUT /api/health-profile/` contract. Profile values remain client state only; JWT storage is unchanged. The settings page does not introduce profile history or derived health calculations.
+
 The profile foundation does not calculate BMI, calorie targets, nutrition advice, or other health recommendations.
 
 ## Future Product Boundaries

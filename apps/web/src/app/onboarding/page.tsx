@@ -14,56 +14,21 @@ import {
 import {
   ActivityLevel,
   HealthGoal,
-  HealthProfileInput,
   saveHealthProfile,
 } from "@/lib/health-profile";
+import {
+  activityOptions,
+  dateYearsAgo,
+  emptyProfileDraft,
+  formatHealthProfileApiError,
+  goalOptions,
+  ProfileDraft,
+  validateHealthProfile,
+} from "@/lib/health-profile-form";
 
 /* eslint-disable @next/next/no-img-element */
 
 const totalSteps = 6;
-
-type ProfileDraft = Omit<HealthProfileInput, "goal" | "activity_level"> & {
-  goal: HealthGoal | "";
-  activity_level: ActivityLevel | "";
-};
-
-const goalOptions: Array<{ value: HealthGoal; label: string; detail: string }> = [
-  { value: "general_wellness", label: "سلامت عمومی", detail: "ساختن عادت‌های سالم‌تر" },
-  { value: "lose_weight", label: "کاهش وزن", detail: "حرکت به سمت وزن کمتر" },
-  { value: "maintain_weight", label: "حفظ وزن", detail: "ثابت نگه‌داشتن مسیر فعلی" },
-  { value: "gain_weight", label: "افزایش وزن", detail: "حرکت به سمت وزن بیشتر" },
-  { value: "build_muscle", label: "عضله‌سازی", detail: "تمرکز روی رشد و قدرت" },
-];
-
-const activityOptions: Array<{ value: ActivityLevel; label: string; detail: string }> = [
-  { value: "sedentary", label: "کم‌تحرک", detail: "بیشتر روز نشسته یا بدون ورزش" },
-  { value: "light", label: "فعالیت سبک", detail: "تحرک یا ورزش سبک در هفته" },
-  { value: "moderate", label: "فعالیت متوسط", detail: "ورزش منظم چند روز در هفته" },
-  { value: "high", label: "فعالیت زیاد", detail: "ورزش سنگین یا فعالیت روزانه زیاد" },
-  { value: "very_high", label: "فعالیت خیلی زیاد", detail: "تمرین حرفه‌ای یا کار بدنی سنگین" },
-];
-
-const initialProfile: ProfileDraft = {
-  display_name: "",
-  birth_date: "",
-  height_cm: "",
-  weight_kg: "",
-  goal: "",
-  activity_level: "",
-  food_preferences: "",
-  food_restrictions: "",
-};
-
-const fieldLabels: Record<string, string> = {
-  display_name: "نام دلخواه",
-  birth_date: "تاریخ تولد",
-  height_cm: "قد",
-  weight_kg: "وزن",
-  goal: "هدف اصلی",
-  activity_level: "میزان فعالیت",
-  food_preferences: "ترجیحات غذایی",
-  food_restrictions: "محدودیت‌های غذایی",
-};
 
 const fieldSteps: Record<string, number> = {
   display_name: 0,
@@ -76,72 +41,13 @@ const fieldSteps: Record<string, number> = {
   food_restrictions: 5,
 };
 
-function dateYearsAgo(years: number) {
-  const today = new Date();
-  const targetYear = today.getFullYear() - years;
-  const lastDay = new Date(targetYear, today.getMonth() + 1, 0).getDate();
-  const day = Math.min(today.getDate(), lastDay);
-  return [
-    targetYear,
-    String(today.getMonth() + 1).padStart(2, "0"),
-    String(day).padStart(2, "0"),
-  ].join("-");
-}
-
-function translateBackendMessage(message: string) {
-  if (message.includes("required") || message.includes("blank")) {
-    return "این مقدار الزامی است.";
-  }
-  if (message.includes("valid choice")) {
-    return "یکی از گزینه‌های معتبر را انتخاب کنید.";
-  }
-  if (message.includes("at least 18")) {
-    return "سن باید حداقل ۱۸ سال باشد.";
-  }
-  if (message.includes("more than 120")) {
-    return "سن نمی‌تواند بیشتر از ۱۲۰ سال باشد.";
-  }
-  if (message.includes("greater than or equal")) {
-    const value = message.match(/[\d.]+/)?.[0];
-    return `مقدار باید حداقل ${value ?? "حد مجاز"} باشد.`;
-  }
-  if (message.includes("less than or equal")) {
-    const value = message.match(/[\d.]+/)?.[0];
-    return `مقدار باید حداکثر ${value ?? "حد مجاز"} باشد.`;
-  }
-  if (message.includes("no more than 500")) {
-    return "متن باید حداکثر ۵۰۰ نویسه باشد.";
-  }
-  return "مقدار واردشده معتبر نیست.";
-}
-
-function getBackendError(error: ApiError) {
-  if (!error.details || typeof error.details !== "object") {
-    return { message: error.message, step: null };
-  }
-
-  const entries = Object.entries(error.details as Record<string, unknown>);
-  const messages = entries.flatMap(([field, value]) => {
-    const values = Array.isArray(value) ? value : [value];
-    return values
-      .filter((item): item is string => typeof item === "string")
-      .map((item) => `${fieldLabels[field] ?? field}: ${translateBackendMessage(item)}`);
-  });
-  const firstField = entries[0]?.[0];
-
-  return {
-    message: messages.length ? messages.join(" • ") : error.message,
-    step: firstField && firstField in fieldSteps ? fieldSteps[firstField] : null,
-  };
-}
-
 function SmilingAvocado() {
   return (
     <span className="relative flex h-11 w-11 items-center justify-center rounded-[0.85rem] bg-gradient-to-br from-[#D4F24E] to-[#CFE84E] shadow-[0_6px_16px_rgba(134,185,59,0.34)] ring-1 ring-white/40">
       <img
         src="/brand-assets/avocado-smiling.png"
         alt=""
-        className="h-[2.6rem] w-[2.6rem] object-contain"
+        className="h-[2.6rem] w-[2.6rem] scale-[1.15] object-contain"
       />
     </span>
   );
@@ -149,7 +55,7 @@ function SmilingAvocado() {
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const [profile, setProfile] = useState<ProfileDraft>(initialProfile);
+  const [profile, setProfile] = useState<ProfileDraft>(emptyProfileDraft);
   const [step, setStep] = useState(0);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -191,37 +97,17 @@ export default function OnboardingPage() {
   }
 
   function validateStep(currentStep: number) {
-    if (currentStep === 0 && !profile.display_name.trim()) {
-      return "یه نام یا اسم دلخواه وارد کن تا باهاش صدات کنیم.";
-    }
-    if (currentStep === 1) {
-      if (!profile.birth_date) {
-        return "تاریخ تولدت رو وارد کن.";
-      }
-      if (profile.birth_date > dateYearsAgo(18)) {
-        return "برای ساخت پروفایل باید حداقل ۱۸ سال داشته باشی.";
-      }
-      if (profile.birth_date < dateYearsAgo(120)) {
-        return "تاریخ تولد واردشده معتبر نیست.";
-      }
-    }
-    if (currentStep === 2) {
-      const height = Number(profile.height_cm);
-      const weight = Number(profile.weight_kg);
-      if (!profile.height_cm || !Number.isFinite(height) || height < 50 || height > 250) {
-        return "قد رو بین ۵۰ تا ۲۵۰ سانتی‌متر وارد کن.";
-      }
-      if (!profile.weight_kg || !Number.isFinite(weight) || weight < 20 || weight > 500) {
-        return "وزن رو بین ۲۰ تا ۵۰۰ کیلوگرم وارد کن.";
-      }
-    }
-    if (currentStep === 3 && !profile.goal) {
-      return "هدفی که الان برات مهم‌تره رو انتخاب کن.";
-    }
-    if (currentStep === 4 && !profile.activity_level) {
-      return "نزدیک‌ترین سطح فعالیت به روزهای معمولت رو انتخاب کن.";
-    }
-    return null;
+    const errors = validateHealthProfile(profile);
+    const fieldsByStep: Array<Array<keyof ProfileDraft>> = [
+      ["display_name"],
+      ["birth_date"],
+      ["height_cm", "weight_kg"],
+      ["goal"],
+      ["activity_level"],
+      ["food_preferences", "food_restrictions"],
+    ];
+    const firstInvalidField = fieldsByStep[currentStep].find((field) => errors[field]);
+    return firstInvalidField ? errors[firstInvalidField] ?? null : null;
   }
 
   function continueToNextStep() {
@@ -273,9 +159,9 @@ export default function OnboardingPage() {
         return;
       }
       if (caughtError instanceof ApiError) {
-        const backendError = getBackendError(caughtError);
-        if (backendError.step !== null) {
-          setStep(backendError.step);
+        const backendError = formatHealthProfileApiError(caughtError);
+        if (backendError.field && backendError.field in fieldSteps) {
+          setStep(fieldSteps[backendError.field]);
         }
         setError(backendError.message);
       } else {
