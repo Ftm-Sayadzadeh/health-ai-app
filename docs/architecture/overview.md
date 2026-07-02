@@ -25,6 +25,7 @@ The API is intentionally minimal:
 - Auth endpoints: `POST /api/auth/request-otp/`, `POST /api/auth/verify-otp/`, `GET /api/auth/me/`
 - Profiles app: `profiles`
 - Health profile endpoint: `GET /api/health-profile/`, `PUT /api/health-profile/`
+- Program intake endpoints: `GET /api/program-intakes/status/` and owner-scoped `GET/PUT` nutrition and workout intake endpoints
 
 The backend reads database, Redis, and Celery settings from environment variables. Local defaults are suitable only for development.
 
@@ -61,6 +62,12 @@ The auth user payload includes `has_health_profile`. After OTP verification, nor
 Users with a profile can open `/profile` from the dashboard to retrieve and replace their existing profile through the same `GET/PUT /api/health-profile/` contract. Profile values remain client state only; JWT storage is unchanged. The settings page does not introduce profile history or derived health calculations.
 
 The profile foundation does not calculate BMI, calorie targets, nutrition advice, or other health recommendations.
+
+## Program Intake Phase
+
+The `programs` app stores optional, structured nutrition and workout intake answers in separate one-to-one records. Access is limited to authenticated normal users who already have a health profile. Nutrition and workout completion remain independent, and the dashboard only offers an optional entry point.
+
+The frontend hub at `/plans/intake` uses short guided questionnaires and reloads existing answers for editing. A completed submission stores user-confirmed constraints and preferences only. It does not generate a meal plan, workout plan, calorie target, health calculation, or AI recommendation.
 
 ## Future Product Boundaries
 
