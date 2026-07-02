@@ -86,7 +86,7 @@ export default function LoginPage() {
 
       <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col">
         {/* floating pill header — matches landing page style */}
-        <header dir="rtl" className="sticky top-4 z-30 mb-4">
+        <header dir="rtl" className="sticky top-4 z-30 mb-4 shrink-0">
           <div className="flex items-center justify-between gap-4 rounded-full border border-[#EFEAD9]/80 bg-white/85 px-4 py-2.5 shadow-[0_14px_34px_rgba(85,117,54,0.1)] backdrop-blur-md sm:px-6 sm:py-3">
             <Link href="/" className="flex items-center gap-3">
               <SmilingAvocado className="h-11 w-11" imgClassName="h-20 w-20 max-w-none translate-y-1" />
