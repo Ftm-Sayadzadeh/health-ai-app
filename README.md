@@ -34,7 +34,7 @@ Not implemented yet:
 
 - Production-hardened token storage
 - AI features
-- Nutrition calculation or meal logging
+- Automatic nutrition calculation, calorie targets, or food databases
 - Diet plans or workout plans
 - Coach, student, partner, or doctor-plan import features
 - Notifications
@@ -81,6 +81,9 @@ Default local URLs:
 - Frontend program intake: http://localhost:3000/plans/intake
 - Daily nutrition log: http://localhost:3000/nutrition
 - Daily nutrition API: http://localhost:8000/api/nutrition/days/YYYY-MM-DD/
+- Custom foods API: http://localhost:8000/api/nutrition/custom-foods/
+- Recent foods API: http://localhost:8000/api/nutrition/recent-foods/
+- Saved foods manager: http://localhost:3000/nutrition/foods
 
 Run API tests:
 
@@ -131,7 +134,7 @@ Users with an existing health profile can view and update the same foundational 
 
 Normal users with a completed health profile may optionally complete separate nutrition and workout questionnaires under `/plans/intake`. The answers are stored through `GET/PUT /api/program-intakes/nutrition/` and `GET/PUT /api/program-intakes/workout/`. This phase does not generate plans, calculations, or recommendations.
 
-Normal users may manually log foods by day and meal under `/nutrition`. Daily calorie totals are derived only from calorie values entered by the user. The tracker does not provide calorie targets, food data, medical guidance, or nutrition recommendations.
+Normal users may manually log foods by day and meal under `/nutrition`. Daily calorie totals are derived only from calorie values entered by the user. Recent foods come from the user's own log history, and reusable custom foods can be managed at `/nutrition/foods`; selecting either only prefills the entry form for review. The tracker does not provide automatic calorie calculation, public food data, medical guidance, or nutrition recommendations.
 
 Run web lint:
 

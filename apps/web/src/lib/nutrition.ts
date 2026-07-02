@@ -11,6 +11,10 @@ export type FoodLogEntryInput = {
   note: string;
 };
 
+export type CreateFoodLogEntryInput = FoodLogEntryInput & {
+  save_as_custom?: boolean;
+};
+
 export type FoodLogEntry = FoodLogEntryInput & {
   id: number;
   created_at: string;
@@ -25,6 +29,18 @@ export type DailyFoodLog = {
   entries: FoodLogEntry[];
 };
 
+export type CustomFood = Omit<FoodLogEntryInput, "meal_type"> & {
+  id: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type RecentFood = Omit<FoodLogEntryInput, "meal_type"> & {
+  last_logged_at: string;
+};
+
+type ResultList<T> = { results: T[] };
+
 function requireAccessToken() {
   const token = getAccessToken();
   if (!token) throw new ApiError("توکن ورود پیدا نشد.", 401, null);
@@ -37,11 +53,49 @@ export function getDailyFoodLog(date: string) {
   });
 }
 
-export function createFoodLogEntry(date: string, input: FoodLogEntryInput) {
+export function createFoodLogEntry(date: string, input: CreateFoodLogEntryInput) {
   return apiRequest<FoodLogEntry>(`/api/nutrition/days/${date}/entries/`, {
     method: "POST",
     token: requireAccessToken(),
     body: input,
+  });
+}
+
+export function getCustomFoods() {
+  return apiRequest<ResultList<CustomFood>>("/api/nutrition/custom-foods/", {
+    token: requireAccessToken(),
+  });
+}
+
+export function createCustomFood(input: Omit<FoodLogEntryInput, "meal_type">) {
+  return apiRequest<CustomFood>("/api/nutrition/custom-foods/", {
+    method: "POST",
+    token: requireAccessToken(),
+    body: input,
+  });
+}
+
+export function updateCustomFood(
+  id: number,
+  input: Omit<FoodLogEntryInput, "meal_type">,
+) {
+  return apiRequest<CustomFood>(`/api/nutrition/custom-foods/${id}/`, {
+    method: "PUT",
+    token: requireAccessToken(),
+    body: input,
+  });
+}
+
+export function deleteCustomFood(id: number) {
+  return apiRequest<void>(`/api/nutrition/custom-foods/${id}/`, {
+    method: "DELETE",
+    token: requireAccessToken(),
+  });
+}
+
+export function getRecentFoods() {
+  return apiRequest<ResultList<RecentFood>>("/api/nutrition/recent-foods/", {
+    token: requireAccessToken(),
   });
 }
 
@@ -99,7 +153,13 @@ export function formatNutritionError(error: unknown) {
   if (error.details && typeof error.details === "object") {
     const details = error.details as Record<string, unknown>;
     if (details.date) return "تاریخ انتخاب‌شده معتبر نیست.";
-    if (details.food_name) return "نام غذا رو وارد کن.";
+    if (details.food_name) {
+      const message = Array.isArray(details.food_name)
+        ? String(details.food_name[0] ?? "")
+        : String(details.food_name);
+      if (message.includes("already saved")) return "این غذا با همین مقدار و کالری قبلا ذخیره شده.";
+      return "نام غذا رو وارد کن.";
+    }
     if (details.serving_description) return "مقدار یا اندازه وعده رو وارد کن.";
     if (details.calories) return "کالری باید عددی بین ۰ تا ۱۰٬۰۰۰ باشه.";
     if (details.meal_type) return "نوع وعده رو انتخاب کن.";
