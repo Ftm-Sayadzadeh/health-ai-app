@@ -12,6 +12,7 @@ import {
   needsHealthProfile,
 } from "@/lib/auth";
 import { ApiError } from "@/lib/api-client";
+import { getDailyFoodLog, getTehranTodayKey, toPersianNumber } from "@/lib/nutrition";
 import { getProgramIntakeStatus, ProgramIntakeStatus } from "@/lib/program-intakes";
 
 /* eslint-disable @next/next/no-img-element */
@@ -110,6 +111,10 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [intakeStatus, setIntakeStatus] = useState<ProgramIntakeStatus | null>(null);
+  const [todayNutrition, setTodayNutrition] = useState<{
+    calories: number;
+    entryCount: number;
+  } | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -136,6 +141,20 @@ export default function DashboardPage() {
             if (isMounted) setIntakeStatus(programStatus);
           } catch (statusError) {
             if (statusError instanceof ApiError && statusError.status === 401) {
+              logout();
+              router.replace("/login");
+            }
+          }
+          try {
+            const todayLog = await getDailyFoodLog(getTehranTodayKey());
+            if (isMounted) {
+              setTodayNutrition({
+                calories: todayLog.total_calories,
+                entryCount: todayLog.entry_count,
+              });
+            }
+          } catch (nutritionError) {
+            if (nutritionError instanceof ApiError && nutritionError.status === 401) {
               logout();
               router.replace("/login");
             }
@@ -281,12 +300,27 @@ export default function DashboardPage() {
                 حساب تو آماده‌ست
               </h1>
               <p className="mt-3 max-w-lg text-[0.9rem] leading-7 text-[#5F6F55] sm:text-base sm:leading-8">
-                خوش اومدی. داشبورد فعلا وضعیت ورود و حساب تو رو نشون می‌ده؛ امکانات
-                تغذیه و سلامت به‌زودی اضافه می‌شن.
+                خوش اومدی. از همین‌جا می‌تونی غذای امروزت رو ثبت کنی و مسیر سلامتت رو مرتب نگه داری.
               </p>
             </div>
           </div>
         </section>
+
+        {user?.role === "normal" && user.has_health_profile ? (
+          <section className="relative mb-6 overflow-hidden rounded-[1.5rem] border border-[#DCE9B0] bg-gradient-to-l from-white to-[#F4FBE3] p-4 shadow-[0_14px_34px_rgba(85,117,54,0.07)] sm:p-5">
+            <img src="/brand-assets/avocado-slice.png" alt="" aria-hidden="true" className="pointer-events-none absolute -left-3 -top-4 h-20 w-20 object-contain opacity-10" />
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[0.9rem] bg-[#EAF7C7] text-lg font-extrabold text-[#557536]" aria-hidden="true">غ</span>
+                <div><h2 className="font-extrabold">ثبت غذای امروز</h2><p className="mt-1 text-xs text-[#6B7A5A]">غذای امروزت رو سریع ثبت کن؛ بر اساس کالری‌هایی که خودت وارد کردی.</p></div>
+              </div>
+              <div className="flex items-center gap-3 sm:shrink-0">
+                {todayNutrition ? <div className="grid min-w-32 grid-cols-2 gap-2"><span className="rounded-xl bg-white px-3 py-2 text-center shadow-sm"><strong className="block text-base">{toPersianNumber(todayNutrition.calories)}</strong><span className="text-[0.62rem] text-[#8A9A78]">کالری</span></span><span className="rounded-xl bg-white px-3 py-2 text-center shadow-sm"><strong className="block text-base">{toPersianNumber(todayNutrition.entryCount)}</strong><span className="text-[0.62rem] text-[#8A9A78]">مورد ثبت</span></span></div> : null}
+                <Link href="/nutrition" className="flex-1 rounded-full bg-[#D4F24E] px-5 py-3 text-center text-sm font-extrabold shadow-[0_10px_22px_rgba(212,242,78,0.25)] hover:bg-[#CFE84E] sm:flex-none">باز کردن گزارش امروز</Link>
+              </div>
+            </div>
+          </section>
+        ) : null}
 
         {/* main grid: account + coming-soon */}
         <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">

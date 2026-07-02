@@ -26,6 +26,7 @@ The API is intentionally minimal:
 - Profiles app: `profiles`
 - Health profile endpoint: `GET /api/health-profile/`, `PUT /api/health-profile/`
 - Program intake endpoints: `GET /api/program-intakes/status/` and owner-scoped `GET/PUT` nutrition and workout intake endpoints
+- Nutrition tracking endpoints: daily owner-scoped food logs plus entry create, update, and delete operations
 
 The backend reads database, Redis, and Celery settings from environment variables. Local defaults are suitable only for development.
 
@@ -68,6 +69,12 @@ The profile foundation does not calculate BMI, calorie targets, nutrition advice
 The `programs` app stores optional, structured nutrition and workout intake answers in separate one-to-one records. Access is limited to authenticated normal users who already have a health profile. Nutrition and workout completion remain independent, and the dashboard only offers an optional entry point.
 
 The frontend hub at `/plans/intake` uses short guided questionnaires and reloads existing answers for editing. A completed submission stores user-confirmed constraints and preferences only. It does not generate a meal plan, workout plan, calorie target, health calculation, or AI recommendation.
+
+## Nutrition Tracking Phase
+
+The `nutrition` app stores manual daily food entries grouped into breakfast, lunch, dinner, snack, and other meals. Calorie totals are derived at request time from user-entered values and are never treated as targets or clinical measurements.
+
+The Persian RTL `/nutrition` workspace supports date navigation and entry creation, editing, and deletion. This phase intentionally excludes macros, custom foods, external food databases, image or voice logging, AI, and recommendations.
 
 ## Future Product Boundaries
 

@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "profiles",
     "programs",
     "plans",
+    "nutrition",
 ]
 
 MIDDLEWARE = [
