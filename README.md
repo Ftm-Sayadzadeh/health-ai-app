@@ -25,6 +25,7 @@ Implemented in this milestone:
 - Persian RTL health profile onboarding at `/onboarding`
 - Authenticated health profile settings at `/profile`
 - Optional nutrition and workout program intake at `/plans/intake`
+- Manual daily meal logging and calorie totals at `/nutrition`
 - Persian-first RTL web shell
 - Local Docker services for API, web, PostgreSQL, Redis, and Celery worker
 - Documentation for the initial architecture
@@ -78,6 +79,8 @@ Default local URLs:
 - Frontend profile settings: http://localhost:3000/profile
 - Program intake API status: http://localhost:8000/api/program-intakes/status/
 - Frontend program intake: http://localhost:3000/plans/intake
+- Daily nutrition log: http://localhost:3000/nutrition
+- Daily nutrition API: http://localhost:8000/api/nutrition/days/YYYY-MM-DD/
 
 Run API tests:
 
@@ -127,6 +130,8 @@ Normal users without a health profile are guided through `/onboarding` after OTP
 Users with an existing health profile can view and update the same foundational fields at `/profile`. Updates use the existing owner-scoped health profile endpoint and do not create history, check-ins, calculations, or recommendations.
 
 Normal users with a completed health profile may optionally complete separate nutrition and workout questionnaires under `/plans/intake`. The answers are stored through `GET/PUT /api/program-intakes/nutrition/` and `GET/PUT /api/program-intakes/workout/`. This phase does not generate plans, calculations, or recommendations.
+
+Normal users may manually log foods by day and meal under `/nutrition`. Daily calorie totals are derived only from calorie values entered by the user. The tracker does not provide calorie targets, food data, medical guidance, or nutrition recommendations.
 
 Run web lint:
 
