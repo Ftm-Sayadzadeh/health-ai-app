@@ -43,11 +43,12 @@ export async function apiRequest<TResponse>(
   path: string,
   { body, method = body ? "POST" : "GET", token }: RequestOptions = {},
 ) {
+  const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
   const headers: HeadersInit = {
     Accept: "application/json",
   };
 
-  if (body) {
+  if (body && !isFormData) {
     headers["Content-Type"] = "application/json";
   }
   if (token) {
@@ -57,7 +58,7 @@ export async function apiRequest<TResponse>(
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method,
     headers,
-    body: body ? JSON.stringify(body) : undefined,
+    body: body ? (isFormData ? body : JSON.stringify(body)) : undefined,
   });
 
   const text = await response.text();
@@ -68,4 +69,16 @@ export async function apiRequest<TResponse>(
   }
 
   return data as TResponse;
+}
+
+export async function apiDownload(path: string, token: string) {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    const data = text ? JSON.parse(text) : null;
+    throw new ApiError(extractErrorMessage(data), response.status, data);
+  }
+  return response.blob();
 }
