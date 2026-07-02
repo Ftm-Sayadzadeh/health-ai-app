@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import "@fontsource-variable/vazirmatn";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Health AI App",
-  description: "زیرساخت اولیه محصول سلامت، تغذیه و سبک زندگی فارسی",
+  title: "Health AI App | سلامت هوشمند فارسی",
+  description: "پلتفرم فارسی سلامت، تغذیه، کالری و مربی‌گری با کمک هوش مصنوعی",
 };
 
 export default function RootLayout({
@@ -12,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl">
-      <body>{children}</body>
+    <html lang="fa" dir="rtl" data-scroll-behavior="smooth">
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }
