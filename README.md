@@ -24,6 +24,7 @@ Implemented in this milestone:
 - Authenticated health profile endpoint at `/api/health-profile/`
 - Persian RTL health profile onboarding at `/onboarding`
 - Authenticated health profile settings at `/profile`
+- Optional nutrition and workout program intake at `/plans/intake`
 - Persian-first RTL web shell
 - Local Docker services for API, web, PostgreSQL, Redis, and Celery worker
 - Documentation for the initial architecture
@@ -75,6 +76,8 @@ Default local URLs:
 - Frontend login: http://localhost:3000/login
 - Frontend onboarding: http://localhost:3000/onboarding
 - Frontend profile settings: http://localhost:3000/profile
+- Program intake API status: http://localhost:8000/api/program-intakes/status/
+- Frontend program intake: http://localhost:3000/plans/intake
 
 Run API tests:
 
@@ -122,6 +125,8 @@ The auth UI phase adds a Persian OTP login page and guarded dashboard display. T
 Normal users without a health profile are guided through `/onboarding` after OTP login. The profile endpoint stores only user-confirmed foundational data and does not calculate BMI, calories, nutrition targets, or recommendations. Coach and admin roles are not required to complete onboarding.
 
 Users with an existing health profile can view and update the same foundational fields at `/profile`. Updates use the existing owner-scoped health profile endpoint and do not create history, check-ins, calculations, or recommendations.
+
+Normal users with a completed health profile may optionally complete separate nutrition and workout questionnaires under `/plans/intake`. The answers are stored through `GET/PUT /api/program-intakes/nutrition/` and `GET/PUT /api/program-intakes/workout/`. This phase does not generate plans, calculations, or recommendations.
 
 Run web lint:
 

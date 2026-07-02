@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "accounts",
     "health",
     "profiles",
+    "programs",
 ]
 
 MIDDLEWARE = [

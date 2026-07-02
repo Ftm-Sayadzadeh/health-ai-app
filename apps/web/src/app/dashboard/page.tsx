@@ -11,6 +11,8 @@ import {
   logout,
   needsHealthProfile,
 } from "@/lib/auth";
+import { ApiError } from "@/lib/api-client";
+import { getProgramIntakeStatus, ProgramIntakeStatus } from "@/lib/program-intakes";
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -39,45 +41,6 @@ function SmilingAvocado({
         />
       </span>
     </span>
-  );
-}
-
-function SunAccent() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-4 w-4 text-[#FFB24D]"
-      fill="none"
-    >
-      <circle cx="12" cy="12" r="4.5" fill="currentColor" />
-      <g stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-        <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" />
-      </g>
-    </svg>
-  );
-}
-
-function WaterDropAccent() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-4 w-4 text-[#86B93B]"
-      fill="none"
-    >
-      <path
-        d="M12 2.5c3.5 4.2 6 7.6 6 10.8a6 6 0 1 1-12 0c0-3.2 2.5-6.6 6-10.8Z"
-        fill="currentColor"
-        opacity="0.85"
-      />
-      <path
-        d="M9.5 13.2a2.5 2.5 0 0 0 2.5 2.5"
-        stroke="#FFFDF8"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-    </svg>
   );
 }
 
@@ -146,6 +109,7 @@ export default function DashboardPage() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [intakeStatus, setIntakeStatus] = useState<ProgramIntakeStatus | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -165,6 +129,17 @@ export default function DashboardPage() {
         if (isMounted) {
           setUser(currentUser);
           setIsCheckingAuth(false);
+        }
+        if (currentUser.role === "normal" && currentUser.has_health_profile) {
+          try {
+            const programStatus = await getProgramIntakeStatus();
+            if (isMounted) setIntakeStatus(programStatus);
+          } catch (statusError) {
+            if (statusError instanceof ApiError && statusError.status === 401) {
+              logout();
+              router.replace("/login");
+            }
+          }
         }
       } catch {
         logout();
@@ -390,42 +365,46 @@ export default function DashboardPage() {
             ) : null}
           </section>
 
-          {/* coming-soon card */}
-          <section className="relative overflow-hidden rounded-[2rem] border border-[#EFEAD9] bg-white p-6 text-center shadow-[0_24px_60px_rgba(85,117,54,0.08)] ring-1 ring-black/[0.02] sm:p-7">
+          {user?.role === "normal" && user.has_health_profile ? (
+          <section className="relative overflow-hidden rounded-[2rem] border border-[#EFEAD9] bg-white p-6 shadow-[0_24px_60px_rgba(85,117,54,0.08)] ring-1 ring-black/[0.02] sm:p-7">
             <img
               src="/brand-assets/avocado-slice.png"
               alt=""
               aria-hidden="true"
               className="pointer-events-none absolute -left-3 -top-3 h-20 w-20 object-contain opacity-10"
             />
-            <div className="relative mx-auto mb-5 flex w-full max-w-[15rem] justify-center">
-              <div className="absolute top-3 h-24 w-full rounded-full bg-gradient-to-b from-[#EAF7C7] to-[#FFF6E8]" />
-              <img
-                src="/brand-assets/curved-growth-path-with-sprouts.png"
-                alt="مسیر رشد با جوانه‌ها"
-                className="relative h-24 w-full max-w-[13rem] object-contain drop-shadow-[0_10px_18px_rgba(85,117,54,0.12)]"
-              />
+            <div className="relative flex items-start justify-between gap-4">
+              <div>
+                <span className="inline-flex rounded-full bg-[#EAF7C7] px-3 py-1.5 text-[0.7rem] font-extrabold text-[#557536]">اختیاری</span>
+                <h2 className="mt-4 text-lg font-extrabold leading-tight sm:text-xl">ساخت برنامه شخصی</h2>
+              </div>
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#F4FBE3] text-lg font-extrabold text-[#557536]" aria-hidden="true">پ</span>
             </div>
-
-            <h2 className="text-lg font-extrabold leading-tight sm:text-xl">
-              مسیر سلامت تو تازه شروع شده
-            </h2>
-            <p className="mx-auto mt-2 max-w-[20rem] text-[0.8rem] leading-6 text-[#6B7A5A]">
-              ثبت غذا، مسیر رشد و همراهی هوشمند به‌زودی اضافه می‌شن. فعلا همین که
-              وارد شدی، یه قدم سالمه.
+            <p className="mt-3 text-[0.8rem] leading-6 text-[#6B7A5A]">
+              پرسش‌های تکمیلی تغذیه و تمرین رو هر وقت خواستی جواب بده. فعلا هیچ برنامه‌ای تولید نمی‌شه.
             </p>
-
-            <div className="mt-5 flex flex-col gap-2">
-              <span className="inline-flex items-center justify-center gap-2 rounded-full bg-[#EAF7C7] px-4 py-2 text-[0.72rem] font-bold text-[#557536]">
-                <SunAccent />
-                ثبت غذا — به‌زودی
+            <div className="mt-5 grid grid-cols-2 gap-2">
+              <span className="rounded-xl bg-[#F4FBE3] px-3 py-2 text-center text-[0.7rem] font-bold text-[#557536]">
+                تغذیه: {intakeStatus ? (intakeStatus.nutrition.completed ? "تکمیل شده" : "نیاز به تکمیل") : "وضعیت نامشخص"}
               </span>
-              <span className="inline-flex items-center justify-center gap-2 rounded-full bg-[#FFF6E8] px-4 py-2 text-[0.72rem] font-bold text-[#7A3A27]">
-                <WaterDropAccent />
-                مسیر رشد — به‌زودی
+              <span className="rounded-xl bg-[#FFF6E8] px-3 py-2 text-center text-[0.7rem] font-bold text-[#7A3A27]">
+                تمرین: {intakeStatus ? (intakeStatus.workout.completed ? "تکمیل شده" : "نیاز به تکمیل") : "وضعیت نامشخص"}
               </span>
             </div>
+            <Link href="/plans/intake" className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-[#D4F24E] px-5 py-3 text-sm font-extrabold shadow-[0_12px_24px_rgba(212,242,78,0.28)] transition hover:bg-[#CFE84E] focus:outline-none focus:ring-4 focus:ring-[#EAF7C7]">
+              تکمیل پرسشنامه برنامه
+            </Link>
           </section>
+          ) : (
+            <section className="relative overflow-hidden rounded-[2rem] border border-[#EFEAD9] bg-white p-6 text-center shadow-[0_24px_60px_rgba(85,117,54,0.08)] ring-1 ring-black/[0.02] sm:p-7">
+              <div className="relative mx-auto mb-5 flex w-full max-w-[15rem] justify-center">
+                <div className="absolute top-3 h-24 w-full rounded-full bg-gradient-to-b from-[#EAF7C7] to-[#FFF6E8]" />
+                <img src="/brand-assets/curved-growth-path-with-sprouts.png" alt="مسیر رشد با جوانه‌ها" className="relative h-24 w-full max-w-[13rem] object-contain" />
+              </div>
+              <h2 className="text-lg font-extrabold">مسیر سلامت تو تازه شروع شده</h2>
+              <p className="mt-2 text-[0.8rem] leading-6 text-[#6B7A5A]">امکانات بیشتر به‌تدریج اضافه می‌شن.</p>
+            </section>
+          )}
         </div>
 
         <footer className="flex flex-col items-center justify-between gap-3 border-t border-[#EFEAD9] py-6 sm:flex-row">
