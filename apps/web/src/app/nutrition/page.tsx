@@ -7,6 +7,7 @@ import { Suspense, useCallback, useState } from "react";
 import { ApiError } from "@/lib/api-client";
 import { logout } from "@/lib/auth";
 import {
+  CustomFood,
   createFoodLogEntry,
   DailyFoodLog,
   deleteFoodLogEntry,
@@ -14,10 +15,13 @@ import {
   FoodLogEntryInput,
   formatNutritionDate,
   formatNutritionError,
+  getCustomFoods,
   getDailyFoodLog,
+  getRecentFoods,
   getTehranTodayKey,
   isDateKey,
   MealType,
+  RecentFood,
   shiftDateKey,
   toPersianNumber,
   updateFoodLogEntry,
@@ -48,6 +52,11 @@ function NutritionPageContent() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<FoodLogEntry | null>(null);
   const [defaultMeal, setDefaultMeal] = useState<MealType>("breakfast");
+  const [recentFoods, setRecentFoods] = useState<RecentFood[]>([]);
+  const [customFoods, setCustomFoods] = useState<CustomFood[]>([]);
+  const [quickListsLoading, setQuickListsLoading] = useState(false);
+  const [recentFoodsError, setRecentFoodsError] = useState<string | null>(null);
+  const [customFoodsError, setCustomFoodsError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -55,6 +64,29 @@ function NutritionPageContent() {
     setDailyLog(await getDailyFoodLog(selectedDate));
   }, [selectedDate]);
   const access = useNutritionAccess(load);
+
+  const loadQuickFoods = useCallback(async () => {
+    setQuickListsLoading(true);
+    setRecentFoodsError(null);
+    setCustomFoodsError(null);
+    const [recentResult, customResult] = await Promise.allSettled([
+      getRecentFoods(),
+      getCustomFoods(),
+    ]);
+    const rejected = [recentResult, customResult].find(
+      (result): result is PromiseRejectedResult => result.status === "rejected",
+    );
+    if (rejected?.reason instanceof ApiError && rejected.reason.status === 401) {
+      logout();
+      router.replace("/login");
+      return;
+    }
+    if (recentResult.status === "fulfilled") setRecentFoods(recentResult.value.results);
+    else setRecentFoodsError("دریافت غذاهای اخیر ممکن نشد؛ ورود دستی همچنان در دسترسه.");
+    if (customResult.status === "fulfilled") setCustomFoods(customResult.value.results);
+    else setCustomFoodsError("دریافت غذاهای ذخیره‌شده ممکن نشد؛ ورود دستی همچنان در دسترسه.");
+    setQuickListsLoading(false);
+  }, [router]);
 
   function changeDate(value: string) {
     if (!isDateKey(value) || value > today) return;
@@ -66,6 +98,7 @@ function NutritionPageContent() {
     setDefaultMeal(mealType);
     setActionError(null);
     setSheetOpen(true);
+    void loadQuickFoods();
   }
 
   function openEdit(entry: FoodLogEntry) {
@@ -75,12 +108,12 @@ function NutritionPageContent() {
     setSheetOpen(true);
   }
 
-  async function saveEntry(input: FoodLogEntryInput) {
+  async function saveEntry(input: FoodLogEntryInput, saveAsCustom: boolean) {
     setIsSaving(true);
     setActionError(null);
     try {
       if (selectedEntry) await updateFoodLogEntry(selectedEntry.id, input);
-      else await createFoodLogEntry(selectedDate, input);
+      else await createFoodLogEntry(selectedDate, { ...input, save_as_custom: saveAsCustom });
       await load();
       setSheetOpen(false);
       setSelectedEntry(null);
@@ -152,7 +185,7 @@ function NutritionPageContent() {
 
       <div className="mt-5 flex justify-center"><Link href="/dashboard" className="text-xs font-extrabold text-[#557536]">بازگشت به داشبورد</Link></div>
 
-      {sheetOpen ? <FoodEntrySheet entry={selectedEntry} defaultMeal={defaultMeal} isSaving={isSaving} error={actionError} onClose={() => { setSheetOpen(false); setActionError(null); }} onSave={saveEntry} onDelete={selectedEntry ? removeEntry : null} /> : null}
+      {sheetOpen ? <FoodEntrySheet entry={selectedEntry} defaultMeal={defaultMeal} recentFoods={recentFoods} customFoods={customFoods} quickListsLoading={quickListsLoading} recentFoodsError={recentFoodsError} customFoodsError={customFoodsError} isSaving={isSaving} error={actionError} onClose={() => { setSheetOpen(false); setActionError(null); }} onSave={saveEntry} onDelete={selectedEntry ? removeEntry : null} /> : null}
     </NutritionShell>
   );
 }

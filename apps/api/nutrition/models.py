@@ -54,3 +54,32 @@ class FoodLogEntry(models.Model):
 
     def __str__(self):
         return f"{self.food_name} ({self.calories} kcal)"
+
+
+class CustomFood(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="custom_foods",
+    )
+    food_name = models.CharField(max_length=120)
+    serving_description = models.CharField(max_length=120)
+    calories = models.PositiveIntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(10000)]
+    )
+    note = models.TextField(blank=True, default="", max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-updated_at", "-id"]
+        indexes = [models.Index(fields=["user", "-updated_at"])]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "food_name", "serving_description", "calories"],
+                name="unique_custom_food_per_user",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.food_name} ({self.calories} kcal)"

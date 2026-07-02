@@ -8,9 +8,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import FoodLogDay, FoodLogEntry
+from .models import CustomFood, FoodLogDay, FoodLogEntry
 from .permissions import HasHealthProfile, IsNormalUser
-from .serializers import FoodLogEntrySerializer
+from .serializers import (
+    CustomFoodSerializer,
+    FoodLogEntryCreateSerializer,
+    FoodLogEntrySerializer,
+)
 
 
 MEAL_TYPES = [choice for choice, _label in FoodLogEntry.MealType.choices]
@@ -60,13 +64,23 @@ class DailyFoodLogView(NutritionPermissionMixin, APIView):
 class FoodLogEntryCreateView(NutritionPermissionMixin, APIView):
     def post(self, request, log_date):
         parsed_date = parse_log_date(log_date)
-        serializer = FoodLogEntrySerializer(data=request.data)
+        serializer = FoodLogEntryCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        values = dict(serializer.validated_data)
+        save_as_custom = values.pop("save_as_custom", False)
         with transaction.atomic():
             log_day, _created = FoodLogDay.objects.get_or_create(
                 user=request.user, date=parsed_date
             )
-            entry = serializer.save(log_day=log_day)
+            entry = FoodLogEntry.objects.create(log_day=log_day, **values)
+            if save_as_custom:
+                CustomFood.objects.update_or_create(
+                    user=request.user,
+                    food_name=entry.food_name,
+                    serving_description=entry.serving_description,
+                    calories=entry.calories,
+                    defaults={"note": entry.note},
+                )
         return Response(
             FoodLogEntrySerializer(entry).data,
             status=status.HTTP_201_CREATED,
@@ -112,3 +126,92 @@ class FoodLogEntryDetailView(NutritionPermissionMixin, APIView):
             if not log_day.entries.exists():
                 log_day.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CustomFoodListCreateView(NutritionPermissionMixin, APIView):
+    def get(self, request):
+        foods = CustomFood.objects.filter(user=request.user)
+        return Response(
+            {"results": CustomFoodSerializer(foods, many=True).data}
+        )
+
+    def post(self, request):
+        serializer = CustomFoodSerializer(
+            data=request.data,
+            context={"request": request},
+        )
+        serializer.is_valid(raise_exception=True)
+        food = serializer.save(user=request.user)
+        return Response(
+            CustomFoodSerializer(food).data,
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class CustomFoodDetailView(NutritionPermissionMixin, APIView):
+    @staticmethod
+    def get_food(request, food_id):
+        return CustomFood.objects.filter(pk=food_id, user=request.user).first()
+
+    def get(self, request, food_id):
+        food = self.get_food(request, food_id)
+        if food is None:
+            return Response(
+                {"detail": "Custom food not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        return Response(CustomFoodSerializer(food).data)
+
+    def put(self, request, food_id):
+        food = self.get_food(request, food_id)
+        if food is None:
+            return Response(
+                {"detail": "Custom food not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        serializer = CustomFoodSerializer(
+            food,
+            data=request.data,
+            context={"request": request},
+        )
+        serializer.is_valid(raise_exception=True)
+        return Response(CustomFoodSerializer(serializer.save()).data)
+
+    def delete(self, request, food_id):
+        food = self.get_food(request, food_id)
+        if food is None:
+            return Response(
+                {"detail": "Custom food not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        food.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class RecentFoodListView(NutritionPermissionMixin, APIView):
+    def get(self, request):
+        results = []
+        seen = set()
+        entries = FoodLogEntry.objects.filter(log_day__user=request.user).order_by(
+            "-created_at", "-id"
+        )
+        for entry in entries.iterator(chunk_size=100):
+            key = (
+                " ".join(entry.food_name.split()).casefold(),
+                " ".join(entry.serving_description.split()).casefold(),
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            results.append(
+                {
+                    "food_name": entry.food_name,
+                    "serving_description": entry.serving_description,
+                    "calories": entry.calories,
+                    "note": entry.note,
+                    "last_logged_at": entry.created_at,
+                }
+            )
+            if len(results) == 12:
+                break
+        return Response({"results": results})
