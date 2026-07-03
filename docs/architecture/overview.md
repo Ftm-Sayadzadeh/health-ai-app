@@ -22,7 +22,7 @@ The API is intentionally minimal:
 - Health app: `health`
 - Health endpoint: `GET /api/health/`
 - Accounts app: `accounts`
-- Auth endpoints: `POST /api/auth/request-otp/`, `POST /api/auth/verify-otp/`, `GET /api/auth/me/`
+- Auth endpoints: `POST /api/auth/request-otp/`, `POST /api/auth/verify-otp/`, `POST /api/auth/token/refresh/`, `GET /api/auth/me/`
 - Profiles app: `profiles`
 - Health profile endpoint: `GET /api/health-profile/`, `PUT /api/health-profile/`
 - Program intake endpoints: `GET /api/program-intakes/status/` and owner-scoped `GET/PUT` nutrition and workout intake endpoints
@@ -39,6 +39,7 @@ The backend now includes phone OTP authentication with a custom user model and J
 - OTP codes are stored hashed, expire after 5 minutes, are limited to 5 verification attempts, and are consumed after successful verification.
 - A 60-second resend throttle applies per phone number.
 - In debug mode, OTP codes may be returned for local testing. Outside debug mode, OTP codes are never returned and delivery goes through an SMS provider adapter.
+- Access tokens remain short-lived at 15 minutes. Seven-day refresh tokens let the web client renew access once after a `401`; refresh failure clears the browser session and returns the user to login.
 - Django Admin UI remains intentionally disabled.
 
 ## Frontend

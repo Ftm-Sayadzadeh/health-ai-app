@@ -72,6 +72,7 @@ Default local URLs:
 - API health check: http://localhost:8000/api/health/
 - Auth OTP request: http://localhost:8000/api/auth/request-otp/
 - Auth OTP verify: http://localhost:8000/api/auth/verify-otp/
+- Auth token refresh: http://localhost:8000/api/auth/token/refresh/
 - Auth current user: http://localhost:8000/api/auth/me/
 - Health profile: http://localhost:8000/api/health-profile/
 - Frontend login: http://localhost:3000/login
@@ -119,7 +120,7 @@ curl -X POST http://localhost:8000/api/auth/verify-otp/ `
   -d "{\"phone_number\":\"09123456789\",\"otp\":\"123456\"}"
 ```
 
-The verify response returns JWT `access` and `refresh` tokens. Use the access token with:
+The verify response returns JWT `access` and `refresh` tokens. Access tokens expire after 15 minutes and refresh tokens after 7 days. The web client refreshes an expired access token once and retries the original authenticated request; an invalid or expired refresh token clears the local session. Use the access token with:
 
 ```powershell
 curl http://localhost:8000/api/auth/me/ `
