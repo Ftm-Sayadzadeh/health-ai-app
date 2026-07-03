@@ -238,6 +238,35 @@ class OTPFlowTests(TestCase):
             },
         )
 
+    def test_refresh_token_returns_new_access_token(self):
+        user = User.objects.create_user(phone_number=self.phone_number)
+        refresh = RefreshToken.for_user(user)
+
+        response = self.client.post(
+            reverse("token-refresh"),
+            {"refresh": str(refresh)},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("access", response.json())
+        self.assertNotIn("refresh", response.json())
+        me_response = self.client.get(
+            reverse("auth-me"),
+            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}",
+        )
+        self.assertEqual(me_response.status_code, 200)
+        self.assertEqual(me_response.json()["id"], user.id)
+
+    def test_refresh_token_rejects_invalid_token(self):
+        response = self.client.post(
+            reverse("token-refresh"),
+            {"refresh": "not-a-valid-refresh-token"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 401)
+
     def _request_otp(self):
         response = self.client.post(
             reverse("request-otp"),

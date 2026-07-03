@@ -35,6 +35,14 @@ export function saveTokens(tokens: AuthTokens) {
   window.localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refresh);
 }
 
+export function saveAccessToken(accessToken: string) {
+  if (!canUseStorage()) {
+    return;
+  }
+
+  window.localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+}
+
 export function clearTokens() {
   if (!canUseStorage()) {
     return;
