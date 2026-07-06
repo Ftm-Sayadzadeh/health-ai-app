@@ -8,6 +8,7 @@ import {
   FoodLogEntry,
   FoodLogEntryInput,
   MealType,
+  PlannedFoodDraft,
   RecentFood,
   toPersianNumber,
 } from "@/lib/nutrition";
@@ -29,6 +30,7 @@ type ReusableFood = Pick<
 export function FoodEntrySheet({
   entry,
   defaultMeal,
+  plannedDraft,
   recentFoods,
   customFoods,
   quickListsLoading,
@@ -42,6 +44,7 @@ export function FoodEntrySheet({
 }: {
   entry: FoodLogEntry | null;
   defaultMeal: MealType;
+  plannedDraft: PlannedFoodDraft | null;
   recentFoods: RecentFood[];
   customFoods: CustomFood[];
   quickListsLoading: boolean;
@@ -53,13 +56,13 @@ export function FoodEntrySheet({
   onSave: (input: FoodLogEntryInput, saveAsCustom: boolean) => Promise<void>;
   onDelete: (() => Promise<void>) | null;
 }) {
-  const [activeTab, setActiveTab] = useState<QuickTab>(entry ? "manual" : "recent");
-  const [selectedSource, setSelectedSource] = useState<"recent" | "custom" | null>(null);
-  const [mealType, setMealType] = useState<MealType>(entry?.meal_type ?? defaultMeal);
-  const [foodName, setFoodName] = useState(entry?.food_name ?? "");
-  const [serving, setServing] = useState(entry?.serving_description ?? "");
-  const [calories, setCalories] = useState(entry ? String(entry.calories) : "");
-  const [note, setNote] = useState(entry?.note ?? "");
+  const [activeTab, setActiveTab] = useState<QuickTab>(entry || plannedDraft ? "manual" : "recent");
+  const [selectedSource, setSelectedSource] = useState<"recent" | "custom" | "plan" | null>(plannedDraft ? "plan" : null);
+  const [mealType, setMealType] = useState<MealType>(entry?.meal_type ?? plannedDraft?.meal_type ?? defaultMeal);
+  const [foodName, setFoodName] = useState(entry?.food_name ?? plannedDraft?.food_name ?? "");
+  const [serving, setServing] = useState(entry?.serving_description ?? plannedDraft?.serving_description ?? "");
+  const [calories, setCalories] = useState(entry ? String(entry.calories) : plannedDraft?.calories === null || plannedDraft?.calories === undefined ? "" : String(plannedDraft.calories));
+  const [note, setNote] = useState(entry?.note ?? plannedDraft?.note ?? "");
   const [saveForLater, setSaveForLater] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -137,7 +140,7 @@ export function FoodEntrySheet({
             </div>
           </fieldset>
 
-          {!entry ? (
+          {!entry && !plannedDraft ? (
             <div className="rounded-[1.2rem] border border-[#EFEAD9] bg-[#FFFDF8] p-2">
               <div role="tablist" aria-label="روش افزودن غذا" className="grid grid-cols-3 gap-1">
                 {([
@@ -151,7 +154,7 @@ export function FoodEntrySheet({
             </div>
           ) : null}
 
-          {!entry && activeTab === "recent" ? (
+          {!entry && !plannedDraft && activeTab === "recent" ? (
             <ReusableFoodList
               foods={recentFoods}
               isLoading={quickListsLoading}
@@ -161,7 +164,7 @@ export function FoodEntrySheet({
             />
           ) : null}
 
-          {!entry && activeTab === "saved" ? (
+          {!entry && !plannedDraft && activeTab === "saved" ? (
             <div>
               <ReusableFoodList
                 foods={customFoods}
@@ -180,8 +183,8 @@ export function FoodEntrySheet({
             <>
               {selectedSource ? (
                 <div className="flex items-center justify-between gap-3 rounded-2xl border border-[#DCE9B0] bg-[#F4FBE3] px-4 py-3 text-xs text-[#557536]">
-                  <span className="font-bold">مقادیر انتخاب‌شده رو قبل از ثبت بررسی و در صورت نیاز ویرایش کن.</span>
-                  <button type="button" onClick={() => setActiveTab(selectedSource === "custom" ? "saved" : "recent")} className="shrink-0 font-extrabold">تغییر انتخاب</button>
+                  <span className="font-bold">{selectedSource === "plan" ? "این مورد از برنامه روزانه پیش‌پر شده؛ قبل از ثبت واقعی بررسی و ویرایشش کن." : "مقادیر انتخاب‌شده رو قبل از ثبت بررسی و در صورت نیاز ویرایش کن."}</span>
+                  {selectedSource !== "plan" ? <button type="button" onClick={() => setActiveTab(selectedSource === "custom" ? "saved" : "recent")} className="shrink-0 font-extrabold">تغییر انتخاب</button> : null}
                 </div>
               ) : null}
               <div className="grid gap-4 sm:grid-cols-2">
@@ -190,7 +193,7 @@ export function FoodEntrySheet({
               </div>
               <label className="block text-sm font-bold text-[#557536]">کالری<input type="number" inputMode="numeric" min="0" max="10000" step="1" value={calories} onChange={(event) => setCalories(event.target.value)} dir="ltr" className="mt-2 w-full rounded-2xl border border-[#E9E5DC] bg-[#FFFDF8] px-4 py-3 text-left outline-none focus:border-[#D4F24E] focus:ring-4 focus:ring-[#EAF7C7]" placeholder="0" /><span className="mt-1 block text-[0.68rem] font-normal text-[#8A9A78]">کالری به‌صورت خودکار محاسبه نمی‌شه؛ عددی رو وارد کن که خودت داری.</span></label>
               <label className="block text-sm font-bold text-[#557536]">یادداشت (اختیاری)<textarea value={note} onChange={(event) => setNote(event.target.value)} maxLength={500} rows={3} className="mt-2 w-full resize-none rounded-2xl border border-[#E9E5DC] bg-[#FFFDF8] px-4 py-3 outline-none focus:border-[#D4F24E] focus:ring-4 focus:ring-[#EAF7C7]" /><span className="mt-1 block text-left text-[0.68rem] font-normal text-[#8A9A78]" dir="ltr">{toPersianNumber(note.length)} / ۵۰۰</span></label>
-              {!entry && selectedSource !== "custom" ? (
+              {!entry && selectedSource !== "custom" && selectedSource !== "plan" ? (
                 <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[#DCE9B0] bg-[#F4FBE3] px-4 py-3">
                   <input type="checkbox" checked={saveForLater} onChange={(event) => setSaveForLater(event.target.checked)} className="mt-0.5 h-4 w-4 accent-[#86B93B]" />
                   <span><span className="block text-sm font-extrabold text-[#557536]">ذخیره برای دفعات بعد</span><span className="mt-0.5 block text-[0.68rem] text-[#6B7A5A]">این مقادیر به فهرست شخصی خودت اضافه می‌شن.</span></span>

@@ -15,6 +15,10 @@ export type CreateFoodLogEntryInput = FoodLogEntryInput & {
   save_as_custom?: boolean;
 };
 
+export type PlannedFoodDraft = Omit<FoodLogEntryInput, "calories"> & {
+  calories: number | null;
+};
+
 export type FoodLogEntry = FoodLogEntryInput & {
   id: number;
   created_at: string;

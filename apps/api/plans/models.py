@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import F, Q
 from pathlib import Path
@@ -79,3 +80,58 @@ class Plan(models.Model):
 
     def __str__(self):
         return f"{self.plan_type}: {self.title}"
+
+
+class NutritionPlanMeal(models.Model):
+    class MealType(models.TextChoices):
+        BREAKFAST = "breakfast", "Breakfast"
+        LUNCH = "lunch", "Lunch"
+        DINNER = "dinner", "Dinner"
+        SNACK = "snack", "Snack"
+        OTHER = "other", "Other"
+
+    plan = models.ForeignKey(
+        Plan,
+        on_delete=models.CASCADE,
+        related_name="nutrition_meals",
+    )
+    meal_type = models.CharField(max_length=16, choices=MealType.choices)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["id"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["plan", "meal_type"],
+                name="unique_nutrition_meal_per_plan",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.plan_id}: {self.meal_type}"
+
+
+class NutritionPlanMealItem(models.Model):
+    meal = models.ForeignKey(
+        NutritionPlanMeal,
+        on_delete=models.CASCADE,
+        related_name="items",
+    )
+    food_name = models.CharField(max_length=120)
+    serving_description = models.CharField(max_length=120)
+    calories = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0), MaxValueValidator(10000)],
+    )
+    note = models.TextField(blank=True, default="", max_length=500)
+    sort_order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["sort_order", "id"]
+
+    def __str__(self):
+        return f"{self.meal_id}: {self.food_name}"

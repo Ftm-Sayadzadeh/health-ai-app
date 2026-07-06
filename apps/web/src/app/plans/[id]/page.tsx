@@ -7,7 +7,9 @@ import { useCallback, useState } from "react";
 import { ApiError } from "@/lib/api-client";
 import { logout } from "@/lib/auth";
 import { downloadPlanAttachment, formatPlanApiError, getPlan, Plan, updatePlan } from "@/lib/plans";
+import { getNutritionPlanStructure, NutritionPlanStructure } from "@/lib/structured-nutrition-plan";
 
+import { NutritionStructureSection } from "../_components/nutrition-structure";
 import { PlanForm, PlanFormValue } from "../_components/plan-form";
 import { PlansLoading, PlansPageShell, usePlansAccess } from "../_components/plans-ui";
 
@@ -21,11 +23,23 @@ export default function PlanDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [confirmingLifecycle, setConfirmingLifecycle] = useState(false);
+  const [nutritionStructure, setNutritionStructure] = useState<NutritionPlanStructure | null>(null);
+  const [structureError, setStructureError] = useState<string | null>(null);
   const load = useCallback(async () => {
     if (!Number.isInteger(planId) || planId < 1) throw new Error("شناسه برنامه معتبر نیست.");
     const response = await getPlan(planId);
     setPlan(response);
     setValue({ title: response.title, notes: response.notes, external_provider_name: response.external_provider_name, starts_on: response.starts_on, ends_on: response.ends_on, attachment: null, remove_attachment: false });
+    setNutritionStructure(null);
+    setStructureError(null);
+    if (response.plan_type === "nutrition") {
+      try {
+        setNutritionStructure(await getNutritionPlanStructure(response.id));
+      } catch (caught) {
+        if (caught instanceof ApiError && caught.status === 401) throw caught;
+        setStructureError("دریافت وعده‌های برنامه ممکن نشد. دوباره تلاش کن.");
+      }
+    }
   }, [planId]);
   const access = usePlansAccess(load);
 
@@ -55,6 +69,15 @@ export default function PlanDetailPage() {
       setValue({ title: updated.title, notes: updated.notes, external_provider_name: updated.external_provider_name, starts_on: updated.starts_on, ends_on: updated.ends_on, attachment: null, remove_attachment: false });
       setSuccess(status === "archived" ? "برنامه بایگانی شد." : status !== plan.status ? "برنامه دوباره فعال شد." : "تغییرات برنامه ذخیره شد.");
       setConfirmingLifecycle(false);
+      if (updated.plan_type === "nutrition") {
+        try {
+          setNutritionStructure(await getNutritionPlanStructure(updated.id));
+          setStructureError(null);
+        } catch (caught) {
+          if (caught instanceof ApiError && caught.status === 401) throw caught;
+          setStructureError("برنامه ذخیره شد، اما تازه‌سازی وعده‌ها ممکن نشد.");
+        }
+      }
     } catch (caught) {
       if (caught instanceof ApiError && caught.status === 401) {
         logout();
@@ -100,6 +123,8 @@ export default function PlanDetailPage() {
             }
           />
         ) : null}
+        {structureError ? <p role="alert" className="mt-4 rounded-2xl border border-[#F5D5C9] bg-[#FFF6E8] p-4 text-sm text-[#7A3A27]">{structureError}</p> : null}
+        {plan?.plan_type === "nutrition" && nutritionStructure ? <NutritionStructureSection structure={nutritionStructure} onChange={setNutritionStructure} /> : null}
       </div>
     </PlansPageShell>
   );

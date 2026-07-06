@@ -84,6 +84,8 @@ Default local URLs:
 - Daily nutrition API: http://localhost:8000/api/nutrition/days/YYYY-MM-DD/
 - Custom foods API: http://localhost:8000/api/nutrition/custom-foods/
 - Recent foods API: http://localhost:8000/api/nutrition/recent-foods/
+- Structured nutrition plan: http://localhost:8000/api/plans/PLAN_ID/nutrition-structure/
+- Active nutrition structure: http://localhost:8000/api/plans/active-nutrition-structure/
 - Saved foods manager: http://localhost:3000/nutrition/foods
 
 Run API tests:
@@ -136,6 +138,8 @@ Users with an existing health profile can view and update the same foundational 
 Normal users with a completed health profile may optionally complete separate nutrition and workout questionnaires under `/plans/intake`. The answers are stored through `GET/PUT /api/program-intakes/nutrition/` and `GET/PUT /api/program-intakes/workout/`. This phase does not generate plans, calculations, or recommendations.
 
 Normal users may manually log foods by day and meal under `/nutrition`. Daily calorie totals are derived only from calorie values entered by the user. Recent foods come from the user's own log history, and reusable custom foods can be managed at `/nutrition/foods`; selecting either only prefills the entry form for review. The tracker does not provide automatic calorie calculation, public food data, medical guidance, or nutrition recommendations.
+
+Nutrition plans may also contain user-entered structured meal items. These planned items are reusable daily-template content, remain separate from actual food logs, and only prefill the daily entry form after the user chooses one. Archived plan structures are read-only. The app does not generate, approve, or medically validate these items.
 
 Run web lint:
 

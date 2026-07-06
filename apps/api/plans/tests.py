@@ -1,15 +1,16 @@
-from datetime import date
+from datetime import date, timedelta
 from tempfile import TemporaryDirectory
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import override_settings
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework.test import APIClient, APITestCase
 
 from accounts.models import User
 from profiles.models import HealthProfile
 
-from .models import Plan
+from .models import NutritionPlanMeal, NutritionPlanMealItem, Plan
 
 
 class PlanAPITests(APITestCase):
@@ -405,3 +406,276 @@ class PlanAPITests(APITestCase):
         )
         self.assertEqual(remove_response.status_code, 200)
         self.assertIsNone(remove_response.json()["attachment"])
+
+
+class StructuredNutritionPlanAPITests(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = self.create_user_with_profile("09128888888")
+        self.other_user = self.create_user_with_profile("09129999999")
+        self.plan = self.create_plan(self.user, "Nutrition plan")
+        self.workout_plan = self.create_plan(
+            self.user,
+            "Workout plan",
+            plan_type=Plan.PlanType.WORKOUT,
+            source=Plan.Source.SELF,
+        )
+        self.payload = {
+            "meal_type": NutritionPlanMeal.MealType.BREAKFAST,
+            "food_name": "Bread and cheese",
+            "serving_description": "Two pieces",
+            "calories": 320,
+            "note": "User-entered item",
+        }
+
+    @staticmethod
+    def create_user_with_profile(phone_number, role=User.Role.NORMAL):
+        user = User.objects.create_user(phone_number=phone_number, role=role)
+        HealthProfile.objects.create(
+            user=user,
+            display_name="Test user",
+            birth_date=date(1990, 1, 1),
+            height_cm="170.00",
+            weight_kg="70.00",
+            goal=HealthProfile.Goal.GENERAL_WELLNESS,
+            activity_level=HealthProfile.ActivityLevel.MODERATE,
+        )
+        return user
+
+    @staticmethod
+    def create_plan(
+        owner,
+        title,
+        plan_type=Plan.PlanType.NUTRITION,
+        source=Plan.Source.EXTERNAL_SPECIALIST,
+        status=Plan.Status.ACTIVE,
+        activated_at=None,
+    ):
+        return Plan.objects.create(
+            owner=owner,
+            created_by=owner,
+            plan_type=plan_type,
+            source=source,
+            status=status,
+            title=title,
+            notes="User-provided notes",
+            activated_at=activated_at or timezone.now(),
+        )
+
+    def authenticate(self, user=None):
+        self.client.force_authenticate(user or self.user)
+
+    def structure_url(self, plan=None):
+        return reverse("nutrition-plan-structure", args=[(plan or self.plan).id])
+
+    def create_url(self, plan=None):
+        return reverse("nutrition-plan-item-create", args=[(plan or self.plan).id])
+
+    def create_item(self, payload=None, plan=None):
+        self.authenticate()
+        return self.client.post(
+            self.create_url(plan), payload or self.payload, format="json"
+        )
+
+    def test_endpoints_require_auth_normal_role_and_health_profile(self):
+        self.assertEqual(self.client.get(self.structure_url()).status_code, 401)
+        self.assertEqual(
+            self.client.post(self.create_url(), self.payload, format="json").status_code,
+            401,
+        )
+        self.assertEqual(
+            self.client.get(reverse("active-nutrition-plan-structure")).status_code,
+            401,
+        )
+
+        coach = self.create_user_with_profile("09120000001", User.Role.COACH)
+        self.authenticate(coach)
+        self.assertEqual(self.client.get(self.structure_url()).status_code, 403)
+
+        incomplete = User.objects.create_user(phone_number="09120000002")
+        self.authenticate(incomplete)
+        self.assertEqual(self.client.get(self.structure_url()).status_code, 403)
+
+    def test_structure_is_owner_scoped_and_rejects_workout_plans(self):
+        other_plan = self.create_plan(self.other_user, "Private plan")
+        self.authenticate()
+        self.assertEqual(self.client.get(self.structure_url(other_plan)).status_code, 404)
+        self.assertEqual(self.client.get(self.structure_url(self.workout_plan)).status_code, 400)
+        self.assertEqual(
+            self.client.post(
+                self.create_url(self.workout_plan), self.payload, format="json"
+            ).status_code,
+            400,
+        )
+
+    def test_structure_has_fixed_groups_and_items_append_in_order(self):
+        self.authenticate()
+        empty_response = self.client.get(self.structure_url())
+        self.assertEqual(empty_response.status_code, 200)
+        self.assertEqual(empty_response.json()["item_count"], 0)
+        self.assertEqual(
+            [meal["meal_type"] for meal in empty_response.json()["meals"]],
+            list(NutritionPlanMeal.MealType.values),
+        )
+        self.assertTrue(all(meal["id"] is None for meal in empty_response.json()["meals"]))
+
+        first = self.create_item(
+            {
+                **self.payload,
+                "food_name": "  Bread and cheese  ",
+                "serving_description": "  Two pieces  ",
+                "note": "  Item note  ",
+            }
+        )
+        second = self.create_item({**self.payload, "food_name": "Tea", "calories": None})
+        structure = self.client.get(self.structure_url()).json()
+        breakfast = next(
+            meal for meal in structure["meals"] if meal["meal_type"] == "breakfast"
+        )
+
+        self.assertEqual(first.status_code, 201)
+        self.assertEqual(first.json()["food_name"], "Bread and cheese")
+        self.assertEqual(first.json()["note"], "Item note")
+        self.assertEqual(second.status_code, 201)
+        self.assertIsNone(second.json()["calories"])
+        self.assertEqual(structure["item_count"], 2)
+        self.assertEqual([item["sort_order"] for item in breakfast["items"]], [0, 1])
+        self.assertEqual(NutritionPlanMeal.objects.count(), 1)
+
+    def test_item_validation_rejects_invalid_values(self):
+        self.authenticate()
+        response = self.client.post(
+            self.create_url(),
+            {
+                "meal_type": "unknown",
+                "food_name": "   ",
+                "serving_description": "   ",
+                "calories": 10001,
+                "note": "x" * 501,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        for field in [
+            "meal_type",
+            "food_name",
+            "serving_description",
+            "calories",
+            "note",
+        ]:
+            self.assertIn(field, response.json())
+
+        negative = self.client.post(
+            self.create_url(),
+            {**self.payload, "calories": -1},
+            format="json",
+        )
+        maximum = self.client.post(
+            self.create_url(),
+            {**self.payload, "food_name": "Maximum", "calories": 10000},
+            format="json",
+        )
+        self.assertEqual(negative.status_code, 400)
+        self.assertEqual(maximum.status_code, 201)
+
+    def test_item_can_be_retrieved_replaced_and_moved_between_meals(self):
+        created = self.create_item()
+        item_id = created.json()["id"]
+        detail_url = reverse(
+            "nutrition-plan-item-detail", args=[self.plan.id, item_id]
+        )
+        self.assertEqual(self.client.get(detail_url).status_code, 200)
+
+        response = self.client.put(
+            detail_url,
+            {
+                **self.payload,
+                "meal_type": NutritionPlanMeal.MealType.DINNER,
+                "food_name": "Updated dinner",
+                "calories": None,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["meal_type"], "dinner")
+        self.assertEqual(response.json()["food_name"], "Updated dinner")
+        self.assertIsNone(response.json()["calories"])
+        self.assertFalse(
+            NutritionPlanMeal.objects.filter(
+                plan=self.plan,
+                meal_type=NutritionPlanMeal.MealType.BREAKFAST,
+            ).exists()
+        )
+        self.assertTrue(
+            NutritionPlanMeal.objects.filter(
+                plan=self.plan,
+                meal_type=NutritionPlanMeal.MealType.DINNER,
+            ).exists()
+        )
+
+    def test_delete_cleans_empty_meal_and_is_owner_scoped(self):
+        created = self.create_item()
+        item_id = created.json()["id"]
+        detail_url = reverse(
+            "nutrition-plan-item-detail", args=[self.plan.id, item_id]
+        )
+        self.authenticate(self.other_user)
+        self.assertEqual(self.client.get(detail_url).status_code, 404)
+        self.assertEqual(self.client.delete(detail_url).status_code, 404)
+
+        self.authenticate()
+        self.assertEqual(self.client.delete(detail_url).status_code, 204)
+        self.assertEqual(NutritionPlanMealItem.objects.count(), 0)
+        self.assertEqual(NutritionPlanMeal.objects.count(), 0)
+
+    def test_archived_structure_is_read_only_and_preserved(self):
+        created = self.create_item()
+        item_id = created.json()["id"]
+        self.plan.status = Plan.Status.ARCHIVED
+        self.plan.archived_at = timezone.now()
+        self.plan.save(update_fields=["status", "archived_at"])
+        detail_url = reverse(
+            "nutrition-plan-item-detail", args=[self.plan.id, item_id]
+        )
+
+        structure = self.client.get(self.structure_url())
+        self.assertEqual(structure.status_code, 200)
+        self.assertFalse(structure.json()["editable"])
+        self.assertEqual(structure.json()["item_count"], 1)
+        self.assertEqual(
+            self.client.post(self.create_url(), self.payload, format="json").status_code,
+            409,
+        )
+        self.assertEqual(
+            self.client.put(detail_url, self.payload, format="json").status_code,
+            409,
+        )
+        self.assertEqual(self.client.delete(detail_url).status_code, 409)
+        self.assertEqual(NutritionPlanMealItem.objects.count(), 1)
+
+    def test_active_structure_selects_most_recently_activated_plan(self):
+        newer = self.create_plan(
+            self.user,
+            "Newest active plan",
+            activated_at=timezone.now() + timedelta(minutes=1),
+        )
+        self.authenticate()
+        response = self.client.get(reverse("active-nutrition-plan-structure"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["plan"]["id"], newer.id)
+
+        newer.status = Plan.Status.ARCHIVED
+        newer.save(update_fields=["status"])
+        fallback = self.client.get(reverse("active-nutrition-plan-structure"))
+        self.assertEqual(fallback.json()["plan"]["id"], self.plan.id)
+
+        self.plan.status = Plan.Status.ARCHIVED
+        self.plan.save(update_fields=["status"])
+        missing = self.client.get(reverse("active-nutrition-plan-structure"))
+        self.assertEqual(missing.status_code, 404)
+
+    def test_plan_deletion_cascades_structure(self):
+        self.create_item()
+        self.plan.delete()
+        self.assertEqual(NutritionPlanMeal.objects.count(), 0)
+        self.assertEqual(NutritionPlanMealItem.objects.count(), 0)
