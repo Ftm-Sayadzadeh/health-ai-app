@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from pathlib import Path
 
-from .models import Plan
+from .models import NutritionPlanMeal, NutritionPlanMealItem, Plan
 
 
 MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024
@@ -192,3 +192,55 @@ class PlanUpdateSerializer(TrimmedPlanFieldsMixin, serializers.ModelSerializer):
         if old_name and old_storage and (remove_attachment or new_attachment):
             old_storage.delete(old_name)
         return instance
+
+
+class NutritionPlanMealItemSerializer(serializers.ModelSerializer):
+    meal_type = serializers.CharField(source="meal.meal_type", read_only=True)
+
+    class Meta:
+        model = NutritionPlanMealItem
+        fields = [
+            "id",
+            "meal_type",
+            "food_name",
+            "serving_description",
+            "calories",
+            "note",
+            "sort_order",
+            "created_at",
+            "updated_at",
+        ]
+
+
+class NutritionPlanMealItemWriteSerializer(serializers.Serializer):
+    meal_type = serializers.ChoiceField(choices=NutritionPlanMeal.MealType.choices)
+    food_name = serializers.CharField(max_length=120)
+    serving_description = serializers.CharField(max_length=120)
+    calories = serializers.IntegerField(
+        min_value=0,
+        max_value=10000,
+        required=False,
+        allow_null=True,
+        default=None,
+    )
+    note = serializers.CharField(
+        max_length=500,
+        required=False,
+        allow_blank=True,
+        default="",
+    )
+
+    def validate_food_name(self, value):
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError("Food name cannot be blank.")
+        return value
+
+    def validate_serving_description(self, value):
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError("Serving description cannot be blank.")
+        return value
+
+    def validate_note(self, value):
+        return value.strip()

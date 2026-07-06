@@ -27,6 +27,7 @@ The API is intentionally minimal:
 - Health profile endpoint: `GET /api/health-profile/`, `PUT /api/health-profile/`
 - Program intake endpoints: `GET /api/program-intakes/status/` and owner-scoped `GET/PUT` nutrition and workout intake endpoints
 - Nutrition tracking endpoints: daily owner-scoped food logs, entry operations, reusable custom-food CRUD, and derived recent foods
+- Structured nutrition plan endpoints: owner-scoped plan structure reads and granular planned-item operations
 
 The backend reads database, Redis, and Celery settings from environment variables. Local defaults are suitable only for development.
 
@@ -78,6 +79,12 @@ The `nutrition` app stores manual daily food entries grouped into breakfast, lun
 The Persian RTL `/nutrition` workspace supports date navigation and entry creation, editing, and deletion. Custom foods are independent reusable templates: their values are copied into a daily entry so later template edits never rewrite history. Recent foods are derived from the current user's log entries, deduplicated, and used only to prefill the user-confirmed entry form.
 
 Custom and recent foods still rely entirely on calories entered by the user. This phase intentionally excludes macros, external food databases, image or voice logging, AI, automatic calorie calculation, and recommendations.
+
+## Structured Nutrition Plan Phase
+
+The `plans` app owns optional structured nutrition-plan meals because they describe intended plan content. The `nutrition` app continues to own what the user actually logged as eaten. Fixed meal groups are created lazily around user-entered items, and archived structures remain readable but cannot be changed.
+
+The daily nutrition workspace may show the most recently activated active nutrition plan as a reusable daily template. Choosing an item only prefills the existing food-entry form; it does not automatically create a log or establish adherence. Planned calories are optional and are never calculated by the app.
 
 ## Future Product Boundaries
 

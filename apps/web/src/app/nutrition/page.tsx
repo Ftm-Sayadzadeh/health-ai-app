@@ -21,14 +21,21 @@ import {
   getTehranTodayKey,
   isDateKey,
   MealType,
+  PlannedFoodDraft,
   RecentFood,
   shiftDateKey,
   toPersianNumber,
   updateFoodLogEntry,
 } from "@/lib/nutrition";
+import {
+  getActiveNutritionPlanStructure,
+  NutritionPlanItem,
+  NutritionPlanStructure,
+} from "@/lib/structured-nutrition-plan";
 
 import { FoodEntrySheet } from "./_components/food-entry-sheet";
 import { NutritionLoading, NutritionShell, useNutritionAccess } from "./_components/nutrition-ui";
+import { PlannedMeals } from "./_components/planned-meals";
 
 const meals: { type: MealType; label: string; hint: string }[] = [
   { type: "breakfast", label: "صبحانه", hint: "شروع روز" },
@@ -51,6 +58,8 @@ function NutritionPageContent() {
   const [dailyLog, setDailyLog] = useState<DailyFoodLog | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<FoodLogEntry | null>(null);
+  const [plannedDraft, setPlannedDraft] = useState<PlannedFoodDraft | null>(null);
+  const [activeStructure, setActiveStructure] = useState<NutritionPlanStructure | null>(null);
   const [defaultMeal, setDefaultMeal] = useState<MealType>("breakfast");
   const [recentFoods, setRecentFoods] = useState<RecentFood[]>([]);
   const [customFoods, setCustomFoods] = useState<CustomFood[]>([]);
@@ -61,7 +70,20 @@ function NutritionPageContent() {
   const [actionError, setActionError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    setDailyLog(await getDailyFoodLog(selectedDate));
+    const [dailyResult, structureResult] = await Promise.allSettled([
+      getDailyFoodLog(selectedDate),
+      getActiveNutritionPlanStructure(),
+    ]);
+    if (dailyResult.status === "rejected") throw dailyResult.reason;
+    setDailyLog(dailyResult.value);
+    if (structureResult.status === "fulfilled") {
+      setActiveStructure(structureResult.value.item_count ? structureResult.value : null);
+    } else {
+      if (structureResult.reason instanceof ApiError && structureResult.reason.status === 401) {
+        throw structureResult.reason;
+      }
+      setActiveStructure(null);
+    }
   }, [selectedDate]);
   const access = useNutritionAccess(load);
 
@@ -95,6 +117,7 @@ function NutritionPageContent() {
 
   function openCreate(mealType: MealType) {
     setSelectedEntry(null);
+    setPlannedDraft(null);
     setDefaultMeal(mealType);
     setActionError(null);
     setSheetOpen(true);
@@ -103,7 +126,22 @@ function NutritionPageContent() {
 
   function openEdit(entry: FoodLogEntry) {
     setSelectedEntry(entry);
+    setPlannedDraft(null);
     setDefaultMeal(entry.meal_type);
+    setActionError(null);
+    setSheetOpen(true);
+  }
+
+  function openPlannedItem(item: NutritionPlanItem) {
+    setSelectedEntry(null);
+    setPlannedDraft({
+      meal_type: item.meal_type,
+      food_name: item.food_name,
+      serving_description: item.serving_description,
+      calories: item.calories,
+      note: item.note,
+    });
+    setDefaultMeal(item.meal_type);
     setActionError(null);
     setSheetOpen(true);
   }
@@ -117,6 +155,7 @@ function NutritionPageContent() {
       await load();
       setSheetOpen(false);
       setSelectedEntry(null);
+      setPlannedDraft(null);
     } catch (caught) {
       if (caught instanceof ApiError && caught.status === 401) {
         logout();
@@ -138,6 +177,7 @@ function NutritionPageContent() {
       await load();
       setSheetOpen(false);
       setSelectedEntry(null);
+      setPlannedDraft(null);
     } catch (caught) {
       if (caught instanceof ApiError && caught.status === 401) {
         logout();
@@ -177,6 +217,8 @@ function NutritionPageContent() {
 
       {access.error ? <p role="alert" className="mt-4 rounded-2xl border border-[#F5D5C9] bg-[#FFF6E8] p-4 text-sm text-[#7A3A27]">دریافت گزارش روزانه ممکن نشد. دوباره تلاش کن.</p> : null}
 
+      {activeStructure ? <PlannedMeals structure={activeStructure} onSelect={openPlannedItem} /> : null}
+
       <div className="mt-4 grid items-start gap-4 lg:grid-cols-2">
         {meals.map((meal) => (
           <MealSection key={meal.type} meal={meal} entries={(dailyLog?.entries ?? []).filter((entry) => entry.meal_type === meal.type)} calories={dailyLog?.meal_totals[meal.type] ?? 0} onAdd={() => openCreate(meal.type)} onEdit={openEdit} />
@@ -185,7 +227,7 @@ function NutritionPageContent() {
 
       <div className="mt-5 flex justify-center"><Link href="/dashboard" className="text-xs font-extrabold text-[#557536]">بازگشت به داشبورد</Link></div>
 
-      {sheetOpen ? <FoodEntrySheet entry={selectedEntry} defaultMeal={defaultMeal} recentFoods={recentFoods} customFoods={customFoods} quickListsLoading={quickListsLoading} recentFoodsError={recentFoodsError} customFoodsError={customFoodsError} isSaving={isSaving} error={actionError} onClose={() => { setSheetOpen(false); setActionError(null); }} onSave={saveEntry} onDelete={selectedEntry ? removeEntry : null} /> : null}
+      {sheetOpen ? <FoodEntrySheet entry={selectedEntry} defaultMeal={defaultMeal} plannedDraft={plannedDraft} recentFoods={recentFoods} customFoods={customFoods} quickListsLoading={quickListsLoading} recentFoodsError={recentFoodsError} customFoodsError={customFoodsError} isSaving={isSaving} error={actionError} onClose={() => { setSheetOpen(false); setPlannedDraft(null); setActionError(null); }} onSave={saveEntry} onDelete={selectedEntry ? removeEntry : null} /> : null}
     </NutritionShell>
   );
 }
