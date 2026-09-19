@@ -82,9 +82,9 @@ export default function NutritionIntakePage() {
 
   return (
     <IntakePage>
-      <form onSubmit={submit} className="rounded-[1.75rem] border border-[#EFEAD9] bg-white p-5 shadow-[0_24px_60px_rgba(85,117,54,0.08)] sm:rounded-[2rem] sm:p-9">
+      <form onSubmit={submit} className="card p-5 sm:p-8">
         <Progress step={step} total={6} />
-        <p className="text-xs font-extrabold text-[#86B93B]">پرسشنامه تغذیه</p>
+        <p className="text-xs font-bold text-[var(--brand-green)]">پرسشنامه تغذیه</p>
 
         {step === 0 ? <Step title="الگوی وعده‌های روزانه‌ات چطوره؟" help="تعداد ترجیحی وعده‌ها و نزدیک‌ترین الگوی معمول رو انتخاب کن."><Question label="تعداد وعده ترجیحی"><CompactChoices value={value.preferred_meal_count ?? 0} onChange={(preferred_meal_count) => setValue({...value, preferred_meal_count})} options={[2,3,4,5,6].map((number) => ({value:number,label:`${toPersianDigits(number)} وعده`}))} /></Question><Question label="الگوی غذا خوردن"><ChoiceGrid value={value.meal_pattern} onChange={(meal_pattern) => setValue({...value, meal_pattern})} options={[{value:"regular",label:"وعده‌های منظم"},{value:"irregular",label:"نامنظم"},{value:"skips_breakfast",label:"معمولا صبحانه نمی‌خورم"},{value:"night_eating",label:"بیشتر شب‌ها غذا می‌خورم"},{value:"other",label:"الگوی دیگری دارم"}]} /></Question></Step> : null}
 
@@ -98,7 +98,7 @@ export default function NutritionIntakePage() {
 
         {step === 5 ? <Step title="سلیقه غذایی‌ات رو بهتر بشناسیم" help="این موارد اختیاری‌اند و برای برنامه‌ریزی آینده ذخیره می‌شن."><div className="mt-6 grid gap-4 sm:grid-cols-2"><TextArea label="غذاهایی که دوست نداری" value={value.disliked_foods} onChange={(disliked_foods) => setValue({...value,disliked_foods})} maxLength={500} /><TextArea label="غذاها یا سبک‌های محبوب" value={value.favorite_foods_or_cuisines} onChange={(favorite_foods_or_cuisines) => setValue({...value,favorite_foods_or_cuisines})} maxLength={500} /></div><TextArea label="یادداشت تکمیلی" value={value.notes} onChange={(notes) => setValue({...value,notes})} maxLength={1000} compact /></Step> : null}
 
-        {(formError || access.error) ? <p role="alert" className="mt-6 rounded-2xl border border-[#F5D5C9] bg-[#FFF6E8] p-4 text-sm leading-6 text-[#7A3A27]">{formError || access.error}</p> : null}
+        {(formError || access.error) ? <p role="alert" className="notice notice-error mt-6">{formError || access.error}</p> : null}
         <FormActions step={step} total={6} saving={saving} onBack={() => { setFormError(null); setStep((current) => current - 1); }} />
       </form>
     </IntakePage>
@@ -106,13 +106,13 @@ export default function NutritionIntakePage() {
 }
 
 function Step({ title, help, children }: { title: string; help: string; children: ReactNode }) {
-  return <section><h1 className="mt-2 text-2xl font-extrabold leading-tight sm:text-3xl">{title}</h1><p className="mt-2 text-sm leading-7 text-[#6B7A5A]">{help}</p>{children}</section>;
+  return <section><h1 className="mt-2 text-2xl font-bold leading-tight">{title}</h1><p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">{help}</p>{children}</section>;
 }
 
 function Question({ label, children }: { label: string; children: ReactNode }) {
-  return <div className="mt-7 first:mt-6"><h2 className="text-sm font-extrabold text-[#3D4C34]">{label}</h2>{children}</div>;
+  return <div className="mt-7 first:mt-6"><h2 className="text-sm font-bold text-[var(--text-default)]">{label}</h2>{children}</div>;
 }
 
 function TextArea({ label, value, onChange, maxLength, compact = false }: { label: string; value: string; onChange: (value: string) => void; maxLength: number; compact?: boolean }) {
-  return <label className="block text-sm font-bold text-[#557536]">{label}<textarea value={value} onChange={(event) => onChange(event.target.value)} maxLength={maxLength} rows={compact ? 3 : 4} className="mt-2 w-full resize-none rounded-2xl border border-[#E9E5DC] bg-[#FFFDF8] p-4 text-[#25321F] outline-none focus:border-[#D4F24E] focus:ring-4 focus:ring-[#EAF7C7]" /><span className="mt-1 block text-left text-[0.68rem] text-[#8A9A78]" dir="ltr">{toPersianDigits(value.length)} / {toPersianDigits(maxLength)}</span></label>;
+  return <label className="block field-label">{label}<textarea value={value} onChange={(event) => onChange(event.target.value)} maxLength={maxLength} rows={compact ? 3 : 4} className="field-input mt-2 resize-none" /><span className="mt-1 block text-left text-[0.68rem] text-[var(--text-subtle)]" dir="ltr">{toPersianDigits(value.length)} / {toPersianDigits(maxLength)}</span></label>;
 }

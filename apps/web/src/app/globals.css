@@ -1,9 +1,64 @@
 @import "tailwindcss";
 
+/*
+  سلامت هوشمند — Polish design tokens
+  Calmer avocado/lime wellness direction. Lime is now a subtle accent;
+  avocado green is the primary action color. Shadows, radii and button
+  states are unified here so the UI feels consistent and product-ready.
+*/
+
 :root {
   color-scheme: light;
-  background: #faf7f0;
-  color: #25321f;
+
+  /* surfaces */
+  --surface-page: #faf7f0;
+  --surface-card: #ffffff;
+  --surface-soft: #fbfaf4;
+  --surface-tint: #f4f7ec;
+  --surface-muted: #f4f1e9;
+  --surface-input: #fffdf8;
+
+  /* avocado/lime brand */
+  --brand-avocado: #537d2b;
+  --brand-avocado-hover: #476d26;
+  --brand-avocado-soft: #eef5da;
+  --brand-avocado-softer: #f5f9e8;
+  --brand-green: #4a6b2a;
+  --brand-green-soft: #6f8a4a;
+  --brand-lime-accent: #c7e56a;
+
+  /* text */
+  --text-strong: #25321f;
+  --text-default: #38452e;
+  --text-muted: #5f6f55;
+  --text-subtle: #8a9a78;
+  --text-faint: #a6b09a;
+
+  /* borders */
+  --border-soft: #efe9da;
+  --border-default: #e6e0d2;
+  --border-input: #e2dccd;
+  --border-lime: #d6e1ac;
+
+  /* states */
+  --danger: #a6473a;
+  --danger-soft: #fbece6;
+  --danger-border: #ecd3c8;
+  --warning: #b07520;
+  --warning-soft: #fbf0dc;
+
+  /* focus ring */
+  --ring-soft: rgba(83, 125, 43, 0.16);
+
+  /* controlled shadow scale (no large floating glows) */
+  --shadow-xs: 0 1px 2px rgba(37, 50, 31, 0.06);
+  --shadow-sm: 0 1px 3px rgba(37, 50, 31, 0.08), 0 1px 2px rgba(37, 50, 31, 0.04);
+  --shadow-md: 0 4px 12px rgba(37, 50, 31, 0.08), 0 2px 4px rgba(37, 50, 31, 0.04);
+  --shadow-lg: 0 10px 24px rgba(37, 50, 31, 0.1), 0 4px 8px rgba(37, 50, 31, 0.05);
+  --shadow-btn: 0 1px 2px rgba(37, 50, 31, 0.18), 0 1px 1px rgba(37, 50, 31, 0.1);
+
+  background: var(--surface-page);
+  color: var(--text-strong);
 }
 
 * {
@@ -18,13 +73,11 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 88% 6%, rgba(212, 242, 78, 0.24), transparent 18rem),
-    radial-gradient(circle at 10% 12%, rgba(234, 247, 199, 0.75), transparent 17rem),
-    radial-gradient(circle at 78% 94%, rgba(255, 198, 154, 0.16), transparent 22rem),
-    radial-gradient(circle at 4% 88%, rgba(134, 185, 59, 0.12), transparent 20rem),
-    #faf7f0;
+    radial-gradient(circle at 92% 4%, rgba(199, 229, 106, 0.1), transparent 16rem),
+    radial-gradient(circle at 6% 8%, rgba(238, 245, 218, 0.5), transparent 18rem),
+    var(--surface-page);
   background-attachment: fixed;
-  color: #25321f;
+  color: var(--text-strong);
   font-family: "Vazirmatn Variable", Vazirmatn, Tahoma, Arial, sans-serif;
   font-feature-settings: "ss01";
   -webkit-font-smoothing: antialiased;
@@ -37,7 +90,9 @@ a {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -49,13 +104,15 @@ button:disabled {
   cursor: not-allowed;
 }
 
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
   opacity: 1;
+  color: var(--text-faint);
 }
 
 ::selection {
-  background: #d4f24e;
-  color: #25321f;
+  background: var(--brand-avocado-soft);
+  color: var(--text-strong);
 }
 
 @keyframes floaty {
@@ -64,40 +121,12 @@ input::placeholder {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
 }
 
 .animate-floaty {
-  animation: floaty 6s ease-in-out infinite;
-}
-
-@keyframes floaty-slow {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-.animate-floaty-slow {
-  animation: floaty-slow 9s ease-in-out infinite;
-}
-
-@keyframes blob-morph {
-  0%,
-  100% {
-    border-radius: 42% 58% 60% 40% / 48% 42% 58% 52%;
-  }
-  50% {
-    border-radius: 58% 42% 40% 60% / 52% 58% 42% 48%;
-  }
-}
-
-.animate-blob {
-  animation: blob-morph 18s ease-in-out infinite;
+  animation: floaty 7s ease-in-out infinite;
 }
 
 @keyframes loading-sweep {
@@ -116,12 +145,12 @@ input::placeholder {
 @keyframes soft-pulse {
   0%,
   100% {
-    opacity: 0.55;
+    opacity: 0.6;
     transform: scale(1);
   }
   50% {
     opacity: 1;
-    transform: scale(1.06);
+    transform: scale(1.04);
   }
 }
 
@@ -131,8 +160,6 @@ input::placeholder {
 
 @media (prefers-reduced-motion: reduce) {
   .animate-floaty,
-  .animate-floaty-slow,
-  .animate-blob,
   .loading-sweep,
   .animate-soft-pulse {
     animation: none;
@@ -149,13 +176,209 @@ input::placeholder {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(134, 185, 59, 0.35);
+  background: rgba(83, 125, 43, 0.22);
   border-radius: 999px;
   border: 3px solid transparent;
   background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(134, 185, 59, 0.55);
+  background: rgba(83, 125, 43, 0.4);
   background-clip: padding-box;
+}
+
+/* ----------------------------------------------------------------- */
+/* Shared component primitives — keep Tailwind readable and states    */
+/* consistent across pages. Layout utilities in markup still apply.   */
+/* ----------------------------------------------------------------- */
+
+@layer components {
+  /* Buttons ---------------------------------------------------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    border-radius: 0.75rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.25rem;
+    border: 1px solid transparent;
+    transition: background-color 0.15s ease, color 0.15s ease,
+      border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  }
+  .btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px var(--ring-soft);
+  }
+  .btn:disabled {
+    cursor: not-allowed;
+  }
+  .btn-sm {
+    padding: 0.4rem 0.875rem;
+    font-size: 0.75rem;
+    line-height: 1.1rem;
+    border-radius: 0.625rem;
+  }
+
+  .btn-primary {
+    background-color: var(--brand-avocado);
+    color: #fff;
+    box-shadow: var(--shadow-btn);
+  }
+  .btn-primary:hover {
+    background-color: var(--brand-avocado-hover);
+  }
+  .btn-primary:disabled {
+    background-color: var(--surface-muted);
+    color: var(--text-subtle);
+    box-shadow: none;
+  }
+
+  .btn-secondary {
+    background-color: var(--surface-card);
+    border-color: var(--border-default);
+    color: var(--text-default);
+  }
+  .btn-secondary:hover {
+    background-color: var(--surface-soft);
+    border-color: var(--border-input);
+  }
+  .btn-secondary:disabled {
+    background-color: var(--surface-muted);
+    color: var(--text-subtle);
+    border-color: var(--border-soft);
+  }
+
+  .btn-ghost {
+    background-color: transparent;
+    color: var(--brand-green);
+  }
+  .btn-ghost:hover {
+    background-color: var(--brand-avocado-soft);
+  }
+  .btn-ghost:disabled {
+    color: var(--text-subtle);
+  }
+
+  .btn-danger {
+    background-color: var(--danger-soft);
+    border-color: var(--danger-border);
+    color: var(--danger);
+  }
+  .btn-danger:hover {
+    background-color: #f8e0d8;
+  }
+
+  /* Form fields ----------------------------------------------------- */
+  .field-input {
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-input);
+    background-color: var(--surface-input);
+    padding: 0.7rem 1rem;
+    color: var(--text-strong);
+    outline: none;
+    transition: border-color 0.15s ease, background-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  .field-input:focus {
+    border-color: var(--brand-avocado);
+    background-color: #fff;
+    box-shadow: 0 0 0 4px var(--ring-soft);
+  }
+  textarea.field-input {
+    line-height: 1.75;
+  }
+
+  .field-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--brand-green);
+  }
+
+  /* Notices --------------------------------------------------------- */
+  .notice {
+    border-radius: 0.75rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    border: 1px solid transparent;
+  }
+  .notice-error {
+    background-color: var(--danger-soft);
+    border-color: var(--danger-border);
+    color: var(--danger);
+  }
+  .notice-success {
+    background-color: var(--brand-avocado-soft);
+    border-color: var(--border-lime);
+    color: var(--brand-green);
+  }
+  .notice-info {
+    background-color: var(--surface-tint);
+    border-color: var(--border-soft);
+    color: var(--text-muted);
+  }
+
+  /* Cards ----------------------------------------------------------- */
+  .card {
+    border-radius: 1rem;
+    border: 1px solid var(--border-soft);
+    background-color: var(--surface-card);
+    box-shadow: var(--shadow-sm);
+  }
+  .card-tint {
+    border-radius: 1rem;
+    border: 1px solid var(--border-lime);
+    background: linear-gradient(106deg, var(--brand-avocado-softer), #fff 60%, var(--warning-soft));
+    box-shadow: var(--shadow-sm);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: 999px;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.1rem;
+  }
+  .chip-neutral {
+    background-color: var(--surface-muted);
+    color: #6f6a5e;
+  }
+  .chip-green {
+    background-color: var(--brand-avocado-soft);
+    color: var(--brand-green);
+  }
+
+  /* App header (floating pill, calmer than before) ------------------ */
+  .app-header {
+    position: sticky;
+    top: 1rem;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-soft);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 0.55rem 1rem;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(8px);
+  }
+  .app-logo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 0.625rem;
+    background-color: var(--brand-avocado-soft);
+    box-shadow: inset 0 0 0 1px var(--border-lime);
+  }
 }

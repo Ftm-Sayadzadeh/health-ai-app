@@ -41,16 +41,15 @@ const fieldSteps: Record<string, number> = {
   food_restrictions: 5,
 };
 
-function SmilingAvocado() {
+function BrandMark() {
   return (
-    <span className="relative flex h-11 w-11 items-center justify-center rounded-[0.85rem] bg-gradient-to-br from-[#D4F24E] to-[#CFE84E] shadow-[0_6px_16px_rgba(134,185,59,0.34)] ring-1 ring-white/40">
-      <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-[0.85rem]">
-        <img
-          src="/brand-assets/avocado-smiling.png"
-          alt=""
-          className="h-20 w-20 max-w-none translate-y-1 object-contain"
-        />
-      </span>
+    <span className="app-logo h-9 w-9 shrink-0">
+      <img
+        src="/brand-assets/avocado-smiling.png"
+        alt=""
+        aria-hidden="true"
+        className="h-16 w-16 max-w-none translate-y-0.5 object-contain"
+      />
     </span>
   );
 }
@@ -180,10 +179,10 @@ export default function OnboardingPage() {
 
   if (isCheckingAuth) {
     return (
-      <main className="min-h-screen px-4 py-4 text-[#25321F] sm:px-6 lg:px-8">
+      <main className="min-h-screen px-4 py-4 text-[var(--text-strong)] sm:px-6 lg:px-8">
         <div className="mx-auto flex min-h-[calc(100vh-2rem)] max-w-6xl items-center justify-center">
-          <div className="w-full max-w-[24rem] rounded-[2rem] border border-[#EFEAD9] bg-white p-8 text-center shadow-[0_24px_60px_rgba(85,117,54,0.1)]">
-            <p role="status" aria-live="polite" className="text-sm font-extrabold">
+          <div className="card max-w-sm p-7 text-center">
+            <p role="status" aria-live="polite" className="text-sm font-bold">
               یه لحظه، داریم حسابت رو بررسی می‌کنیم...
             </p>
           </div>
@@ -193,18 +192,15 @@ export default function OnboardingPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden px-4 py-4 text-[#25321F] sm:px-6 lg:px-8">
-      <div className="pointer-events-none absolute -left-32 top-0 h-96 w-96 rounded-full bg-[#EAF7C7]/45 blur-3xl" />
-      <div className="pointer-events-none absolute -right-28 bottom-0 h-[28rem] w-[28rem] rounded-full bg-[#FFF6E8]/60 blur-3xl" />
-
+    <main className="min-h-screen px-4 py-4 text-[var(--text-strong)] sm:px-6 lg:px-8">
       <div className="relative mx-auto max-w-4xl">
         <header dir="rtl" className="sticky top-4 z-30 mb-6">
-          <div className="flex items-center justify-between gap-4 rounded-full border border-[#EFEAD9]/80 bg-white/85 px-4 py-2.5 shadow-[0_14px_34px_rgba(85,117,54,0.1)] backdrop-blur-md sm:px-6 sm:py-3">
-            <Link href="/" className="flex items-center gap-3">
-              <SmilingAvocado />
+          <div className="app-header">
+            <Link href="/" className="flex items-center gap-2.5">
+              <BrandMark />
               <span className="flex flex-col leading-none">
-                <span className="text-[1rem] font-extrabold tracking-tight">سلامت هوشمند</span>
-                <span className="mt-1 text-[0.66rem] font-medium text-[#8A9A78]">
+                <span className="text-[0.95rem] font-bold tracking-tight">سلامت هوشمند</span>
+                <span className="mt-1 text-[0.66rem] font-medium text-[var(--text-subtle)]">
                   تکمیل اطلاعات پایه
                 </span>
               </span>
@@ -215,16 +211,16 @@ export default function OnboardingPage() {
                 logout();
                 router.replace("/login");
               }}
-              className="rounded-full border border-[#E9E5DC] bg-white px-4 py-2 text-[0.8rem] font-bold text-[#6B7A5A] focus:outline-none focus:ring-4 focus:ring-[#EAF7C7]"
+              className="btn btn-secondary btn-sm"
             >
               خروج
             </button>
           </div>
         </header>
 
-        <section className="mx-auto w-full max-w-[36rem] rounded-[2rem] border border-[#EFEAD9] bg-white/95 p-6 shadow-[0_30px_70px_rgba(85,117,54,0.12)] sm:p-9">
-          <div className="mb-8">
-            <div className="flex items-center justify-between text-[0.72rem] font-bold text-[#6B7A5A]">
+        <section className="card mx-auto w-full max-w-[36rem] p-5 sm:p-8">
+          <div className="mb-7">
+            <div className="flex items-center justify-between text-[0.72rem] font-bold text-[var(--text-muted)]">
               <span>مرحله {step + 1} از {totalSteps}</span>
               <span>اطلاعات پایه پروفایل</span>
             </div>
@@ -239,32 +235,32 @@ export default function OnboardingPage() {
               {Array.from({ length: totalSteps }, (_, index) => (
                 <span
                   key={index}
-                  className={`h-2 flex-1 rounded-full transition-colors ${index <= step ? "bg-[#D4F24E]" : "bg-[#EFEAD9]"}`}
+                  className={`h-1.5 flex-1 rounded-full transition-colors ${index <= step ? "bg-[var(--brand-avocado)]" : "bg-[var(--surface-muted)]"}`}
                 />
               ))}
             </div>
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="min-h-[22rem] pb-8 sm:pb-10">
+            <div className="min-h-[20rem] pb-8 sm:pb-10">
               {step === 0 ? (
                 <div>
-                  <p className="text-[0.72rem] font-extrabold text-[#86B93B]">خوش اومدی</p>
-                  <h1 className="mt-2 text-2xl font-extrabold leading-tight sm:text-3xl">
+                  <p className="text-[0.72rem] font-bold text-[var(--brand-green)]">خوش اومدی</p>
+                  <h1 className="mt-2 text-2xl font-bold leading-tight">
                     دوست داری چی صدات کنیم؟
                   </h1>
-                  <p className="mt-3 text-sm leading-7 text-[#6B7A5A]">
+                  <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
                     نام یا اسم دلخواهت کافیه؛ بعدا هم می‌تونی تغییرش بدی.
                   </p>
                   <label className="mt-8 block">
-                    <span className="text-[0.8rem] font-bold text-[#557536]">نام دلخواه</span>
+                    <span className="field-label">نام دلخواه</span>
                     <input
                       autoFocus
                       value={profile.display_name}
                       onChange={(event) => updateField("display_name", event.target.value)}
                       maxLength={80}
                       placeholder="مثلا سارا"
-                      className="mt-2 w-full rounded-[1.1rem] border border-[#E9E5DC] bg-[#FFFDF8] px-4 py-3.5 outline-none focus:border-[#D4F24E] focus:bg-white focus:ring-4 focus:ring-[#EAF7C7]"
+                      className="field-input mt-2"
                     />
                   </label>
                 </div>
@@ -272,15 +268,15 @@ export default function OnboardingPage() {
 
               {step === 1 ? (
                 <div>
-                  <p className="text-[0.72rem] font-extrabold text-[#86B93B]">درباره تو</p>
-                  <h1 className="mt-2 text-2xl font-extrabold leading-tight sm:text-3xl">
+                  <p className="text-[0.72rem] font-bold text-[var(--brand-green)]">درباره تو</p>
+                  <h1 className="mt-2 text-2xl font-bold leading-tight">
                     تاریخ تولدت چه روزیه؟
                   </h1>
-                  <p className="mt-3 text-sm leading-7 text-[#6B7A5A]">
+                  <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
                     این نسخه برای کاربران ۱۸ سال به بالا طراحی شده.
                   </p>
                   <label className="mt-8 block">
-                    <span className="text-[0.8rem] font-bold text-[#557536]">تاریخ تولد</span>
+                    <span className="field-label">تاریخ تولد</span>
                     <input
                       autoFocus
                       type="date"
@@ -289,7 +285,7 @@ export default function OnboardingPage() {
                       max={dateYearsAgo(18)}
                       onChange={(event) => updateField("birth_date", event.target.value)}
                       dir="ltr"
-                      className="mt-2 w-full rounded-[1.1rem] border border-[#E9E5DC] bg-[#FFFDF8] px-4 py-3.5 outline-none focus:border-[#D4F24E] focus:bg-white focus:ring-4 focus:ring-[#EAF7C7]"
+                      className="field-input mt-2"
                     />
                   </label>
                 </div>
@@ -297,16 +293,16 @@ export default function OnboardingPage() {
 
               {step === 2 ? (
                 <div>
-                  <p className="text-[0.72rem] font-extrabold text-[#86B93B]">اندازه‌های پایه</p>
-                  <h1 className="mt-2 text-2xl font-extrabold leading-tight sm:text-3xl">
+                  <p className="text-[0.72rem] font-bold text-[var(--brand-green)]">اندازه‌های پایه</p>
+                  <h1 className="mt-2 text-2xl font-bold leading-tight">
                     قد و وزن فعلیت چقدره؟
                   </h1>
-                  <p className="mt-3 text-sm leading-7 text-[#6B7A5A]">
+                  <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
                     فقط مقدار فعلی رو وارد کن؛ اینجا هیچ محاسبه‌ای انجام نمی‌دیم.
                   </p>
                   <div className="mt-8 grid gap-4 sm:grid-cols-2">
                     <label className="block">
-                      <span className="text-[0.8rem] font-bold text-[#557536]">قد (سانتی‌متر)</span>
+                      <span className="field-label">قد (سانتی‌متر)</span>
                       <input
                         autoFocus
                         type="number"
@@ -318,11 +314,11 @@ export default function OnboardingPage() {
                         onChange={(event) => updateField("height_cm", event.target.value)}
                         placeholder="170"
                         dir="ltr"
-                        className="mt-2 w-full rounded-[1.1rem] border border-[#E9E5DC] bg-[#FFFDF8] px-4 py-3.5 text-left outline-none focus:border-[#D4F24E] focus:bg-white focus:ring-4 focus:ring-[#EAF7C7]"
+                        className="field-input mt-2 text-left"
                       />
                     </label>
                     <label className="block">
-                      <span className="text-[0.8rem] font-bold text-[#557536]">وزن (کیلوگرم)</span>
+                      <span className="field-label">وزن (کیلوگرم)</span>
                       <input
                         type="number"
                         inputMode="decimal"
@@ -333,7 +329,7 @@ export default function OnboardingPage() {
                         onChange={(event) => updateField("weight_kg", event.target.value)}
                         placeholder="65"
                         dir="ltr"
-                        className="mt-2 w-full rounded-[1.1rem] border border-[#E9E5DC] bg-[#FFFDF8] px-4 py-3.5 text-left outline-none focus:border-[#D4F24E] focus:bg-white focus:ring-4 focus:ring-[#EAF7C7]"
+                        className="field-input mt-2 text-left"
                       />
                     </label>
                   </div>
@@ -342,11 +338,11 @@ export default function OnboardingPage() {
 
               {step === 3 ? (
                 <div>
-                  <p className="text-[0.72rem] font-extrabold text-[#86B93B]">هدف فعلی</p>
-                  <h1 className="mt-2 text-2xl font-extrabold leading-tight sm:text-3xl">
+                  <p className="text-[0.72rem] font-bold text-[var(--brand-green)]">هدف فعلی</p>
+                  <h1 className="mt-2 text-2xl font-bold leading-tight">
                     الان کدوم هدف برات مهم‌تره؟
                   </h1>
-                  <p className="mt-3 text-sm leading-7 text-[#6B7A5A]">
+                  <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
                     فقط یک جهت کلی انتخاب کن؛ برنامه‌ریزی دقیق برای بعد می‌مونه.
                   </p>
                   <div className="mt-7 grid gap-3 sm:grid-cols-2 sm:gap-4">
@@ -356,10 +352,10 @@ export default function OnboardingPage() {
                         type="button"
                         aria-pressed={profile.goal === option.value}
                         onClick={() => updateField("goal", option.value)}
-                        className={`rounded-[1.1rem] border p-4 text-right transition focus:outline-none focus:ring-4 focus:ring-[#EAF7C7] sm:min-h-[5.25rem] ${index === goalOptions.length - 1 ? "sm:col-span-2 sm:mx-auto sm:w-[calc(50%-0.5rem)]" : ""} ${profile.goal === option.value ? "border-[#D4F24E] bg-[#F4FBE3] shadow-[0_10px_24px_rgba(134,185,59,0.12)]" : "border-[#E9E5DC] bg-[#FFFDF8] hover:border-[#DCE9B0]"}`}
+                        className={`rounded-xl border p-4 text-right transition focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--ring-soft)] sm:min-h-[5.25rem] ${index === goalOptions.length - 1 ? "sm:col-span-2 sm:mx-auto sm:w-[calc(50%-0.5rem)]" : ""} ${profile.goal === option.value ? "border-[var(--brand-avocado)] bg-[var(--brand-avocado-soft)]" : "border-[var(--border-input)] bg-[var(--surface-input)] hover:border-[var(--border-lime)]"}`}
                       >
-                        <span className="block text-sm font-extrabold">{option.label}</span>
-                        <span className="mt-1 block text-[0.72rem] text-[#6B7A5A]">{option.detail}</span>
+                        <span className="block text-sm font-bold">{option.label}</span>
+                        <span className="mt-1 block text-[0.72rem] text-[var(--text-muted)]">{option.detail}</span>
                       </button>
                     ))}
                   </div>
@@ -368,11 +364,11 @@ export default function OnboardingPage() {
 
               {step === 4 ? (
                 <div>
-                  <p className="text-[0.72rem] font-extrabold text-[#86B93B]">روزهای معمول تو</p>
-                  <h1 className="mt-2 text-2xl font-extrabold leading-tight sm:text-3xl">
+                  <p className="text-[0.72rem] font-bold text-[var(--brand-green)]">روزهای معمول تو</p>
+                  <h1 className="mt-2 text-2xl font-bold leading-tight">
                     معمولا چقدر فعالیت داری؟
                   </h1>
-                  <p className="mt-3 text-sm leading-7 text-[#6B7A5A]">
+                  <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
                     نزدیک‌ترین گزینه به بیشتر روزهای هفته رو انتخاب کن.
                   </p>
                   <div className="mt-6 space-y-3">
@@ -382,14 +378,14 @@ export default function OnboardingPage() {
                         type="button"
                         aria-pressed={profile.activity_level === option.value}
                         onClick={() => updateField("activity_level", option.value)}
-                        className={`flex w-full items-center justify-between gap-4 rounded-[1.1rem] border p-4 text-right transition focus:outline-none focus:ring-4 focus:ring-[#EAF7C7] ${profile.activity_level === option.value ? "border-[#D4F24E] bg-[#F4FBE3]" : "border-[#E9E5DC] bg-[#FFFDF8] hover:border-[#DCE9B0]"}`}
+                        className={`flex w-full items-center justify-between gap-4 rounded-xl border p-4 text-right transition focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--ring-soft)] ${profile.activity_level === option.value ? "border-[var(--brand-avocado)] bg-[var(--brand-avocado-soft)]" : "border-[var(--border-input)] bg-[var(--surface-input)] hover:border-[var(--border-lime)]"}`}
                       >
                         <span>
-                          <span className="block text-sm font-extrabold">{option.label}</span>
-                          <span className="mt-1 block text-[0.72rem] text-[#6B7A5A]">{option.detail}</span>
+                          <span className="block text-sm font-bold">{option.label}</span>
+                          <span className="mt-1 block text-[0.72rem] text-[var(--text-muted)]">{option.detail}</span>
                         </span>
                         <span
-                          className={`h-4 w-4 shrink-0 rounded-full border-2 ${profile.activity_level === option.value ? "border-[#86B93B] bg-[#D4F24E]" : "border-[#CFC9BD]"}`}
+                          className={`h-4 w-4 shrink-0 rounded-full border-2 ${profile.activity_level === option.value ? "border-[var(--brand-avocado)] bg-[var(--brand-avocado)]" : "border-[#cfc9bd]"}`}
                         />
                       </button>
                     ))}
@@ -399,16 +395,16 @@ export default function OnboardingPage() {
 
               {step === 5 ? (
                 <div>
-                  <p className="text-[0.72rem] font-extrabold text-[#86B93B]">اختیاری</p>
-                  <h1 className="mt-2 text-2xl font-extrabold leading-tight sm:text-3xl">
+                  <p className="text-[0.72rem] font-bold text-[var(--brand-green)]">اختیاری</p>
+                  <h1 className="mt-2 text-2xl font-bold leading-tight">
                     نکته غذایی مهمی هست؟
                   </h1>
-                  <p className="mt-3 text-sm leading-7 text-[#6B7A5A]">
+                  <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
                     اگر ترجیح یا محدودیتی داری بنویس؛ می‌تونی هر دو کادر رو خالی بذاری.
                   </p>
                   <div className="mt-7 grid gap-5 sm:grid-cols-2">
                     <label className="block">
-                      <span className="text-[0.8rem] font-bold text-[#557536]">ترجیحات غذایی</span>
+                      <span className="field-label">ترجیحات غذایی</span>
                       <textarea
                         autoFocus
                         value={profile.food_preferences}
@@ -416,22 +412,22 @@ export default function OnboardingPage() {
                         maxLength={500}
                         rows={4}
                         placeholder="مثلا غذاهای گیاهی"
-                        className="mt-2 w-full resize-none rounded-[1.1rem] border border-[#E9E5DC] bg-[#FFFDF8] px-4 py-3 outline-none focus:border-[#D4F24E] focus:bg-white focus:ring-4 focus:ring-[#EAF7C7]"
+                        className="field-input mt-2 resize-none"
                       />
                     </label>
                     <label className="block">
-                      <span className="text-[0.8rem] font-bold text-[#557536]">محدودیت‌های غذایی</span>
+                      <span className="field-label">محدودیت‌های غذایی</span>
                       <textarea
                         value={profile.food_restrictions}
                         onChange={(event) => updateField("food_restrictions", event.target.value)}
                         maxLength={500}
                         rows={4}
                         placeholder="مثلا حساسیت یا پرهیز غذایی"
-                        className="mt-2 w-full resize-none rounded-[1.1rem] border border-[#E9E5DC] bg-[#FFFDF8] px-4 py-3 outline-none focus:border-[#D4F24E] focus:bg-white focus:ring-4 focus:ring-[#EAF7C7]"
+                        className="field-input mt-2 resize-none"
                       />
                     </label>
                   </div>
-                  <p className="mt-5 rounded-[1rem] bg-[#EAF7C7]/60 px-4 py-3 text-[0.75rem] leading-6 text-[#557536]">
+                  <p className="notice notice-info mt-5">
                     جزئیات بیشتر فقط وقتی از ما برنامه تغذیه یا ورزش بخوای، در یک مسیر جدا پرسیده می‌شه.
                   </p>
                 </div>
@@ -439,22 +435,18 @@ export default function OnboardingPage() {
             </div>
 
             {error ? (
-              <div
-                role="alert"
-                aria-live="polite"
-                className="mb-5 rounded-[1rem] border border-[#F5D5C9] bg-[#FFF6E8] px-4 py-3 text-[0.8rem] leading-6 text-[#7A3A27]"
-              >
+              <div role="alert" aria-live="polite" className="notice notice-error mb-5">
                 {error}
               </div>
             ) : null}
 
-            <div className="flex items-center gap-3 border-t border-[#EFEAD9] pt-6 sm:pt-7">
+            <div className="flex items-center gap-3 border-t border-[var(--border-soft)] pt-6 sm:pt-7">
               {step > 0 ? (
                 <button
                   type="button"
                   onClick={goBack}
                   disabled={isSaving}
-                  className="rounded-full border border-[#E9E5DC] bg-white px-6 py-3.5 text-sm font-bold text-[#6B7A5A] focus:outline-none focus:ring-4 focus:ring-[#EAF7C7] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="btn btn-secondary"
                 >
                   قبلی
                 </button>
@@ -462,7 +454,7 @@ export default function OnboardingPage() {
               <button
                 type="submit"
                 disabled={isSaving}
-                className="flex-1 rounded-full bg-[#D4F24E] px-6 py-3.5 text-sm font-extrabold text-[#25321F] shadow-[0_16px_30px_rgba(212,242,78,0.35)] transition hover:bg-[#CFE84E] focus:outline-none focus:ring-4 focus:ring-[#EAF7C7] disabled:cursor-not-allowed disabled:bg-[#E9E5DC] disabled:text-[#8A9A78] disabled:shadow-none sm:text-base"
+                className="btn btn-primary flex-1 py-3.5"
               >
                 {isSaving
                   ? "در حال ذخیره..."

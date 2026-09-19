@@ -23,24 +23,15 @@ const roleLabels: Record<AuthUser["role"], string> = {
   admin: "مدیر",
 };
 
-function SmilingAvocado({
-  className,
-  imgClassName,
-}: {
-  className?: string;
-  imgClassName?: string;
-}) {
+function BrandMark() {
   return (
-    <span
-      className={`relative flex items-center justify-center rounded-[0.85rem] bg-gradient-to-br from-[#D4F24E] to-[#CFE84E] shadow-[0_6px_16px_rgba(134,185,59,0.34)] ring-1 ring-white/40 ${className ?? ""}`}
-    >
-      <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-[0.85rem]">
-        <img
-          src="/brand-assets/avocado-smiling.png"
-          alt=""
-          className={`object-contain ${imgClassName ?? "h-[1.6rem] w-[1.6rem]"}`}
-        />
-      </span>
+    <span className="app-logo h-9 w-9 shrink-0">
+      <img
+        src="/brand-assets/avocado-smiling.png"
+        alt=""
+        aria-hidden="true"
+        className="h-16 w-16 max-w-none translate-y-0.5 object-contain"
+      />
     </span>
   );
 }
@@ -184,22 +175,22 @@ export default function DashboardPage() {
 
   if (isCheckingAuth) {
     return (
-      <main className="min-h-screen px-4 py-4 text-[#25321F] sm:px-6 lg:px-8">
+      <main className="min-h-screen px-4 py-4 text-[var(--text-strong)] sm:px-6 lg:px-8">
         <div className="mx-auto flex min-h-[calc(100vh-2rem)] max-w-6xl items-center justify-center">
-          <div className="w-full max-w-[24rem] rounded-[2rem] border border-[#EFEAD9] bg-white p-8 text-center shadow-[0_24px_60px_rgba(85,117,54,0.1)] ring-1 ring-black/[0.02]">
-            <div className="relative mx-auto mb-5 flex h-24 w-24 items-center justify-center">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-b from-[#EAF7C7] to-[#FFF6E8]" />
+          <div className="card max-w-sm p-7 text-center">
+            <div className="relative mx-auto mb-4 flex h-16 w-16 items-center justify-center">
+              <div className="absolute inset-0 rounded-full bg-[var(--brand-avocado-soft)]" />
               <img
                 src="/brand-assets/sprout-stage-4.png"
                 alt=""
-                className="animate-soft-pulse relative h-16 w-16 object-contain drop-shadow-[0_8px_14px_rgba(85,117,54,0.18)]"
+                className="animate-soft-pulse relative h-12 w-12 object-contain"
               />
             </div>
-            <p role="status" aria-live="polite" className="text-sm font-extrabold">
+            <p role="status" aria-live="polite" className="text-sm font-bold">
               یه لحظه، داریم ورودت رو بررسی می‌کنیم...
             </p>
-            <div className="mt-5 h-2 overflow-hidden rounded-full bg-[#EAF7C7]" dir="ltr">
-              <div className="loading-sweep h-full w-1/2 rounded-full bg-[#D4F24E]" />
+            <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[var(--brand-avocado-soft)]" dir="ltr">
+              <div className="loading-sweep h-full w-1/2 rounded-full bg-[var(--brand-avocado)]" />
             </div>
           </div>
         </div>
@@ -214,51 +205,42 @@ export default function DashboardPage() {
           label: "شماره موبایل",
           value: user.phone_number,
           dir: "ltr" as const,
-          tint: "bg-[#FFF6E8] text-[#7A3A27]",
+          tint: "bg-[#fbf0e0] text-[#8a5a32]",
         },
         {
           icon: <RoleIcon />,
           label: "نقش کاربر",
           value: roleLabels[user.role],
           dir: "rtl" as const,
-          tint: "bg-[#EAF7C7] text-[#557536]",
+          tint: "bg-[var(--brand-avocado-soft)] text-[var(--brand-green)]",
         },
         {
           icon: <StatusDotIcon />,
           label: "وضعیت نشست",
           value: "فعال",
           dir: "rtl" as const,
-          tint: "bg-[#EAF7C7] text-[#557536]",
+          tint: "bg-[var(--brand-avocado-soft)] text-[var(--brand-green)]",
         },
       ]
     : [];
 
   return (
-    <main className="relative min-h-screen overflow-hidden px-4 py-4 text-[#25321F] sm:px-6 lg:px-8">
-      {/* soft ambient background */}
-      <div className="pointer-events-none absolute -left-32 top-0 h-96 w-96 rounded-full bg-[#EAF7C7]/45 blur-3xl" />
-      <div className="pointer-events-none absolute -right-28 bottom-0 h-[28rem] w-[28rem] rounded-full bg-[#FFF6E8]/60 blur-3xl" />
-
-      <div className="relative mx-auto max-w-6xl">
-        {/* floating pill header — matches landing page exactly */}
-        <header dir="rtl" className="sticky top-4 z-30 mb-8">
-          <div className="flex items-center justify-between gap-4 rounded-full border border-[#EFEAD9]/80 bg-white/85 px-4 py-2.5 shadow-[0_14px_34px_rgba(85,117,54,0.1)] backdrop-blur-md sm:px-6 sm:py-3">
-            <Link href="/" className="flex items-center gap-3">
-              <SmilingAvocado className="h-11 w-11" imgClassName="h-20 w-20 max-w-none translate-y-1" />
+    <main className="min-h-screen px-4 py-4 text-[var(--text-strong)] sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-5xl">
+        <header dir="rtl" className="sticky top-4 z-30 mb-6">
+          <div className="app-header">
+            <Link href="/" className="flex items-center gap-2.5">
+              <BrandMark />
               <span className="flex flex-col leading-none">
-                <span className="text-[1rem] font-extrabold tracking-tight">
+                <span className="text-[0.95rem] font-bold tracking-tight">
                   سلامت هوشمند
                 </span>
-                <span className="mt-1 text-[0.66rem] font-medium text-[#8A9A78]">
+                <span className="mt-1 text-[0.66rem] font-medium text-[var(--text-subtle)]">
                   حساب کاربری
                 </span>
               </span>
             </Link>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#F5D5C9] bg-[#FFF6E8] px-5 py-2.5 text-[0.85rem] font-extrabold text-[#7A3A27] shadow-[0_10px_22px_rgba(122,58,39,0.08)] transition hover:-translate-y-0.5 hover:bg-white focus:outline-none focus:ring-4 focus:ring-[#FFF6E8]"
-            >
+            <button type="button" onClick={handleLogout} className="btn btn-secondary btn-sm">
               <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" aria-hidden="true">
                 <path
                   d="M15 12H4M4 12l4-4M4 12l4 4"
@@ -280,62 +262,72 @@ export default function DashboardPage() {
           </div>
         </header>
 
-        {/* welcome banner */}
-        <section className="mb-8">
-          <div className="relative overflow-hidden rounded-[2rem] border border-[#EFEAD9] bg-gradient-to-bl from-[#EAF7C7] via-[#F4FBE3] to-[#FFF6E8] p-7 shadow-[0_24px_60px_rgba(85,117,54,0.1)] ring-1 ring-black/[0.02] sm:p-10">
-            <div className="absolute -left-10 top-8 h-40 w-40 rounded-full bg-white/40 blur-2xl" />
-            <div className="absolute bottom-8 left-20 h-3 w-3 rounded-full bg-[#FF8A67]/70" />
-            <img
-              src="/brand-assets/avocado-half.png"
-              alt=""
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-2 -top-4 h-28 w-28 object-contain opacity-15 sm:h-36 sm:w-36"
-            />
-            <div className="relative max-w-2xl">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1.5 text-[0.72rem] font-extrabold text-[#557536] ring-1 ring-white/60">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#86B93B]" />
-                ورود فعال
-              </span>
-              <h1 className="mt-4 text-3xl font-extrabold leading-tight sm:text-[2.5rem]">
-                حساب تو آماده‌ست
-              </h1>
-              <p className="mt-3 max-w-lg text-[0.9rem] leading-7 text-[#5F6F55] sm:text-base sm:leading-8">
-                خوش اومدی. از همین‌جا می‌تونی غذای امروزت رو ثبت کنی و مسیر سلامتت رو مرتب نگه داری.
-              </p>
-            </div>
-          </div>
+        {/* calm welcome line — no giant hero */}
+        <section className="mb-5">
+          <span className="chip chip-green">
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--brand-green)]" />
+            ورود فعال
+          </span>
+          <h1 className="mt-3 text-2xl font-bold leading-tight sm:text-[1.75rem]">
+            سلام، خوش اومدی
+          </h1>
+          <p className="mt-2 max-w-xl text-[0.88rem] leading-7 text-[var(--text-muted)]">
+            از همین‌جا می‌تونی غذای امروزت رو ثبت کنی و مسیر سلامتت رو مرتب نگه داری.
+          </p>
         </section>
 
         {user?.role === "normal" && user.has_health_profile ? (
-          <section className="relative mb-6 overflow-hidden rounded-[1.5rem] border border-[#DCE9B0] bg-gradient-to-l from-white to-[#F4FBE3] p-4 shadow-[0_14px_34px_rgba(85,117,54,0.07)] sm:p-5">
-            <img src="/brand-assets/avocado-slice.png" alt="" aria-hidden="true" className="pointer-events-none absolute -left-3 -top-4 h-20 w-20 object-contain opacity-10" />
+          <section className="card mb-5 p-4 sm:p-5">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[0.9rem] bg-[#EAF7C7] text-lg font-extrabold text-[#557536]" aria-hidden="true">غ</span>
-                <div><h2 className="font-extrabold">ثبت غذای امروز</h2><p className="mt-1 text-xs text-[#6B7A5A]">غذای امروزت رو سریع ثبت کن؛ بر اساس کالری‌هایی که خودت وارد کردی.</p></div>
+                <span
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--brand-avocado-soft)] text-base font-bold text-[var(--brand-green)]"
+                  aria-hidden="true"
+                >
+                  غ
+                </span>
+                <div>
+                  <h2 className="font-bold">ثبت غذای امروز</h2>
+                  <p className="mt-0.5 text-xs text-[var(--text-muted)]">
+                    غذای امروزت رو سریع ثبت کن؛ بر اساس کالری‌هایی که خودت وارد کردی.
+                  </p>
+                </div>
               </div>
               <div className="flex items-center gap-3 sm:shrink-0">
-                {todayNutrition ? <div className="grid min-w-32 grid-cols-2 gap-2"><span className="rounded-xl bg-white px-3 py-2 text-center shadow-sm"><strong className="block text-base">{toPersianNumber(todayNutrition.calories)}</strong><span className="text-[0.62rem] text-[#8A9A78]">کالری</span></span><span className="rounded-xl bg-white px-3 py-2 text-center shadow-sm"><strong className="block text-base">{toPersianNumber(todayNutrition.entryCount)}</strong><span className="text-[0.62rem] text-[#8A9A78]">مورد ثبت</span></span></div> : null}
-                <Link href="/nutrition" className="flex-1 rounded-full bg-[#D4F24E] px-5 py-3 text-center text-sm font-extrabold shadow-[0_10px_22px_rgba(212,242,78,0.25)] hover:bg-[#CFE84E] sm:flex-none">باز کردن گزارش امروز</Link>
+                {todayNutrition ? (
+                  <div className="grid min-w-32 grid-cols-2 gap-2">
+                    <span className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-soft)] px-3 py-2 text-center">
+                      <strong className="block text-base">{toPersianNumber(todayNutrition.calories)}</strong>
+                      <span className="text-[0.62rem] text-[var(--text-subtle)]">کالری</span>
+                    </span>
+                    <span className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-soft)] px-3 py-2 text-center">
+                      <strong className="block text-base">{toPersianNumber(todayNutrition.entryCount)}</strong>
+                      <span className="text-[0.62rem] text-[var(--text-subtle)]">مورد ثبت</span>
+                    </span>
+                  </div>
+                ) : null}
+                <Link href="/nutrition" className="btn btn-primary">
+                  افزودن غذا
+                </Link>
               </div>
             </div>
           </section>
         ) : null}
 
-        {/* main grid: account + coming-soon */}
-        <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+        {/* main grid: account + program */}
+        <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
           {/* account card */}
-          <section className="rounded-[2rem] border border-[#EFEAD9] bg-white p-6 shadow-[0_24px_60px_rgba(85,117,54,0.08)] ring-1 ring-black/[0.02] sm:p-7">
-            <div className="mb-5 flex flex-col items-stretch gap-3 border-b border-[#EFEAD9] pb-4 sm:flex-row sm:items-center sm:justify-between">
+          <section className="card p-5 sm:p-6">
+            <div className="mb-4 flex flex-col items-stretch gap-3 border-b border-[var(--border-soft)] pb-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex min-w-0 items-center gap-2.5">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[0.8rem] bg-[#EAF7C7] text-[#557536]">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--brand-avocado-soft)] text-[var(--brand-green)]">
                   <AccountIcon />
                 </span>
                 <div>
-                  <h2 className="text-lg font-extrabold leading-tight">
+                  <h2 className="text-base font-bold leading-tight">
                     اطلاعات حساب
                   </h2>
-                  <p className="mt-0.5 text-[0.72rem] font-medium text-[#8A9A78]">
+                  <p className="mt-0.5 text-[0.72rem] font-medium text-[var(--text-subtle)]">
                     داده‌های واقعی حساب تو
                   </p>
                 </div>
@@ -344,7 +336,7 @@ export default function DashboardPage() {
               {user?.has_health_profile ? (
                 <Link
                   href="/profile"
-                  className="inline-flex w-full shrink-0 items-center justify-center gap-1.5 rounded-[0.8rem] border border-[#DCE9B0] bg-[#F4FBE3] px-3 py-2 text-[0.72rem] font-extrabold text-[#557536] transition hover:border-[#D4F24E] hover:bg-[#EAF7C7] focus:outline-none focus:ring-4 focus:ring-[#EAF7C7] sm:w-auto sm:px-3.5"
+                  className="btn btn-ghost btn-sm shrink-0"
                 >
                   <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none" aria-hidden="true">
                     <path
@@ -361,24 +353,24 @@ export default function DashboardPage() {
             </div>
 
             {user ? (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2.5">
                 {accountRows.map((row) => (
                   <div
                     key={row.label}
-                    className="flex items-center justify-between gap-4 rounded-[1.1rem] border border-[#EFEAD9] bg-[#FFFDF8] px-4 py-3.5 transition hover:border-[#DCE9B0]"
+                    className="flex items-center justify-between gap-4 rounded-lg border border-[var(--border-soft)] bg-[var(--surface-soft)] px-4 py-3 transition hover:border-[var(--border-lime)]"
                   >
                     <div className="flex items-center gap-3">
                       <span
-                        className={`flex h-9 w-9 items-center justify-center rounded-[0.7rem] ${row.tint}`}
+                        className={`flex h-8 w-8 items-center justify-center rounded-md ${row.tint}`}
                       >
                         {row.icon}
                       </span>
-                      <span className="text-[0.8rem] font-bold text-[#6B7A5A]">
+                      <span className="text-[0.8rem] font-bold text-[var(--text-muted)]">
                         {row.label}
                       </span>
                     </div>
                     <span
-                      className="text-[0.95rem] font-extrabold text-[#25321F]"
+                      className="text-[0.92rem] font-bold text-[var(--text-strong)]"
                       dir={row.dir}
                     >
                       {row.value}
@@ -389,66 +381,57 @@ export default function DashboardPage() {
             ) : null}
 
             {error ? (
-              <div
-                role="alert"
-                aria-live="polite"
-                className="mt-4 rounded-[1rem] border border-[#F5D5C9] bg-[#FFF6E8] px-4 py-3 text-[0.8rem] leading-6 text-[#7A3A27]"
-              >
+              <div role="alert" aria-live="polite" className="notice notice-error mt-4">
                 {error}
               </div>
             ) : null}
           </section>
 
           {user?.role === "normal" && user.has_health_profile ? (
-          <section className="relative overflow-hidden rounded-[2rem] border border-[#EFEAD9] bg-white p-6 shadow-[0_24px_60px_rgba(85,117,54,0.08)] ring-1 ring-black/[0.02] sm:p-7">
-            <img
-              src="/brand-assets/avocado-slice.png"
-              alt=""
-              aria-hidden="true"
-              className="pointer-events-none absolute -left-3 -top-3 h-20 w-20 object-contain opacity-10"
-            />
-            <div className="relative flex items-start justify-between gap-4">
-              <div>
-                <span className="inline-flex rounded-full bg-[#EAF7C7] px-3 py-1.5 text-[0.7rem] font-extrabold text-[#557536]">اختیاری</span>
-                <h2 className="mt-4 text-lg font-extrabold leading-tight sm:text-xl">ساخت برنامه شخصی</h2>
+            <section className="card p-5 sm:p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <span className="chip chip-neutral">اختیاری</span>
+                  <h2 className="mt-3 text-base font-bold leading-tight sm:text-lg">ساخت برنامه شخصی</h2>
+                </div>
+                <span
+                  className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--brand-avocado-soft)] text-base font-bold text-[var(--brand-green)]"
+                  aria-hidden="true"
+                >
+                  پ
+                </span>
               </div>
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#F4FBE3] text-lg font-extrabold text-[#557536]" aria-hidden="true">پ</span>
-            </div>
-            <p className="mt-3 text-[0.8rem] leading-6 text-[#6B7A5A]">
-              پرسش‌های تکمیلی تغذیه و تمرین رو هر وقت خواستی جواب بده. فعلا هیچ برنامه‌ای تولید نمی‌شه.
-            </p>
-            <div className="mt-5 grid grid-cols-2 gap-2">
-              <span className="rounded-xl bg-[#F4FBE3] px-3 py-2 text-center text-[0.7rem] font-bold text-[#557536]">
-                تغذیه: {intakeStatus ? (intakeStatus.nutrition.completed ? "تکمیل شده" : "نیاز به تکمیل") : "وضعیت نامشخص"}
-              </span>
-              <span className="rounded-xl bg-[#FFF6E8] px-3 py-2 text-center text-[0.7rem] font-bold text-[#7A3A27]">
-                تمرین: {intakeStatus ? (intakeStatus.workout.completed ? "تکمیل شده" : "نیاز به تکمیل") : "وضعیت نامشخص"}
-              </span>
-            </div>
-            <Link href="/plans/intake" className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-[#D4F24E] px-5 py-3 text-sm font-extrabold shadow-[0_12px_24px_rgba(212,242,78,0.28)] transition hover:bg-[#CFE84E] focus:outline-none focus:ring-4 focus:ring-[#EAF7C7]">
-              تکمیل پرسشنامه برنامه
-            </Link>
-          </section>
+              <p className="mt-3 text-[0.8rem] leading-6 text-[var(--text-muted)]">
+                پرسش‌های تکمیلی تغذیه و تمرین رو هر وقت خواستی جواب بده. فعلا هیچ برنامه‌ای تولید نمی‌شه.
+              </p>
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                <span className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-soft)] px-3 py-2 text-center text-[0.7rem] font-bold text-[var(--brand-green)]">
+                  تغذیه: {intakeStatus ? (intakeStatus.nutrition.completed ? "تکمیل شده" : "نیاز به تکمیل") : "وضعیت نامشخص"}
+                </span>
+                <span className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-soft)] px-3 py-2 text-center text-[0.7rem] font-bold text-[#8a5a32]">
+                  تمرین: {intakeStatus ? (intakeStatus.workout.completed ? "تکمیل شده" : "نیاز به تکمیل") : "وضعیت نامشخص"}
+                </span>
+              </div>
+              <Link href="/plans/intake" className="btn btn-secondary mt-4 w-full">
+                تکمیل پرسشنامه برنامه
+              </Link>
+            </section>
           ) : (
-            <section className="relative overflow-hidden rounded-[2rem] border border-[#EFEAD9] bg-white p-6 text-center shadow-[0_24px_60px_rgba(85,117,54,0.08)] ring-1 ring-black/[0.02] sm:p-7">
-              <div className="relative mx-auto mb-5 flex w-full max-w-[15rem] justify-center">
-                <div className="absolute top-3 h-24 w-full rounded-full bg-gradient-to-b from-[#EAF7C7] to-[#FFF6E8]" />
-                <img src="/brand-assets/curved-growth-path-with-sprouts.png" alt="مسیر رشد با جوانه‌ها" className="relative h-24 w-full max-w-[13rem] object-contain" />
-              </div>
-              <h2 className="text-lg font-extrabold">مسیر سلامت تو تازه شروع شده</h2>
-              <p className="mt-2 text-[0.8rem] leading-6 text-[#6B7A5A]">امکانات بیشتر به‌تدریج اضافه می‌شن.</p>
+            <section className="card p-6 text-center">
+              <h2 className="text-base font-bold">مسیر سلامت تو تازه شروع شده</h2>
+              <p className="mt-2 text-[0.8rem] leading-6 text-[var(--text-muted)]">امکانات بیشتر به‌تدریج اضافه می‌شن.</p>
             </section>
           )}
         </div>
 
-        <footer className="flex flex-col items-center justify-between gap-3 border-t border-[#EFEAD9] py-6 sm:flex-row">
+        <footer className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-[var(--border-soft)] py-6 sm:flex-row">
           <div className="flex items-center gap-2">
-            <SmilingAvocado className="h-6 w-6" imgClassName="h-[1rem] w-[1rem]" />
-            <span className="text-[0.78rem] font-bold text-[#557536]">
+            <BrandMark />
+            <span className="text-[0.78rem] font-bold text-[var(--brand-green)]">
               سلامت هوشمند
             </span>
           </div>
-          <p className="text-[0.7rem] text-[#8A9A78]">نسخه اولیه • در حال ساخت</p>
+          <p className="text-[0.7rem] text-[var(--text-subtle)]">نسخه اولیه • در حال ساخت</p>
         </footer>
       </div>
     </main>
