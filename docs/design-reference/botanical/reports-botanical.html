@@ -1,0 +1,1679 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#123f26" />
+    <title>روند پیشرفت — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+    <style>
+      .reports-page {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .reports-hero,
+      .report-card,
+      .reports-state,
+      .report-stat,
+      .report-insight {
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 7%, var(--av-color-border));
+        background: var(--av-color-surface);
+      }
+
+      .reports-hero,
+      .report-card,
+      .reports-state {
+        border-radius: 1.5rem 1.5rem 0.75rem 1.5rem;
+      }
+
+      .reports-hero {
+        display: grid;
+        gap: 1rem;
+        padding: 1rem;
+      }
+
+      .reports-eyebrow,
+      .report-kicker,
+      .chart-note,
+      .report-action-inline,
+      .report-stat small,
+      .report-summary-note {
+        color: var(--av-color-ink-muted);
+        font-size: 0.82rem;
+      }
+
+      .reports-eyebrow {
+        display: inline-flex;
+        inline-size: fit-content;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.42rem 0.72rem;
+        border-radius: 999px;
+        background: color-mix(in oklch, var(--av-color-primary-soft) 74%, white);
+        color: var(--av-color-primary);
+        font-weight: 700;
+      }
+
+      .reports-hero__copy {
+        display: grid;
+        gap: 0.48rem;
+      }
+
+      .reports-hero h1,
+      .report-card h2,
+      .reports-state h2 {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+      }
+
+      .reports-hero h1 {
+        font-size: clamp(1.8rem, 1.25rem + 1.2vw, 2.45rem);
+      }
+
+      .reports-hero p,
+      .report-card p,
+      .reports-state p {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+      }
+
+      .reports-hero__controls {
+        display: grid;
+        gap: 0.85rem;
+      }
+
+      .range-switch {
+        display: inline-flex;
+        gap: 0.45rem;
+        overflow: auto hidden;
+        padding-block-end: 0.15rem;
+        scrollbar-width: none;
+      }
+
+      .range-switch::-webkit-scrollbar {
+        display: none;
+      }
+
+      .range-switch button {
+        min-block-size: 2.7rem;
+        padding-inline: 1rem;
+        border: 1px solid var(--av-color-border);
+        border-radius: 999px;
+        background: var(--av-color-surface);
+        color: var(--av-color-ink-muted);
+        font: inherit;
+        font-weight: 700;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+
+      .range-switch button[aria-pressed="true"] {
+        border-color: color-mix(in oklch, var(--av-color-primary) 24%, var(--av-color-border));
+        background: color-mix(in oklch, var(--av-color-primary-soft) 78%, white);
+        color: var(--av-color-primary);
+      }
+
+      .reports-range-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        padding: 0.15rem 0.1rem 0;
+      }
+
+      .reports-range-meta strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+      }
+
+      .reports-stats {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      .report-stat {
+        display: grid;
+        gap: 0.4rem;
+        padding: 0.9rem 0.95rem;
+        border-radius: 1.2rem 1.2rem 0.55rem 1.2rem;
+      }
+
+      .report-stat__label {
+        color: var(--av-color-ink-muted);
+        font-size: 0.84rem;
+      }
+
+      .report-stat strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1.45rem;
+        line-height: 1.2;
+      }
+
+      .report-delta {
+        display: inline-flex;
+        inline-size: fit-content;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.35rem 0.58rem;
+        border-radius: 999px;
+        background: color-mix(in oklch, var(--report-delta-soft, var(--av-color-primary-soft)) 72%, white);
+        color: var(--report-delta-color, var(--av-color-primary));
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+
+      .reports-content {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .reports-grid {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .reports-grid--primary {
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      }
+
+      .reports-grid--secondary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .report-card {
+        display: grid;
+        gap: 1rem;
+        padding: 1rem;
+      }
+
+      .report-card--feature {
+        padding: 1.05rem;
+      }
+
+      .report-card--feature .report-card__header {
+        align-items: start;
+      }
+
+      .report-card__header,
+      .report-card__footer,
+      .report-card__meta,
+      .report-water-days,
+      .report-insights-grid {
+        display: flex;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+      }
+
+      .report-card__header,
+      .report-card__footer {
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .report-card__title {
+        display: grid;
+        gap: 0.3rem;
+      }
+
+      .report-card__title h2 {
+        font-size: 1.12rem;
+      }
+
+      .report-card__main {
+        display: grid;
+        gap: 0.9rem;
+      }
+
+      .report-hero-value {
+        display: grid;
+        gap: 0.3rem;
+      }
+
+      .report-hero-value strong {
+        color: var(--av-color-ink-strong);
+        font-size: clamp(1.9rem, 1.45rem + 1vw, 2.6rem);
+        line-height: 1;
+      }
+
+      .report-card__meta {
+        align-items: stretch;
+      }
+
+      .report-meta-box {
+        min-inline-size: 10rem;
+        flex: 1 1 10rem;
+        display: grid;
+        gap: 0.2rem;
+        padding: 0.85rem;
+        border-radius: 1rem 1rem 0.45rem 1rem;
+        background: color-mix(in oklch, var(--report-meta-soft, var(--av-color-primary-soft)) 38%, white);
+      }
+
+      .report-meta-box span {
+        color: var(--av-color-ink-muted);
+        font-size: 0.8rem;
+      }
+
+      .report-meta-box strong {
+        color: var(--report-meta-ink, var(--av-color-ink-strong));
+        font-size: 1.05rem;
+      }
+
+      .report-progress {
+        display: grid;
+        gap: 0.45rem;
+      }
+
+      .report-progress__track {
+        position: relative;
+        block-size: 0.72rem;
+        overflow: hidden;
+        border-radius: 999px;
+        background: color-mix(in oklch, var(--av-color-primary-soft) 60%, white);
+      }
+
+      .report-progress__fill {
+        position: absolute;
+        inset-block: 0;
+        inset-inline-start: 0;
+        inline-size: var(--progress, 0%);
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--av-color-primary), color-mix(in oklch, var(--av-color-primary) 74%, white));
+      }
+
+      .report-chart-card {
+        display: grid;
+        gap: 0.65rem;
+      }
+
+      .report-chart {
+        position: relative;
+        min-block-size: 13rem;
+        padding: 0.9rem;
+        border-radius: 1.15rem 1.15rem 0.55rem 1.15rem;
+        background: linear-gradient(180deg, color-mix(in oklch, var(--av-color-primary-soft) 28%, white), white 62%);
+      }
+
+      .report-chart--water {
+        background: linear-gradient(180deg, color-mix(in oklch, oklch(92% 0.035 225) 60%, white), white 62%);
+      }
+
+      .report-chart svg {
+        inline-size: 100%;
+        block-size: 100%;
+        display: block;
+      }
+
+      .report-chart__legend {
+        display: flex;
+        gap: 0.85rem;
+        flex-wrap: wrap;
+      }
+
+      .report-chart__legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.38rem;
+        color: var(--av-color-ink-muted);
+        font-size: 0.8rem;
+      }
+
+      .report-chart__legend i {
+        inline-size: 1.1rem;
+        block-size: 0.22rem;
+        border-radius: 999px;
+        background: var(--legend-color, var(--av-color-primary));
+      }
+
+      .report-chart__legend i.is-target {
+        background: var(--av-color-plan);
+        border: 0;
+        position: relative;
+      }
+
+      .report-chart__legend i.is-target::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: repeating-linear-gradient(
+          90deg,
+          transparent 0 4px,
+          white 4px 7px
+        );
+        mix-blend-mode: screen;
+      }
+
+      .report-empty-trend {
+        min-block-size: 12rem;
+        display: grid;
+        place-items: center;
+        padding: 1rem;
+        border-radius: 1rem 1rem 0.45rem 1rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 66%, white);
+        color: var(--av-color-ink-muted);
+        text-align: center;
+      }
+
+      .report-chart-summary {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      .report-chart-summary div {
+        display: grid;
+        gap: 0.18rem;
+        padding: 0.82rem;
+        border-radius: 0.95rem 0.95rem 0.42rem 0.95rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 72%, white);
+      }
+
+      .report-chart-summary span {
+        color: var(--av-color-ink-muted);
+        font-size: 0.8rem;
+      }
+
+      .report-chart-summary strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+      }
+
+      .report-water-days {
+        gap: 0.55rem;
+      }
+
+      .report-water-day {
+        flex: 1 1 3rem;
+        min-inline-size: 3rem;
+        display: grid;
+        gap: 0.38rem;
+        justify-items: center;
+        padding: 0.68rem 0.45rem;
+        border-radius: 0.95rem 0.95rem 0.42rem 0.95rem;
+        background: color-mix(in oklch, oklch(94% 0.025 225) 60%, white);
+      }
+
+      .report-water-day__dot {
+        inline-size: 0.8rem;
+        block-size: 0.8rem;
+        border-radius: 50%;
+        background: oklch(87% 0.02 225);
+      }
+
+      .report-water-day.is-complete .report-water-day__dot {
+        background: oklch(66% 0.12 225);
+      }
+
+      .report-water-day strong,
+      .report-water-day span {
+        font-size: 0.76rem;
+      }
+
+      .report-bullets {
+        display: grid;
+        gap: 0.55rem;
+      }
+
+      .report-bullets li {
+        display: flex;
+        align-items: start;
+        gap: 0.5rem;
+        color: var(--av-color-ink-muted);
+      }
+
+      .report-bullets li::before {
+        content: "";
+        inline-size: 0.55rem;
+        block-size: 0.55rem;
+        margin-block-start: 0.48rem;
+        border-radius: 50%;
+        background: var(--av-color-primary);
+        flex: 0 0 auto;
+      }
+
+      .report-actions {
+        display: flex;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+      }
+
+      .report-actions .button,
+      .report-actions .report-action-link {
+        min-block-size: 2.8rem;
+      }
+
+      .report-action-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding-inline: 1rem;
+        border-radius: 0.95rem;
+        border: 1px solid var(--av-color-border);
+        color: var(--av-color-ink-strong);
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      .report-card--sleep {
+        gap: 0.8rem;
+      }
+
+      .report-sleep-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      .report-sleep-grid > div {
+        display: grid;
+        gap: 0.24rem;
+        padding: 0.95rem;
+        border-radius: 1rem 1rem 0.45rem 1rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 70%, white);
+      }
+
+      .report-sleep-grid span {
+        color: var(--av-color-ink-muted);
+        font-size: 0.82rem;
+      }
+
+      .report-sleep-grid strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1.05rem;
+      }
+
+      .report-insights-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+
+      .report-insight {
+        display: grid;
+        gap: 0.45rem;
+        padding: 0.95rem;
+        border-radius: 1rem 1rem 0.45rem 1rem;
+      }
+
+      .report-insight strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+      }
+
+      .report-insight a,
+      .report-insight button {
+        inline-size: fit-content;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--av-color-primary);
+        font: inherit;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .report-insight__action {
+        inline-size: fit-content;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--av-color-primary);
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .reports-state {
+        display: grid;
+        gap: 0.75rem;
+        padding: 1.25rem;
+      }
+
+      .reports-state button {
+        inline-size: fit-content;
+      }
+
+      .reports-skeleton {
+        display: grid;
+        gap: 0.7rem;
+      }
+
+      .reports-skeleton span {
+        display: block;
+        block-size: 1rem;
+        border-radius: 999px;
+        background: linear-gradient(
+          90deg,
+          color-mix(in oklch, var(--av-color-surface-subtle) 85%, white),
+          color-mix(in oklch, var(--av-color-primary-soft) 45%, white),
+          color-mix(in oklch, var(--av-color-surface-subtle) 85%, white)
+        );
+        background-size: 200% 100%;
+        animation: skeletonPulse 1.4s ease infinite;
+      }
+
+      .reports-skeleton span:nth-child(1) {
+        inline-size: 28%;
+      }
+
+      .reports-skeleton span:nth-child(2) {
+        inline-size: 100%;
+        block-size: 4.8rem;
+      }
+
+      .reports-skeleton span:nth-child(3),
+      .reports-skeleton span:nth-child(4) {
+        inline-size: 100%;
+        block-size: 8rem;
+      }
+
+      @keyframes skeletonPulse {
+        0% { background-position: 100% 0; }
+        100% { background-position: -100% 0; }
+      }
+
+      .reports-export-dialog {
+        inline-size: min(calc(100% - 2rem), 29rem);
+      }
+
+      .reports-export-dialog__body {
+        display: grid;
+        gap: 0.75rem;
+        margin-block-start: 1rem;
+      }
+
+      .reports-export-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.95rem 1rem;
+        border: 1px solid var(--av-color-border);
+        border-radius: 1rem 1rem 0.45rem 1rem;
+        background: var(--av-color-surface);
+        color: var(--av-color-ink-strong);
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .reports-export-option small {
+        display: block;
+        color: var(--av-color-ink-muted);
+        font-weight: 400;
+      }
+
+      .reports-export-dialog__actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-block-start: 1rem;
+      }
+
+      @media (max-width: 1120px) {
+        .reports-stats {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .reports-grid--primary,
+        .reports-grid--secondary,
+        .report-insights-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .reports-hero {
+          padding: 0.95rem;
+        }
+
+        .reports-range-meta {
+          align-items: start;
+          flex-direction: column;
+        }
+
+        .reports-stats {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 0.7rem;
+          padding-block-end: 0;
+        }
+
+        .report-stat {
+          min-inline-size: 0;
+          padding: 0.82rem 0.8rem;
+          gap: 0.32rem;
+        }
+
+        .report-stat:nth-child(1) {
+          grid-column: 1 / -1;
+          padding-block: 0.95rem;
+        }
+
+        .report-stat strong {
+          font-size: 1.2rem;
+        }
+
+        .report-stat__label {
+          font-size: 0.8rem;
+        }
+
+        .report-stat small {
+          font-size: 0.74rem;
+          line-height: 1.6;
+        }
+
+        .report-card,
+        .report-card--feature,
+        .reports-state {
+          padding: 0.95rem;
+        }
+
+        .report-card__header,
+        .report-card__footer,
+        .report-actions {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .report-actions .button,
+        .report-actions .report-action-link,
+        .report-insight a,
+        .report-insight button {
+          inline-size: 100%;
+          justify-content: center;
+        }
+
+        .report-chart {
+          min-block-size: 11.4rem;
+        }
+
+        .report-chart-summary,
+        .report-sleep-grid,
+        .report-insights-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="app-body" data-page="reports" data-theme="botanical">
+    <div class="app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی محصول">
+        <a class="brand" href="dashboard-botanical.html">
+          <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect class="brand-mark__plan" x="7" y="9" width="29" height="11" rx="5.5" />
+            <rect class="brand-mark__actual" x="12" y="27" width="29" height="11" rx="5.5" />
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4" />
+          </svg>
+          <span>آووکادو</span>
+        </a>
+          <nav aria-label="بخش‌های اصلی">
+          <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+          <a href="quick-log-botanical.html"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+          <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+          <a href="reports-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+          <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+        </nav>
+        <div class="side-nav__foot">مسیرهای اصلی همیشه از همین پنج بخش در دسترس هستند.</div>
+      </aside>
+
+      <main class="app-main" data-od-id="reports-page">
+        <header class="app-topbar">
+          <div class="app-topbar__title">
+            <span>گزارش‌ها</span>
+            <strong id="topbar-range-label">روند هفتگی</strong>
+          </div>
+          <div class="app-topbar__actions">
+            <a class="header-action-link" href="messages-botanical.html" aria-label="پیام‌ها">
+              <img class="header-action-icon" src="assets/icons/icon-message.png" alt="" aria-hidden="true" />
+            </a>
+            <a class="header-action-link header-action-link--notification" href="notifications-botanical.html" aria-label="اعلان‌ها">
+              <img class="header-action-icon" src="assets/icons/icon-bell.png" alt="" aria-hidden="true" />
+              <span class="header-action-badge" aria-hidden="true"></span>
+            </a>
+            <a class="avatar-link" href="settings-botanical.html" aria-label="پروفایل سارا">س</a>
+          </div>
+        </header>
+
+        <div class="app-container page-content reports-page">
+          <section class="reports-hero" data-od-id="reports-header">
+            <div class="reports-hero__copy">
+              <span class="reports-eyebrow">مرور خلاصه و ورود به جزئیات</span>
+              <h1>روند پیشرفت</h1>
+              <p>
+                خلاصه هر بخش را همین‌جا ببینید و برای بررسی یا تکمیل داده،
+                مستقیم وارد صفحه تخصصی همان حوزه شوید.
+              </p>
+            </div>
+
+            <div class="reports-hero__controls">
+              <div class="range-switch" id="range-switch" aria-label="انتخاب بازه گزارش">
+                <button type="button" data-range="weekly" aria-pressed="true">هفتگی</button>
+                <button type="button" data-range="monthly" aria-pressed="false">ماهانه</button>
+                <button type="button" data-range="compare" aria-pressed="false">مقایسه</button>
+              </div>
+
+              <div class="reports-range-meta">
+                <div class="report-card__title">
+                  <strong id="range-title">هفته جاری</strong>
+                  <span class="report-summary-note" id="range-date">۱۲ تا ۱۸ تیر ۱۴۰۵</span>
+                </div>
+                <button class="button button--primary" type="button" id="export-report-button">
+                  دریافت گزارش
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="reports-stats" id="summary-stats" data-od-id="summary-stats" hidden></section>
+
+          <section class="reports-state" id="reports-loading" data-od-id="reports-loading">
+            <h2>در حال آماده‌سازی خلاصه این بازه</h2>
+            <div class="reports-skeleton" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </section>
+
+          <section class="reports-state" id="reports-empty" data-od-id="reports-empty" hidden>
+            <h2>هنوز داده کافی برای این گزارش ندارید</h2>
+            <p>
+              وقتی ثبت‌های بیشتری اضافه شود، خلاصه روند وزن، آب، تغذیه و تمرین
+              همین‌جا دیده می‌شود.
+            </p>
+          </section>
+
+          <section class="reports-state" id="reports-error" data-od-id="reports-error" hidden>
+            <h2>گزارش این بازه فعلاً آماده نشد</h2>
+            <p>برای بارگذاری دوباره خلاصه، یک‌بار دیگر تلاش کنید.</p>
+            <button class="button button--secondary" type="button" id="retry-report-button">
+              تلاش دوباره
+            </button>
+          </section>
+
+          <div class="reports-content" id="reports-content" hidden>
+            <div class="reports-grid reports-grid--primary">
+              <section class="report-card report-card--feature" id="weight-card" data-od-id="weight-card"></section>
+              <section class="report-card report-card--feature" id="water-card" data-od-id="water-card"></section>
+            </div>
+
+            <div class="reports-grid reports-grid--secondary">
+              <section class="report-card" id="nutrition-card" data-od-id="nutrition-card"></section>
+              <section class="report-card" id="workout-card" data-od-id="workout-card"></section>
+            </div>
+
+            <section class="report-card report-card--sleep" id="sleep-card" data-od-id="sleep-card"></section>
+            <section class="report-card" id="insights-card" data-od-id="insights-card"></section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل">
+      <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+      <a href="quick-log-botanical.html" class="quick-log-trigger bottom-nav__primary"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+      <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+      <a href="reports-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+      <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+    </nav>
+
+    <dialog class="modal reports-export-dialog" id="report-export-dialog" aria-labelledby="report-export-title">
+      <h2 id="report-export-title">دریافت گزارش</h2>
+      <p>
+        نسخه مناسب این بازه را انتخاب کنید. هر گزینه فقط خلاصه را منتقل می‌کند و
+        چیزی بدون تأیید شما ثبت نخواهد شد.
+      </p>
+      <div class="reports-export-dialog__body">
+        <button class="reports-export-option" type="button" data-export-action="pdf">
+          <span>دانلود PDF<small>نسخه قابل ذخیره از خلاصه این بازه</small></span>
+          <span>PDF</span>
+        </button>
+        <button class="reports-export-option" type="button" data-export-action="share">
+          <span>اشتراک‌گذاری با متخصص<small>برای گفت‌وگو یا مرور جلسه بعدی</small></span>
+          <span>ارسال</span>
+        </button>
+        <button class="reports-export-option" type="button" data-export-action="message">
+          <span>ارسال در گفتگو<small>باز کردن گفتگو و بردن خلاصه به همان فضا</small></span>
+          <span>گفتگو</span>
+        </button>
+        <button class="reports-export-option" type="button" data-export-action="print">
+          <span>چاپ گزارش<small>برای نسخه کاغذی یا ذخیره از پنجره چاپ</small></span>
+          <span>چاپ</span>
+        </button>
+      </div>
+      <div class="reports-export-dialog__actions">
+        <button class="button button--secondary" type="button" id="close-export-dialog">
+          بستن
+        </button>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <span class="toast__check">
+        <svg class="icon icon--sm" aria-hidden="true">
+          <use href="assets/icons.svg#icon-check" />
+        </svg>
+      </span>
+      <span id="toast-message">آماده شد.</span>
+      <button type="button" id="toast-undo">بستن</button>
+    </div>
+
+    <script>
+      (() => {
+        const $ = (selector, scope = document) => scope.querySelector(selector);
+        const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
+
+        const state = {
+          range: "weekly",
+          loading: true,
+          error: false,
+        };
+
+        const reportData = {
+          weekly: {
+            topbarLabel: "روند هفتگی",
+            rangeTitle: "هفته جاری",
+            rangeDate: "۱۲ تا ۱۸ تیر ۱۴۰۵",
+            stats: [
+              { label: "میانگین کالری", value: "۱٬۷۸۰", unit: "کیلوکالری", change: 90, tone: "good" },
+              { label: "میانگین پروتئین", value: "۸۴", unit: "گرم", change: 6, tone: "good" },
+              { label: "میانگین خواب", value: "۶:۵۵", unit: "ساعت", change: -15, tone: "calm" },
+              { label: "میانگین آب", value: "۱٬۷۵۰", unit: "میلی‌لیتر", change: 120, tone: "water" },
+              { label: "جلسات تمرین", value: "۳", unit: "جلسه", change: 1, tone: "plan" },
+            ],
+            weight: {
+              current: 68.4,
+              target: 65,
+              start: 69.3,
+              change: -0.9,
+              totalProgress: 50,
+              points: [
+                { label: "ش", value: 69.3 },
+                { label: "ی", value: 69.1 },
+                { label: "د", value: 68.9 },
+                { label: "س", value: 68.8 },
+                { label: "چ", value: 68.7 },
+                { label: "پ", value: 68.5 },
+                { label: "ج", value: 68.4 },
+              ],
+            },
+            water: {
+              average: 1750,
+              target: 2000,
+              completedDays: 4,
+              totalChange: 160,
+              weeklyAverageChange: 80,
+              days: [
+                { label: "ش", value: 1900 },
+                { label: "ی", value: 2100 },
+                { label: "د", value: 1450 },
+                { label: "س", value: 2000 },
+                { label: "چ", value: 1750 },
+                { label: "پ", value: 1600 },
+                { label: "ج", value: 1450 },
+              ],
+            },
+            nutrition: {
+              avgCalories: "۱٬۷۸۰ کیلوکالری",
+              avgProtein: "۸۴ گرم",
+              completeDays: 4,
+              summary: "صبحانه و ناهار در بیشتر روزها کامل ثبت شده‌اند و شام‌ها هنوز نوسان دارند.",
+            },
+            workout: {
+              completed: "۳ از ۴ جلسه",
+              duration: "۱۲۵ دقیقه",
+              calories: "حدود ۶۴۰ کالری",
+              next: "آخرین جلسه: قدرت پایه · جمعه",
+            },
+            sleep: {
+              average: "۶ ساعت و ۵۵ دقیقه",
+              belowGoal: "۳ شب",
+              bestNight: "پنجشنبه · ۷ ساعت و ۴۰ دقیقه",
+              note: "این بخش فقط روند عادت خواب را توصیف می‌کند و جای ارزیابی پزشکی را نمی‌گیرد.",
+            },
+            insights: [
+              {
+                title: "روند وزن",
+                copy: "وزن در این بازه آرام‌تر از قبل پایین آمده و به هدف نزدیک‌تر شده است.",
+                action: "بررسی وزن",
+                href: "body-botanical.html",
+              },
+              {
+                title: "وضعیت آب",
+                copy: "در ۴ روز هدف آب کامل شده؛ روزهای تمرین هنوز به یادآوری بیشتری نیاز دارند.",
+                action: "تکمیل آب",
+                href: "water-botanical.html",
+              },
+              {
+                title: "وضعیت تمرین",
+                copy: "بیشتر جلسات این هفته انجام شده‌اند و یک جلسه برای ادامه برنامه باقی مانده است.",
+                action: "مشاهده تمرین‌ها",
+                href: "workout-botanical.html",
+              },
+              {
+                title: "کامل بودن ثبت غذا",
+                copy: "ثبت غذا در ۴ روز کامل بوده و هنوز برای میان‌وعده‌ها جای تکمیل وجود دارد.",
+                action: "تکمیل ثبت غذا",
+                href: "food-log-botanical.html",
+              },
+            ],
+          },
+          monthly: {
+            topbarLabel: "روند ماهانه",
+            rangeTitle: "ماه جاری",
+            rangeDate: "۲۰ خرداد تا ۱۸ تیر ۱۴۰۵",
+            stats: [
+              { label: "میانگین کالری", value: "۱٬۷۳۰", unit: "کیلوکالری", change: 110, tone: "good" },
+              { label: "میانگین پروتئین", value: "۸۱", unit: "گرم", change: 9, tone: "good" },
+              { label: "میانگین خواب", value: "۷:۰۵", unit: "ساعت", change: 20, tone: "good" },
+              { label: "میانگین آب", value: "۱٬۸۲۰", unit: "میلی‌لیتر", change: 210, tone: "water" },
+              { label: "جلسات تمرین", value: "۱۰", unit: "جلسه", change: 2, tone: "plan" },
+            ],
+            weight: {
+              current: 68.4,
+              target: 65,
+              start: 70.2,
+              change: -1.8,
+              totalProgress: 69,
+              points: [
+                { label: "۱", value: 70.2 },
+                { label: "۵", value: 69.9 },
+                { label: "۱۰", value: 69.6 },
+                { label: "۱۵", value: 69.1 },
+                { label: "۲۰", value: 68.8 },
+                { label: "۲۵", value: 68.6 },
+                { label: "۳۰", value: 68.4 },
+              ],
+            },
+            water: {
+              average: 1820,
+              target: 2000,
+              completedDays: 18,
+              totalChange: 240,
+              weeklyAverageChange: 60,
+              days: [
+                { label: "ش", value: 2050 },
+                { label: "ی", value: 1900 },
+                { label: "د", value: 1700 },
+                { label: "س", value: 2000 },
+                { label: "چ", value: 1820 },
+                { label: "پ", value: 1650 },
+                { label: "ج", value: 1950 },
+              ],
+            },
+            nutrition: {
+              avgCalories: "۱٬۷۳۰ کیلوکالری",
+              avgProtein: "۸۱ گرم",
+              completeDays: 18,
+              summary: "ثبت‌های اصلی پایدارتر شده‌اند و میان‌وعده‌ها بیشتر از قبل وارد شده‌اند.",
+            },
+            workout: {
+              completed: "۱۰ از ۱۲ جلسه",
+              duration: "۴۷۰ دقیقه",
+              calories: "حدود ۲٬۲۴۰ کالری",
+              next: "جلسه بعدی: قدرت پایه · یکشنبه",
+            },
+            sleep: {
+              average: "۷ ساعت و ۵ دقیقه",
+              belowGoal: "۹ شب",
+              bestNight: "شنبه · ۸ ساعت و ۱۰ دقیقه",
+              note: "مرور خواب برای دیدن نظم شب‌هاست و تفسیر پزشکی ارائه نمی‌کند.",
+            },
+            insights: [
+              {
+                title: "روند وزن",
+                copy: "در مقیاس ماهانه، وزن با سرعتی آرام و باثبات‌تر از ماه قبل کم شده است.",
+                action: "بررسی وزن",
+                href: "body-botanical.html",
+              },
+              {
+                title: "وضعیت آب",
+                copy: "هدف آب در بیشتر روزها نزدیک شده و الگوی روزهای کم‌مصرف روشن‌تر شده است.",
+                action: "تکمیل آب",
+                href: "water-botanical.html",
+              },
+              {
+                title: "وضعیت تمرین",
+                copy: "بیشتر جلسات برنامه انجام شده و فقط دو جلسه از برنامه ماهانه باقی مانده است.",
+                action: "مشاهده تمرین‌ها",
+                href: "workout-botanical.html",
+              },
+              {
+                title: "کامل بودن ثبت غذا",
+                copy: "بخش عمده روزها ثبت قابل‌اتکایی دارند و هنوز چند روز ناقص برای تکمیل باقی مانده است.",
+                action: "تکمیل ثبت غذا",
+                href: "food-log-botanical.html",
+              },
+            ],
+          },
+          compare: {
+            topbarLabel: "مقایسه دو بازه",
+            rangeTitle: "۷ روز اخیر در برابر ۷ روز قبل",
+            rangeDate: "۵ تا ۱۸ تیر ۱۴۰۵",
+            stats: [
+              { label: "میانگین کالری", value: "۱٬۷۸۰", unit: "کیلوکالری", change: 60, tone: "good" },
+              { label: "میانگین پروتئین", value: "۸۴", unit: "گرم", change: 4, tone: "good" },
+              { label: "میانگین خواب", value: "۶:۵۵", unit: "ساعت", change: -10, tone: "calm" },
+              { label: "میانگین آب", value: "۱٬۷۵۰", unit: "میلی‌لیتر", change: 130, tone: "water" },
+              { label: "جلسات تمرین", value: "۳", unit: "جلسه", change: 0, tone: "plan" },
+            ],
+            weight: {
+              current: 68.4,
+              target: 65,
+              start: 69,
+              change: -0.6,
+              totalProgress: 61,
+              points: [
+                { label: "۵", value: 69.0 },
+                { label: "۷", value: 68.9 },
+                { label: "۹", value: 68.8 },
+                { label: "۱۱", value: 68.7 },
+                { label: "۱۳", value: 68.6 },
+                { label: "۱۵", value: 68.5 },
+                { label: "۱۸", value: 68.4 },
+              ],
+            },
+            water: {
+              average: 1750,
+              target: 2000,
+              completedDays: 4,
+              totalChange: 130,
+              weeklyAverageChange: 65,
+              days: [
+                { label: "ش", value: 1700 },
+                { label: "ی", value: 2050 },
+                { label: "د", value: 1550 },
+                { label: "س", value: 1950 },
+                { label: "چ", value: 1850 },
+                { label: "پ", value: 1680 },
+                { label: "ج", value: 1470 },
+              ],
+            },
+            nutrition: {
+              avgCalories: "۱٬۷۸۰ کیلوکالری",
+              avgProtein: "۸۴ گرم",
+              completeDays: 4,
+              summary: "ثبت غذا نسبت به بازه قبل منظم‌تر شده اما میان‌وعده‌ها هنوز پراکنده ثبت می‌شوند.",
+            },
+            workout: {
+              completed: "۳ از ۳ جلسه",
+              duration: "۱۲۵ دقیقه",
+              calories: "حدود ۶۴۰ کالری",
+              next: "در این بازه، همه جلسه‌های برنامه انجام شده‌اند.",
+            },
+            sleep: {
+              average: "۶ ساعت و ۵۵ دقیقه",
+              belowGoal: "۳ شب",
+              bestNight: "چهارشنبه · ۷ ساعت و ۲۵ دقیقه",
+              note: "در مقایسه دو بازه، نظم خواب کمی نوسان دارد اما افت شدید دیده نمی‌شود.",
+            },
+            insights: [
+              {
+                title: "روند وزن",
+                copy: "کاهش وزن در بازه اخیر آهسته‌تر اما پایدارتر از بازه قبل بوده است.",
+                action: "بررسی وزن",
+                href: "body-botanical.html",
+              },
+              {
+                title: "وضعیت آب",
+                copy: "میانگین آب بهتر شده و هنوز دو روز با فاصله واضح از هدف وجود دارد.",
+                action: "تکمیل آب",
+                href: "water-botanical.html",
+              },
+              {
+                title: "وضعیت تمرین",
+                copy: "الگوی انجام تمرین نسبت به بازه قبل ثابت مانده و وقفه جدیدی دیده نمی‌شود.",
+                action: "مشاهده تمرین‌ها",
+                href: "workout-botanical.html",
+              },
+              {
+                title: "کامل بودن ثبت غذا",
+                copy: "ثبت وعده‌های اصلی بهتر شده و هنوز برای روزهای شلوغ نیاز به تکمیل سریع‌تر وجود دارد.",
+                action: "تکمیل ثبت غذا",
+                href: "food-log-botanical.html",
+              },
+            ],
+          },
+        };
+
+        const toneMeta = {
+          good: { color: "var(--av-color-primary)", soft: "var(--av-color-primary-soft)" },
+          calm: { color: "var(--av-color-plan)", soft: "color-mix(in oklch, var(--av-color-plan) 18%, white)" },
+          water: { color: "oklch(66% 0.12 225)", soft: "oklch(93% 0.03 225)" },
+          plan: { color: "var(--av-color-plan)", soft: "color-mix(in oklch, var(--av-color-plan) 18%, white)" },
+        };
+
+        const loadingState = $("#reports-loading");
+        const emptyState = $("#reports-empty");
+        const errorState = $("#reports-error");
+        const content = $("#reports-content");
+        const statsRoot = $("#summary-stats");
+        const toast = $("#toast");
+        const toastMessage = $("#toast-message");
+        const exportDialog = $("#report-export-dialog");
+        let toastTimer = null;
+
+        function toPersianNumber(value) {
+          return new Intl.NumberFormat("fa-IR").format(value);
+        }
+
+        function formatSigned(value, unit = "") {
+          const sign = value > 0 ? "+" : value < 0 ? "−" : "";
+          const abs = Math.abs(value);
+          const amount = Number.isInteger(abs) ? toPersianNumber(abs) : abs.toLocaleString("fa-IR", {
+            minimumFractionDigits: 1,
+            maximumFractionDigits: 1,
+          });
+          return `${sign}${amount}${unit ? ` ${unit}` : ""}`;
+        }
+
+        function formatWeight(value) {
+          return `${value.toLocaleString("fa-IR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} کیلوگرم`;
+        }
+
+        function showToast(message) {
+          if (!toast || !toastMessage) return;
+          window.clearTimeout(toastTimer);
+          toastMessage.textContent = message;
+          toast.hidden = false;
+          toastTimer = window.setTimeout(() => {
+            toast.hidden = true;
+          }, 2400);
+        }
+
+        function openDialog(dialog) {
+          if (!dialog) return;
+          if (typeof dialog.showModal === "function") dialog.showModal();
+          else dialog.setAttribute("open", "");
+        }
+
+        function closeDialog(dialog) {
+          if (!dialog) return;
+          if (typeof dialog.close === "function" && dialog.open) dialog.close();
+          else dialog.removeAttribute("open");
+        }
+
+        function setState(next) {
+          state.loading = next.loading ?? state.loading;
+          state.error = next.error ?? state.error;
+          render();
+        }
+
+        function renderStats(data) {
+          statsRoot.innerHTML = data.stats
+            .map((item) => {
+              const tone = toneMeta[item.tone] || toneMeta.good;
+              return `
+                <article class="report-stat" style="--report-delta-color:${tone.color}; --report-delta-soft:${tone.soft};" data-od-id="stat-${item.label.replace(/\s+/g, "-")}">
+                  <span class="report-stat__label">${item.label}</span>
+                  <strong>${item.value} ${item.unit}</strong>
+                  <span class="report-delta">${formatSigned(item.change)} نسبت به قبل</span>
+                  <small>مرور همین ${data.rangeTitle}</small>
+                </article>
+              `;
+            })
+            .join("");
+        }
+
+        function createLineChart(points, target, stroke, targetStroke) {
+          if (!points || points.length < 2) {
+            return `
+              <div class="report-empty-trend">
+                <p>برای نمایش روند، حداقل دو ثبت لازم است.</p>
+              </div>
+            `;
+          }
+
+          const values = points.map((point) => point.value);
+          const min = Math.min(...values, target) - 0.4;
+          const max = Math.max(...values, target) + 0.4;
+          const range = Math.max(max - min, 1);
+          const coords = points.map((point, index) => {
+            const x = (index / (points.length - 1)) * 100;
+            const y = 88 - (((point.value - min) / range) * 70);
+            return `${x.toFixed(2)},${y.toFixed(2)}`;
+          });
+          const targetY = 88 - (((target - min) / range) * 70);
+
+          return `
+            <div class="report-chart">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <g stroke="color-mix(in oklch, var(--av-color-border) 80%, white)" stroke-width="0.6">
+                  <line x1="0" y1="18" x2="100" y2="18"></line>
+                  <line x1="0" y1="53" x2="100" y2="53"></line>
+                  <line x1="0" y1="88" x2="100" y2="88"></line>
+                </g>
+                <polyline
+                  points="0,${targetY.toFixed(2)} 100,${targetY.toFixed(2)}"
+                  fill="none"
+                  stroke="${targetStroke}"
+                  stroke-width="2.2"
+                  stroke-dasharray="6 5"
+                  stroke-linecap="round"
+                ></polyline>
+                <polyline
+                  points="${coords.join(" ")}"
+                  fill="none"
+                  stroke="${stroke}"
+                  stroke-width="3.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></polyline>
+                ${points
+                  .map((point, index) => {
+                    const x = (index / (points.length - 1)) * 100;
+                    const y = 88 - (((point.value - min) / range) * 70);
+                    return `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="2.1" fill="${stroke}"></circle>`;
+                  })
+                  .join("")}
+              </svg>
+            </div>
+          `;
+        }
+
+        function createWaterDays(days, target) {
+          return `
+            <div class="report-water-days">
+              ${days
+                .map((day) => {
+                  const complete = day.value >= target;
+                  return `
+                    <div class="report-water-day ${complete ? "is-complete" : ""}">
+                      <span>${day.label}</span>
+                      <span class="report-water-day__dot" aria-hidden="true"></span>
+                      <strong>${toPersianNumber(day.value)}</strong>
+                    </div>
+                  `;
+                })
+                .join("")}
+            </div>
+          `;
+        }
+
+        function renderWeightCard(data) {
+          const weight = data.weight;
+          $("#weight-card").innerHTML = `
+            <div class="report-card__header">
+              <div class="report-card__title">
+                <span class="report-kicker">وزن و مسیر رسیدن به هدف</span>
+                <h2>روند وزن</h2>
+              </div>
+              <span class="report-delta" style="--report-delta-color:var(--av-color-plan); --report-delta-soft:color-mix(in oklch, var(--av-color-plan) 18%, white);">
+                ${formatSigned(weight.change, "کیلوگرم")}
+              </span>
+            </div>
+
+            <div class="report-card__main">
+              <div class="report-hero-value">
+                <span class="report-summary-note">وزن فعلی</span>
+                <strong>${formatWeight(weight.current)}</strong>
+              </div>
+
+              <div class="report-card__meta">
+                <div class="report-meta-box">
+                  <span>وزن هدف</span>
+                  <strong>${formatWeight(weight.target)}</strong>
+                </div>
+                <div class="report-meta-box" style="--report-meta-soft:color-mix(in oklch, var(--av-color-plan) 12%, white);">
+                  <span>تغییر این بازه</span>
+                  <strong>${formatSigned(weight.change, "کیلوگرم")}</strong>
+                </div>
+                <div class="report-meta-box">
+                  <span>باقی‌مانده تا هدف</span>
+                  <strong>${formatWeight(Math.max(0, weight.current - weight.target)).replace("کیلوگرم", "کیلوگرم")}</strong>
+                </div>
+              </div>
+
+              <div class="report-progress">
+                <div class="report-card__header">
+                  <span class="report-summary-note">پیشرفت از شروع تا هدف</span>
+                  <strong>${toPersianNumber(weight.totalProgress)}٪</strong>
+                </div>
+                <div class="report-progress__track">
+                  <span class="report-progress__fill" style="--progress:${weight.totalProgress}%"></span>
+                </div>
+              </div>
+
+              <div class="report-chart-card">
+                ${createLineChart(weight.points, weight.target, "var(--av-color-primary)", "var(--av-color-plan)")}
+                <div class="report-chart__legend">
+                  <span><i style="--legend-color:var(--av-color-primary)"></i> وزن واقعی</span>
+                  <span><i class="is-target"></i> هدف</span>
+                </div>
+                <div class="report-chart-summary">
+                  <div>
+                    <span>تغییر کل بازه</span>
+                    <strong>${formatSigned(weight.change, "کیلوگرم")}</strong>
+                  </div>
+                  <div>
+                    <span>شروع این بازه</span>
+                    <strong>${formatWeight(weight.start)}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="report-actions">
+              <a class="button button--primary" href="body-botanical.html#quick-entry">ثبت وزن جدید</a>
+              <a class="report-action-link" href="body-botanical.html">مشاهده جزئیات وزن</a>
+            </div>
+          `;
+        }
+
+        function renderWaterCard(data) {
+          const water = data.water;
+          $("#water-card").innerHTML = `
+            <div class="report-card__header">
+              <div class="report-card__title">
+                <span class="report-kicker">آب روزانه و کامل‌بودن ثبت‌ها</span>
+                <h2>آب</h2>
+              </div>
+              <span class="report-delta" style="--report-delta-color:oklch(66% 0.12 225); --report-delta-soft:oklch(93% 0.03 225);">
+                ${formatSigned(water.totalChange, "ml")}
+              </span>
+            </div>
+
+            <div class="report-card__main">
+              <div class="report-hero-value">
+                <span class="report-summary-note">میانگین مصرف روزانه</span>
+                <strong>${toPersianNumber(water.average)} ml</strong>
+              </div>
+
+              <div class="report-card__meta">
+                <div class="report-meta-box" style="--report-meta-soft:oklch(93% 0.03 225);">
+                  <span>هدف روزانه</span>
+                  <strong>${toPersianNumber(water.target)} ml</strong>
+                </div>
+                <div class="report-meta-box">
+                  <span>روزهای تکمیل هدف</span>
+                  <strong>${toPersianNumber(water.completedDays)} روز</strong>
+                </div>
+              </div>
+
+              <div class="report-chart-card">
+                <div class="report-chart report-chart--water">
+                  ${createWaterDays(water.days, water.target)}
+                </div>
+                <div class="report-chart-summary">
+                  <div>
+                    <span>میانگین تغییر هفتگی</span>
+                    <strong>${formatSigned(water.weeklyAverageChange, "ml")}</strong>
+                  </div>
+                  <div>
+                    <span>خلاصه این بازه</span>
+                    <strong>${toPersianNumber(water.completedDays)} روز به هدف کامل رسیده‌اند</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="report-actions">
+              <a class="button button--primary" href="water-botanical.html#quick-entry">ثبت آب امروز</a>
+              <a class="report-action-link" href="water-botanical.html">مشاهده جزئیات آب</a>
+            </div>
+          `;
+        }
+
+        function renderNutritionCard(data) {
+          $("#nutrition-card").innerHTML = `
+            <div class="report-card__header">
+              <div class="report-card__title">
+                <span class="report-kicker">ثبت غذا و کامل‌بودن روزها</span>
+                <h2>تغذیه</h2>
+              </div>
+              <span class="report-delta">${toPersianNumber(data.nutrition.completeDays)} روز کامل</span>
+            </div>
+
+            <div class="report-card__main">
+              <div class="report-card__meta">
+                <div class="report-meta-box">
+                  <span>میانگین کالری</span>
+                  <strong>${data.nutrition.avgCalories}</strong>
+                </div>
+                <div class="report-meta-box">
+                  <span>میانگین پروتئین</span>
+                  <strong>${data.nutrition.avgProtein}</strong>
+                </div>
+              </div>
+              <p>${data.nutrition.summary}</p>
+            </div>
+
+            <div class="report-actions">
+              <a class="button button--primary" href="food-log-botanical.html#add-food">ثبت وعده امروز</a>
+              <a class="report-action-link" href="food-log-botanical.html">مشاهده ثبت غذا</a>
+            </div>
+          `;
+        }
+
+        function renderWorkoutCard(data) {
+          $("#workout-card").innerHTML = `
+            <div class="report-card__header">
+              <div class="report-card__title">
+                <span class="report-kicker">فعالیت و برنامه تمرینی</span>
+                <h2>تمرین</h2>
+              </div>
+              <span class="report-delta" style="--report-delta-color:var(--av-color-plan); --report-delta-soft:color-mix(in oklch, var(--av-color-plan) 18%, white);">
+                ${data.workout.calories}
+              </span>
+            </div>
+
+            <div class="report-card__main">
+              <div class="report-card__meta">
+                <div class="report-meta-box">
+                  <span>جلسات انجام‌شده</span>
+                  <strong>${data.workout.completed}</strong>
+                </div>
+                <div class="report-meta-box">
+                  <span>مجموع زمان فعالیت</span>
+                  <strong>${data.workout.duration}</strong>
+                </div>
+              </div>
+              <p>${data.workout.next}</p>
+            </div>
+
+            <div class="report-actions">
+              <a class="button button--primary" href="workout-botanical.html#start-workout">شروع تمرین امروز</a>
+              <a class="report-action-link" href="workout-botanical.html#weekly-plan">مشاهده تمرین‌ها</a>
+            </div>
+          `;
+        }
+
+        function renderSleepCard(data) {
+          $("#sleep-card").innerHTML = `
+            <div class="report-card__header">
+              <div class="report-card__title">
+                <span class="report-kicker">مرور توصیفی و غیرپزشکی</span>
+                <h2>خواب</h2>
+              </div>
+              <button class="report-insight__action" type="button" data-range-target="compare">مقایسه این روند</button>
+            </div>
+
+            <div class="report-sleep-grid">
+              <div>
+                <span>میانگین مدت خواب</span>
+                <strong>${data.sleep.average}</strong>
+              </div>
+              <div>
+                <span>شب‌های کمتر از هدف</span>
+                <strong>${data.sleep.belowGoal}</strong>
+              </div>
+              <div>
+                <span>بهترین شب ثبت‌شده</span>
+                <strong>${data.sleep.bestNight}</strong>
+              </div>
+            </div>
+
+            <p>${data.sleep.note}</p>
+          `;
+        }
+
+        function renderInsightsCard(data) {
+          $("#insights-card").innerHTML = `
+            <div class="report-card__header">
+              <div class="report-card__title">
+                <span class="report-kicker">چهار جمع‌بندی کوتاه و قابل اقدام</span>
+                <h2>خلاصه‌های این بازه</h2>
+              </div>
+              <span class="report-summary-note">خلاصه را اینجا ببین، اقدام را در صفحه تخصصی انجام بده.</span>
+            </div>
+            <div class="report-insights-grid">
+              ${data.insights
+                .map(
+                  (item, index) => `
+                    <article class="report-insight" data-od-id="insight-${index + 1}">
+                      <strong>${item.title}</strong>
+                      <p>${item.copy}</p>
+                      <a href="${item.href}">${item.action}</a>
+                    </article>
+                  `
+                )
+                .join("")}
+            </div>
+          `;
+        }
+
+        function renderContent(data) {
+          renderWeightCard(data);
+          renderWaterCard(data);
+          renderNutritionCard(data);
+          renderWorkoutCard(data);
+          renderSleepCard(data);
+          renderInsightsCard(data);
+        }
+
+        function renderHeader(data) {
+          $("#range-title").textContent = data.rangeTitle;
+          $("#range-date").textContent = data.rangeDate;
+          $("#topbar-range-label").textContent = data.topbarLabel;
+          $$("[data-range]").forEach((button) => {
+            button.setAttribute("aria-pressed", String(button.dataset.range === state.range));
+          });
+        }
+
+        function render() {
+          const data = reportData[state.range];
+
+          statsRoot.hidden = true;
+          loadingState.hidden = !state.loading;
+          emptyState.hidden = true;
+          errorState.hidden = true;
+          content.hidden = true;
+
+          if (state.loading) return;
+
+          if (state.error) {
+            errorState.hidden = false;
+            return;
+          }
+
+          if (!data || !data.stats?.length) {
+            emptyState.hidden = false;
+            return;
+          }
+
+          renderHeader(data);
+          renderStats(data);
+          statsRoot.hidden = false;
+          renderContent(data);
+          content.hidden = false;
+        }
+
+        $("#range-switch")?.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-range]");
+          if (!button) return;
+          state.range = button.dataset.range;
+          render();
+        });
+
+        $("#retry-report-button")?.addEventListener("click", () => {
+          state.error = false;
+          state.loading = true;
+          render();
+          window.setTimeout(() => {
+            state.loading = false;
+            render();
+          }, 260);
+        });
+
+        $("#export-report-button")?.addEventListener("click", () => {
+          openDialog(exportDialog);
+        });
+
+        $("#close-export-dialog")?.addEventListener("click", () => {
+          closeDialog(exportDialog);
+        });
+
+        exportDialog?.addEventListener("click", (event) => {
+          if (event.target === exportDialog) closeDialog(exportDialog);
+        });
+
+        exportDialog?.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-export-action]");
+          if (!button) return;
+
+          const action = button.dataset.exportAction;
+          closeDialog(exportDialog);
+
+          if (action === "pdf") {
+            showToast("برای ذخیره PDF، پنجره چاپ باز می‌شود.");
+            window.setTimeout(() => window.print(), 180);
+            return;
+          }
+
+          if (action === "share") {
+            showToast("خلاصه این بازه برای اشتراک‌گذاری با متخصص آماده شد.");
+            return;
+          }
+
+          if (action === "message") {
+            showToast("در حال انتقال به گفتگو برای ارسال خلاصه…");
+            window.setTimeout(() => {
+              window.location.href = "messages-botanical.html";
+            }, 220);
+            return;
+          }
+
+          if (action === "print") {
+            window.print();
+          }
+        });
+
+        $("#insights-card")?.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-range-target]");
+          if (!button) return;
+          state.range = button.dataset.rangeTarget;
+          render();
+        });
+
+        $("#sleep-card")?.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-range-target]");
+          if (!button) return;
+          state.range = button.dataset.rangeTarget;
+          render();
+        });
+
+        $("#toast-undo")?.addEventListener("click", () => {
+          toast.hidden = true;
+        });
+
+        renderHeader(reportData[state.range]);
+        render();
+        window.setTimeout(() => {
+          state.loading = false;
+          render();
+        }, 280);
+      })();
+    </script>
+  </body>
+</html>

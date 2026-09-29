@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0d685d" />
+    <title>حالت‌های احراز هویت — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body { margin: 0; background: var(--av-color-canvas); color: var(--av-color-ink); font-family: var(--av-font-family); }
+      .state-shell { inline-size: min(100% - 2rem, 72rem); margin-inline: auto; padding: max(1rem, env(safe-area-inset-top)) 0 3rem; }
+      .state-header { display: grid; gap: .75rem; margin-block: 1rem 1.5rem; }
+      .state-header h1 { margin: 0; color: var(--av-color-ink-strong); font-size: clamp(1.8rem, 1.35rem + 2vw, 3rem); line-height: 1.25; }
+      .state-header p { max-inline-size: 46rem; margin: 0; color: var(--av-color-ink-muted); line-height: 1.8; }
+      .state-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+      .state-section { display: grid; gap: .85rem; margin-block-start: 1.25rem; }
+      .state-section h2 { margin: 0; color: var(--av-color-ink-strong); font-size: 1.2rem; }
+      .state-card { display: grid; gap: .7rem; min-block-size: 100%; border: 1px solid var(--av-color-border); border-radius: 1.25rem 1.25rem .55rem 1.25rem; background: var(--av-color-surface); padding: 1rem; }
+      .state-card h3 { margin: 0; color: var(--av-color-ink-strong); font-size: 1rem; }
+      .state-card p { margin: 0; color: var(--av-color-ink-muted); font-size: .9rem; line-height: 1.75; }
+      .mini-field { display: grid; gap: .4rem; }
+      .mini-field label { color: var(--av-color-ink-strong); font-size: .85rem; font-weight: 650; }
+      .mini-field input { min-block-size: 3rem; border: 1px solid var(--av-color-border-strong); border-radius: 1rem; background: var(--av-color-surface); padding-inline: .85rem; color: var(--av-color-ink-strong); font: inherit; }
+      .mini-field input[aria-invalid="true"] { border-color: var(--av-color-danger); background: var(--av-color-danger-soft); }
+      .otp-mini { direction: ltr; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .35rem; }
+      .otp-mini span { display: grid; place-items: center; min-block-size: 2.8rem; border: 1px solid var(--av-color-border-strong); border-radius: .8rem .8rem .35rem .8rem; background: var(--av-color-surface); color: var(--av-color-ink-strong); font-variant-numeric: tabular-nums; }
+      .alert { display: flex; align-items: flex-start; gap: .55rem; border-radius: 1rem 1rem .45rem 1rem; padding: .75rem; font-size: .86rem; line-height: 1.7; }
+      .alert strong { color: var(--av-color-ink-strong); }
+      .alert--error { background: var(--av-color-danger-soft); color: var(--av-color-danger); }
+      .alert--warning { background: var(--av-color-warning-soft); color: var(--av-color-warning); }
+      .alert--success { background: var(--av-color-success-soft); color: var(--av-color-success); }
+      .alert--info { background: var(--av-color-info-soft); color: var(--av-color-info); }
+      .meta-row { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; color: var(--av-color-ink-muted); font-size: .84rem; }
+      .state-actions { display: flex; flex-wrap: wrap; gap: .55rem; margin-block-start: auto; }
+      .state-actions .button { min-block-size: 2.75rem; }
+      .note-list { margin: 0; padding-inline-start: 1.15rem; color: var(--av-color-ink-muted); line-height: 1.8; }
+      @media (max-width: 38rem) {
+        .state-shell { inline-size: min(100% - 1rem, 72rem); padding-block-end: calc(2rem + env(safe-area-inset-bottom)); }
+        .state-card { padding: .9rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#auth-states-main">پرش به حالت‌ها</a>
+    <main class="state-shell" id="auth-states-main" data-od-id="auth-states-main">
+      <header class="state-header" data-od-id="auth-states-header">
+        <a class="brand" href="auth-flow-index.html" data-od-id="auth-states-brand">
+          <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect class="brand-mark__plan" x="7" y="9" width="29" height="11" rx="5.5" />
+            <rect class="brand-mark__actual" x="12" y="27" width="29" height="11" rx="5.5" />
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4" />
+          </svg>
+          <span>آووکادو</span>
+        </a>
+        <div>
+          <p class="eyebrow">کاتالوگ فشرده حالت‌های احراز هویت</p>
+          <h1>حالت‌های تکمیلی ورود با شماره همراه</h1>
+          <p>این فایل صفحه ورود یا OTP را جایگزین نمی‌کند؛ فقط حالت‌های مفقود و پیام‌های لازم را برای همان دو صفحه مستند و قابل مشاهده می‌کند.</p>
+        </div>
+      </header>
+
+      <section class="state-section" aria-labelledby="phone-states-title" data-od-id="phone-login-states">
+        <h2 id="phone-states-title">ورود با شماره همراه</h2>
+        <div class="state-grid">
+          <article class="state-card" data-od-id="phone-default-state">
+            <h3>حالت پیش‌فرض</h3>
+            <div class="mini-field">
+              <label for="phone-default">شماره همراه</label>
+              <input id="phone-default" dir="ltr" inputmode="tel" autocomplete="tel" placeholder="912 345 6789" />
+            </div>
+            <p>برچسب همیشه دیده می‌شود و کنترل شماره LTR است.</p>
+          </article>
+          <article class="state-card" data-od-id="phone-invalid-state">
+            <h3>شماره نامعتبر</h3>
+            <div class="mini-field">
+              <label for="phone-invalid">شماره همراه</label>
+              <input id="phone-invalid" dir="ltr" inputmode="tel" value="0912 34" aria-invalid="true" aria-describedby="phone-invalid-error" />
+            </div>
+            <div class="alert alert--error" id="phone-invalid-error" role="alert">شماره همراه باید با ۰۹ شروع شود و ۱۱ رقم داشته باشد.</div>
+          </article>
+          <article class="state-card" data-od-id="phone-loading-state">
+            <h3>درخواست کد در حال ارسال</h3>
+            <p aria-live="polite">در حال ارسال کد تایید برای <bdi dir="ltr">0912 345 6789</bdi></p>
+            <div class="state-actions"><button class="button button--primary" type="button" aria-busy="true" disabled>در حال ارسال کد</button></div>
+          </article>
+          <article class="state-card" data-od-id="phone-disabled-state">
+            <h3>ارسال غیرفعال</h3>
+            <p>تا وقتی شماره معتبر نشده، اقدام اصلی غیرفعال است و دلیل آن نزدیک کنترل دیده می‌شود.</p>
+            <div class="state-actions"><button class="button button--primary" type="button" disabled>دریافت کد تایید</button></div>
+          </article>
+          <article class="state-card" data-od-id="phone-api-error-state">
+            <h3>خطای سرویس</h3>
+            <div class="alert alert--error" role="alert">ارسال کد انجام نشد. اتصال را بررسی کنید و دوباره تلاش کنید.</div>
+            <p>شماره واردشده پاک نمی‌شود: <bdi dir="ltr">0912 345 6789</bdi></p>
+          </article>
+          <article class="state-card" data-od-id="phone-offline-state">
+            <h3>آفلاین</h3>
+            <div class="alert alert--warning" role="status" aria-live="polite">آفلاین هستید. پس از اتصال می‌توانید دوباره کد بگیرید.</div>
+            <p>فرم و شماره حفظ می‌شود؛ ارسال تا اتصال پایدار انجام نمی‌شود.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="state-section" aria-labelledby="otp-states-title" data-od-id="otp-states">
+        <h2 id="otp-states-title">کد تایید</h2>
+        <div class="state-grid">
+          <article class="state-card" data-od-id="otp-default-state">
+            <h3>حالت پیش‌فرض</h3>
+            <div class="otp-mini" aria-label="کد تایید شش‌رقمی"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <p>خانه‌ها LTR هستند، `autocomplete="one-time-code"` روی خانه اول استفاده می‌شود و paste شش‌رقمی پشتیبانی می‌شود.</p>
+          </article>
+          <article class="state-card" data-od-id="otp-incorrect-state">
+            <h3>کد نادرست</h3>
+            <div class="otp-mini"><span>4</span><span>8</span><span>2</span><span>9</span><span>1</span><span>3</span></div>
+            <div class="alert alert--error" role="alert">کد درست نیست؛ دوباره بررسی کنید.</div>
+            <p>کد پاک نمی‌شود تا کاربر فقط رقم‌های لازم را اصلاح کند.</p>
+          </article>
+          <article class="state-card" data-od-id="otp-expired-state">
+            <h3>کد منقضی شده</h3>
+            <div class="alert alert--error" role="alert" aria-live="assertive">زمان این کد تمام شده است. کد تازه‌ای دریافت کنید.</div>
+            <div class="state-actions"><button class="button button--secondary" type="button">ارسال دوباره کد</button></div>
+          </article>
+          <article class="state-card" data-od-id="otp-cooldown-state">
+            <h3>زمان انتظار ارسال دوباره</h3>
+            <p id="cooldown-copy" aria-live="polite">ارسال دوباره تا <bdi dir="ltr">01:24</bdi></p>
+            <div class="state-actions"><button class="button button--secondary" type="button" disabled>ارسال دوباره کد</button></div>
+          </article>
+          <article class="state-card" data-od-id="otp-verification-loading-state">
+            <h3>تایید در حال انجام</h3>
+            <p aria-live="polite">در حال ورود به حساب آووکادو.</p>
+            <div class="state-actions"><button class="button button--primary" type="button" aria-busy="true" disabled>در حال ورود</button></div>
+          </article>
+          <article class="state-card" data-od-id="otp-disabled-state">
+            <h3>تایید غیرفعال</h3>
+            <p>تا تکمیل شش رقم، دکمه تایید غیرفعال می‌ماند و پیام کوتاه کنار کد دلیل را توضیح می‌دهد.</p>
+            <div class="state-actions"><button class="button button--primary" type="button" disabled>تایید و ادامه</button></div>
+          </article>
+          <article class="state-card" data-od-id="otp-api-error-state">
+            <h3>خطای سرویس تایید</h3>
+            <div class="alert alert--error" role="alert">تایید کامل نشد. کد واردشده محفوظ است؛ دوباره تلاش کنید.</div>
+          </article>
+          <article class="state-card" data-od-id="otp-offline-state">
+            <h3>آفلاین هنگام تایید</h3>
+            <div class="alert alert--warning" role="status" aria-live="polite">اتصال قطع است. پس از اتصال، همین کد را دوباره بررسی کنید.</div>
+          </article>
+          <article class="state-card" data-od-id="otp-success-state">
+            <h3>تایید موفق</h3>
+            <div class="alert alert--success" role="status" aria-live="polite">شماره تایید شد. در حال انتقال به مسیر بعدی هستید.</div>
+          </article>
+          <article class="state-card" data-od-id="otp-edit-phone-state">
+            <h3>تغییر شماره</h3>
+            <p>بازگشت به فرم شماره باید شماره قبلی را حفظ کند تا فقط همان مقدار اصلاح شود.</p>
+            <div class="state-actions"><a class="button button--secondary" href="auth-botanical.html">تغییر شماره همراه</a></div>
+          </article>
+          <article class="state-card" data-od-id="developer-only-otp-helper-reference">
+            <h3>مرجع توسعه، نه حالت کاربر</h3>
+            <div class="alert alert--info" role="note">Development-only OTP helper — conditionally rendered only when the backend returns an OTP value; hidden in production.</div>
+            <p>این راهنما فقط برای تست داخلی است. مقدار کد نباید در طراحی hardcode شود و فقط از پاسخ backend مانند <bdi dir="auto">response.otp</bdi> می‌آید.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="state-section" aria-labelledby="session-states-title" data-od-id="session-recovery-states">
+        <h2 id="session-states-title">بازیابی نشست</h2>
+        <div class="state-grid">
+          <article class="state-card" data-od-id="session-expired-summary">
+            <h3>نشست منقضی شد</h3>
+            <p>بدون اشاره به توکن یا خطای فنی، مسیر مقصد و پیش‌نویس امن حفظ می‌شود.</p>
+            <div class="state-actions"><a class="button button--primary" href="auth-session-expired.html">دیدن صفحه کامل</a></div>
+          </article>
+          <article class="state-card" data-od-id="repeated-auth-failure-state">
+            <h3>خطای تکراری ورود</h3>
+            <div class="alert alert--error" role="alert">ورود کامل نشد. چند دقیقه دیگر دوباره تلاش کنید یا به صفحه عمومی برگردید.</div>
+            <p>لحن بدون سرزنش است و هیچ جزئیات امنیتی داخلی نمایش داده نمی‌شود.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

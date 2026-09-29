@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "profile-botanical.html",
+  "entry": "profile-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-10T17:58:33.084Z",
+  "updatedAt": "2026-07-10T17:58:33.084Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

@@ -1,0 +1,1528 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#123f26" />
+    <title>هدف‌های تغذیه — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+    <style>
+      body[data-page="nutrition-targets"] {
+        overflow-x: hidden;
+      }
+
+      .targets-page {
+        width: min(100%, 76rem);
+        display: grid;
+        gap: var(--av-space-6);
+        padding-bottom: calc(var(--av-bottom-nav-height) + env(safe-area-inset-bottom) + var(--av-space-10));
+      }
+
+      .targets-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: var(--av-space-4);
+      }
+
+      .targets-header__copy {
+        display: grid;
+        gap: var(--av-space-2);
+      }
+
+      .targets-header h1,
+      .targets-card h2,
+      .targets-card h3,
+      .targets-state h2 {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+      }
+
+      .targets-header p,
+      .targets-card p,
+      .targets-state p,
+      .targets-field__hint,
+      .targets-summary-meta,
+      .targets-card__subcopy {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+      }
+
+      .targets-header__back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.75rem;
+        padding: 0 var(--av-space-4);
+        border: 1px solid var(--av-color-border);
+        border-radius: var(--av-radius-md);
+        background: var(--av-color-surface);
+        color: var(--av-color-ink-strong);
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      .targets-grid {
+        display: grid;
+        gap: var(--av-space-6);
+      }
+
+      .targets-grid.is-preview-hidden {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .targets-main {
+        display: grid;
+        gap: var(--av-space-6);
+      }
+
+      .targets-aside {
+        display: grid;
+        gap: var(--av-space-6);
+        align-content: start;
+      }
+
+      .targets-card {
+        display: grid;
+        gap: var(--av-space-4);
+        padding: clamp(1rem, 2vw, 1.5rem);
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 10%, var(--av-color-border));
+        border-radius: var(--av-radius-lg);
+        background: var(--av-color-surface);
+        box-shadow: var(--av-shadow-1);
+      }
+
+      .targets-card--section {
+        gap: var(--av-space-5);
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .targets-card--section + .targets-card--section {
+        border-top: 1px solid color-mix(in oklch, var(--av-color-primary) 8%, var(--av-color-border));
+        padding-top: var(--av-space-5);
+      }
+
+      .targets-summary {
+        grid-template-columns: minmax(0, 1.2fr) auto;
+        align-items: center;
+      }
+
+      .targets-summary__copy {
+        display: grid;
+        gap: var(--av-space-4);
+      }
+
+      .targets-summary__head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--av-space-3);
+      }
+
+      .targets-summary__head h2 {
+        font-size: var(--av-text-xl);
+      }
+
+      .targets-source-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        min-height: 2rem;
+        padding: 0 var(--av-space-3);
+        border-radius: var(--av-radius-pill);
+        background: var(--av-color-primary-soft);
+        color: var(--av-color-primary);
+        font-size: var(--av-text-xs);
+        font-weight: var(--av-font-weight-semibold);
+      }
+
+      .targets-source-pill[data-tone="plan"] {
+        background: var(--av-color-plan-soft);
+        color: var(--av-color-plan);
+      }
+
+      .targets-summary__stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--av-space-3);
+      }
+
+      .targets-summary__stat,
+      .targets-preview__macro {
+        display: grid;
+        gap: .35rem;
+        min-width: 0;
+        padding: var(--av-space-3);
+        border: 1px solid var(--av-color-border);
+        border-radius: var(--av-radius-md);
+        background: color-mix(in oklch, var(--av-color-surface) 84%, var(--av-color-primary-soft));
+      }
+
+      .targets-summary__stat small,
+      .targets-preview__macro small {
+        color: var(--av-color-ink-muted);
+        font-size: var(--av-text-xs);
+      }
+
+      .targets-summary__stat strong,
+      .targets-preview__macro strong {
+        color: var(--av-color-ink-strong);
+        font-size: var(--av-text-lg);
+      }
+
+      .targets-summary__footer {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--av-space-3);
+      }
+
+      .targets-summary__footer .button {
+        min-height: 2.75rem;
+      }
+
+      .targets-ring {
+        --ring-progress: .62turn;
+        width: clamp(9rem, 24vw, 11rem);
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at center, var(--av-color-surface) 0 58%, transparent 59%),
+          conic-gradient(var(--av-color-primary) 0turn var(--ring-progress), color-mix(in oklch, var(--av-color-primary-soft) 52%, var(--av-color-surface)) var(--ring-progress) 1turn);
+        box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--av-color-primary) 14%, transparent);
+      }
+
+      .targets-ring__inner {
+        width: calc(100% - 1.2rem);
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+        gap: .25rem;
+        border-radius: 50%;
+        background: var(--av-color-surface);
+        text-align: center;
+      }
+
+      .targets-ring__inner small {
+        color: var(--av-color-ink-muted);
+        font-size: var(--av-text-xs);
+      }
+
+      .targets-ring__inner strong {
+        color: var(--av-color-ink-strong);
+        font-size: clamp(1.7rem, 3vw, 2.2rem);
+        line-height: 1;
+      }
+
+      .targets-section-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--av-space-3);
+      }
+
+      .targets-mobile-switcher {
+        display: none;
+      }
+
+      .targets-segmented,
+      .targets-day-tabs {
+        display: inline-grid;
+        grid-auto-flow: column;
+        gap: var(--av-space-2);
+        padding: .25rem;
+        border: 1px solid var(--av-color-border);
+        border-radius: var(--av-radius-pill);
+        background: color-mix(in oklch, var(--av-color-primary-soft) 40%, var(--av-color-surface));
+      }
+
+      .targets-segmented button,
+      .targets-day-tabs button {
+        min-height: 2.5rem;
+        padding: 0 var(--av-space-4);
+        border: 0;
+        border-radius: var(--av-radius-pill);
+        background: transparent;
+        color: var(--av-color-ink);
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .targets-segmented button[aria-pressed="true"],
+      .targets-day-tabs button[aria-pressed="true"] {
+        background: var(--av-color-primary-soft);
+        color: var(--av-color-primary);
+        font-weight: var(--av-font-weight-semibold);
+      }
+
+      .targets-day-tabs button[data-tone="plan"][aria-pressed="true"] {
+        background: var(--av-color-plan-soft);
+        color: var(--av-color-plan);
+      }
+
+      .targets-form-grid {
+        display: grid;
+        gap: var(--av-space-4);
+      }
+
+      .targets-form-grid--two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .targets-field {
+        display: grid;
+        gap: var(--av-space-2);
+      }
+
+      .targets-field--full {
+        grid-column: 1 / -1;
+      }
+
+      .targets-field label,
+      .targets-field legend {
+        color: var(--av-color-ink-strong);
+        font-size: var(--av-text-sm);
+        font-weight: var(--av-font-weight-semibold);
+      }
+
+      .targets-field input,
+      .targets-field textarea,
+      .targets-field select {
+        min-height: 3rem;
+        padding: 0 var(--av-space-4);
+        border: 1px solid var(--av-color-border);
+        border-radius: var(--av-radius-md);
+        background: var(--av-color-surface);
+        color: var(--av-color-ink-strong);
+        font: inherit;
+      }
+
+      .targets-field textarea {
+        min-height: 7rem;
+        padding-block: var(--av-space-3);
+        resize: vertical;
+      }
+
+      .targets-field input:focus-visible,
+      .targets-field textarea:focus-visible,
+      .targets-field select:focus-visible,
+      .targets-segmented button:focus-visible,
+      .targets-day-tabs button:focus-visible {
+        outline: none;
+        box-shadow: var(--av-shadow-focus);
+      }
+
+      .targets-field[data-invalid="true"] input,
+      .targets-field[data-invalid="true"] textarea {
+        border-color: var(--av-color-danger);
+      }
+
+      .targets-field[data-invalid="true"] .targets-field__hint {
+        color: var(--av-color-danger);
+      }
+
+      .targets-feedback,
+      .targets-warning,
+      .targets-state,
+      .targets-dirty {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--av-space-3);
+        padding: var(--av-space-3) var(--av-space-4);
+        border-radius: var(--av-radius-md);
+        font-size: var(--av-text-sm);
+      }
+
+      .targets-feedback {
+        border: 1px solid var(--av-color-danger);
+        background: var(--av-color-danger-soft);
+        color: var(--av-color-danger);
+      }
+
+      .targets-warning {
+        border: 1px solid color-mix(in oklch, var(--av-color-warning) 42%, var(--av-color-border));
+        background: var(--av-color-warning-soft);
+        color: color-mix(in oklch, var(--av-color-warning) 82%, var(--av-color-ink-strong));
+      }
+
+      .targets-dirty {
+        border: 1px solid color-mix(in oklch, var(--av-color-info) 28%, var(--av-color-border));
+        background: var(--av-color-info-soft);
+        color: var(--av-color-info);
+      }
+
+      .targets-inline-error {
+        margin-top: var(--av-space-1);
+      }
+
+      .targets-state {
+        display: grid;
+        gap: var(--av-space-3);
+        padding: clamp(1rem, 3vw, 1.5rem);
+        border: 1px solid var(--av-color-border);
+        background: var(--av-color-surface);
+        box-shadow: var(--av-shadow-1);
+      }
+
+      .targets-state[hidden],
+      .targets-panel[hidden],
+      .targets-inline-error[hidden],
+      .targets-empty-banner[hidden],
+      .targets-loading[hidden],
+      .targets-error-banner[hidden],
+      .targets-dirty[hidden] {
+        display: none !important;
+      }
+
+      .targets-loading {
+        display: grid;
+        gap: var(--av-space-4);
+      }
+
+      .targets-skeleton {
+        display: grid;
+        gap: var(--av-space-3);
+      }
+
+      .targets-skeleton span {
+        display: block;
+        block-size: 1rem;
+        border-radius: var(--av-radius-pill);
+        background: linear-gradient(90deg, var(--av-color-primary-soft), color-mix(in oklch, var(--av-color-primary-soft) 65%, white), var(--av-color-primary-soft));
+        background-size: 200% 100%;
+        animation: targets-shimmer 1.2s linear infinite;
+      }
+
+      .targets-skeleton span:nth-child(1) {
+        block-size: 13rem;
+        border-radius: var(--av-radius-lg);
+      }
+
+      @keyframes targets-shimmer {
+        from { background-position: 200% 0; }
+        to { background-position: -200% 0; }
+      }
+
+      .targets-empty-banner {
+        display: grid;
+        gap: var(--av-space-3);
+      }
+
+      .targets-accordion {
+        display: grid;
+        gap: var(--av-space-4);
+      }
+
+      .targets-accordion__body {
+        display: grid;
+        gap: var(--av-space-4);
+      }
+
+      .targets-preview {
+        position: sticky;
+        inset-block-start: calc(var(--header-height) + 1.5rem);
+        display: grid;
+        gap: var(--av-space-4);
+      }
+
+      .targets-preview[hidden] {
+        display: none !important;
+      }
+
+      .targets-preview__macros {
+        display: grid;
+        gap: var(--av-space-3);
+      }
+
+      .targets-preview__progress {
+        display: grid;
+        gap: var(--av-space-3);
+      }
+
+      .targets-progress-row {
+        display: grid;
+        gap: var(--av-space-2);
+      }
+
+      .targets-progress-row__meta {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--av-space-3);
+        font-size: var(--av-text-xs);
+        color: var(--av-color-ink-muted);
+      }
+
+      .targets-progress-row__bar {
+        overflow: hidden;
+        height: .55rem;
+        border-radius: var(--av-radius-pill);
+        background: color-mix(in oklch, var(--av-color-primary-soft) 60%, var(--av-color-surface));
+      }
+
+      .targets-progress-row__bar span {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--av-color-primary);
+      }
+
+      .targets-progress-row__bar[data-tone="plan"] span {
+        background: var(--av-color-plan);
+      }
+
+      .targets-action-bar {
+        position: sticky;
+        inset-block-end: 0;
+        z-index: 20;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--av-space-3);
+        padding: var(--av-space-3) var(--av-space-4) calc(var(--av-space-3) + env(safe-area-inset-bottom));
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 10%, var(--av-color-border));
+        border-radius: var(--av-radius-lg);
+        background: color-mix(in oklch, var(--av-color-surface) 88%, transparent);
+        backdrop-filter: blur(18px);
+        box-shadow: var(--av-shadow-2);
+      }
+
+      .targets-action-bar__buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--av-space-3);
+      }
+
+      .targets-action-bar__copy {
+        color: var(--av-color-ink-muted);
+        font-size: var(--av-text-xs);
+      }
+
+      .targets-inline-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--av-space-3);
+      }
+
+      .targets-hidden {
+        display: none !important;
+      }
+
+      .targets-source-compact {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--av-space-3);
+      }
+
+      .targets-source-compact__text {
+        display: grid;
+        gap: var(--av-space-1);
+      }
+
+      @media (min-width: 72rem) {
+        .app-shell {
+          display: grid;
+          grid-template-columns: 15rem minmax(0, 1fr);
+        }
+
+        .targets-grid {
+          grid-template-columns: minmax(0, 1.35fr) minmax(20rem, .85fr);
+          align-items: start;
+        }
+      }
+
+      @media (max-width: 63.99rem) {
+        .targets-summary {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .targets-ring {
+          justify-self: center;
+        }
+
+        .targets-preview {
+          position: static;
+        }
+      }
+
+      @media (max-width: 47.99rem) {
+        .targets-header {
+          flex-direction: column-reverse;
+          align-items: stretch;
+        }
+
+        .targets-mobile-switcher {
+          display: block;
+        }
+
+        .targets-form-grid--two,
+        .targets-summary__stats {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .targets-action-bar {
+          inset-inline: 0;
+          border-inline: 0;
+          border-end-start-radius: 0;
+          border-end-end-radius: 0;
+          margin-inline: calc(var(--av-page-gutter) * -1);
+          padding-inline: var(--av-page-gutter);
+        }
+
+        .targets-action-bar__buttons,
+        .targets-inline-actions {
+          inline-size: 100%;
+        }
+
+        .targets-action-bar .button,
+        .targets-inline-actions .button {
+          flex: 1 1 100%;
+        }
+
+        .targets-segmented,
+        .targets-day-tabs {
+          display: grid;
+          grid-auto-flow: column;
+          grid-auto-columns: 1fr;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          align-items: stretch;
+          inline-size: 100%;
+          gap: .2rem;
+          padding: .2rem;
+        }
+
+        .targets-segmented button,
+        .targets-day-tabs button {
+          inline-size: 100%;
+          min-inline-size: 0;
+          min-height: 2.75rem;
+          padding-inline: var(--av-space-2);
+          justify-content: center;
+          text-align: center;
+          white-space: nowrap;
+          font-size: .82rem;
+          line-height: 1.2;
+        }
+
+        .targets-summary[data-mobile-tab="hidden"],
+        .targets-edit-region[data-mobile-tab="hidden"] {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="app-body" data-page="nutrition-targets" data-theme="botanical">
+    <a class="skip-link" href="#nutrition-targets-main">پرش به هدف‌های تغذیه</a>
+    <div class="app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی محصول">
+        <a class="brand" href="dashboard-botanical.html"><span>آووکادو</span></a>
+        <nav aria-label="بخش‌های اصلی">
+          <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+          <a href="quick-log-botanical.html"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+          <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+          <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+          <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+        </nav>
+        <div class="side-nav__foot">مسیرهای اصلی همیشه از همین پنج بخش در دسترس هستند.</div>
+      </aside>
+
+      <main class="app-main" id="nutrition-targets-main" data-od-id="nutrition-targets-page">
+        <header class="app-topbar">
+          <div class="app-topbar__title">
+            <span>تنظیمات هدف تغذیه</span>
+            <strong>هدف‌های روزانه و منبع آن‌ها</strong>
+          </div>
+          <div class="app-topbar__actions">
+            <a class="header-action-link" href="messages-botanical.html" aria-label="پیام‌ها"><img class="header-action-icon" src="assets/icons/icon-message.png" alt="" aria-hidden="true" /></a>
+            <a class="header-action-link header-action-link--notification" href="notifications-botanical.html" aria-label="اعلان‌ها"><img class="header-action-icon" src="assets/icons/icon-bell.png" alt="" aria-hidden="true" /><span class="header-action-badge" aria-hidden="true"></span></a>
+            <a class="avatar-link" href="settings-botanical.html" aria-label="پروفایل سارا">س</a>
+          </div>
+        </header>
+
+        <div class="app-container page-content targets-page">
+          <header class="targets-header" data-od-id="nutrition-targets-header">
+            <div class="targets-header__copy">
+              <h1>هدف‌های تغذیه</h1>
+              <p>مقدار کالری و درشت‌مغذی‌های روزانه‌ات را مدیریت کن.</p>
+            </div>
+            <a class="targets-header__back" id="back-link" href="food-log-botanical.html">بازگشت</a>
+          </header>
+
+          <section class="targets-mobile-switcher" data-od-id="nutrition-targets-mobile-switcher">
+            <div class="targets-segmented" role="group" aria-label="نمایش بخش هدف‌های تغذیه">
+              <button type="button" data-mobile-tab="summary" aria-pressed="true">خلاصه</button>
+              <button type="button" data-mobile-tab="edit" aria-pressed="false">ویرایش</button>
+            </div>
+          </section>
+
+          <section class="targets-loading" id="loading-state" hidden aria-live="polite" data-od-id="nutrition-targets-loading">
+            <article class="targets-card">
+              <div class="targets-skeleton" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </article>
+          </section>
+
+          <section class="targets-state" id="error-state" hidden data-od-id="nutrition-targets-error">
+            <h2>هدف‌ها فعلاً بارگذاری نشدند</h2>
+            <p>مقادیر قبلی شما حذف نشده‌اند. دوباره تلاش کنید تا هدف‌های ذخیره‌شده یا برنامه فعال بازیابی شوند.</p>
+            <div class="targets-inline-actions">
+              <button class="button button--primary" type="button" id="retry-load">تلاش دوباره</button>
+              <a class="button button--secondary" href="food-log-botanical.html">بازگشت به ثبت غذا</a>
+            </div>
+          </section>
+
+          <div class="targets-grid" id="targets-content" data-od-id="nutrition-targets-content">
+            <div class="targets-main">
+              <section class="targets-card targets-summary" id="summary-card" data-od-id="nutrition-targets-summary">
+                <div class="targets-summary__copy">
+                  <div class="targets-summary__head">
+                    <h2>خلاصه هدف فعلی</h2>
+                    <span class="targets-source-pill" id="source-pill">تنظیم‌شده توسط من</span>
+                  </div>
+                  <p class="targets-summary-meta" id="summary-updated">آخرین بروزرسانی: —</p>
+                  <div class="targets-summary__stats">
+                    <article class="targets-summary__stat">
+                      <small>پروتئین</small>
+                      <strong id="summary-protein">۱۱۰ گرم</strong>
+                    </article>
+                    <article class="targets-summary__stat">
+                      <small>کربوهیدرات</small>
+                      <strong id="summary-carbs">۱۶۰ گرم</strong>
+                    </article>
+                    <article class="targets-summary__stat">
+                      <small>چربی</small>
+                      <strong id="summary-fat">۷۰ گرم</strong>
+                    </article>
+                  </div>
+                  <div class="targets-summary__footer">
+                    <p class="targets-card__subcopy" id="summary-day-mode">یک هدف ثابت برای همه روزها</p>
+                    <button class="button button--secondary button--sm" type="button" id="summary-edit-button">ویرایش هدف‌ها</button>
+                  </div>
+                </div>
+                <div class="targets-ring" id="summary-ring" aria-hidden="true">
+                  <div class="targets-ring__inner">
+                    <small>هدف کالری</small>
+                    <strong id="summary-calories">۱۸۰۰</strong>
+                    <small>کیلوکالری</small>
+                  </div>
+                </div>
+              </section>
+
+              <section class="targets-card targets-empty-banner" id="empty-banner" hidden data-od-id="nutrition-targets-empty">
+                <h2>هنوز هدفی برای تغذیه تنظیم نشده</h2>
+                <p>از همین صفحه می‌توانی هدف روزانه کالری و درشت‌مغذی‌ها را مشخص کنی تا کارت جمع روزانه و ثبت غذا با همان مقدارها هماهنگ شوند.</p>
+              </section>
+
+              <section class="targets-card targets-edit-region" id="targets-editor" data-od-id="nutrition-targets-editor">
+                <div class="targets-section-head">
+                  <div>
+                    <h2>ویرایش هدف‌ها</h2>
+                    <p class="targets-card__subcopy">روش تنظیم، نوع روز و منبع فعلی را همین‌جا کنترل کن.</p>
+                  </div>
+                </div>
+
+                <div class="targets-dirty" id="dirty-banner" hidden>
+                  <span aria-hidden="true">ℹ</span>
+                  <span>تغییرات هنوز ذخیره نشده‌اند.</span>
+                </div>
+
+                <div class="targets-warning" id="source-warning" hidden>
+                  <span aria-hidden="true">!</span>
+                  <span id="source-warning-text">با ذخیره این تغییر، هدف فعلی برنامه جایگزین می‌شود.</span>
+                </div>
+
+                <div class="targets-form-grid">
+                  <section class="targets-card targets-card--section" data-od-id="nutrition-targets-method">
+                    <div class="targets-section-head">
+                      <div>
+                        <h3>روش تنظیم</h3>
+                        <p class="targets-card__subcopy">می‌توانی مقادیر را مستقیم با گرم وارد کنی یا از درصد کالری به آن برسی.</p>
+                      </div>
+                      <div class="targets-segmented" role="group" aria-label="روش تنظیم هدف">
+                        <button type="button" data-method="grams" aria-pressed="true">براساس گرم</button>
+                        <button type="button" data-method="percent" aria-pressed="false">براساس درصد کالری</button>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section class="targets-card targets-card--section" data-od-id="nutrition-targets-day-mode">
+                    <div class="targets-section-head">
+                      <div>
+                        <h3>نوع هدف روزانه</h3>
+                        <p class="targets-card__subcopy">اگر روز تمرین و استراحت متفاوت است، از حالت دوگانه استفاده کن.</p>
+                      </div>
+                      <div class="targets-segmented" role="group" aria-label="نوع هدف روزانه">
+                        <button type="button" data-day-mode="single" aria-pressed="true">هدف ثابت</button>
+                        <button type="button" data-day-mode="split" aria-pressed="false">تمرین و استراحت</button>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section class="targets-card targets-card--section targets-accordion" data-od-id="nutrition-targets-form-card">
+                    <div class="targets-section-head">
+                      <div>
+                        <h3>مقادیر هدف</h3>
+                        <p class="targets-card__subcopy" id="editor-subcopy">برای همه روزها یک مجموعه مقدار ذخیره می‌شود.</p>
+                      </div>
+                    </div>
+
+                    <div class="targets-day-tabs" id="day-tabs" hidden>
+                      <button type="button" data-day="workout" aria-pressed="true" data-tone="plan">روز تمرین</button>
+                      <button type="button" data-day="rest" aria-pressed="false">روز استراحت</button>
+                    </div>
+
+                    <div class="targets-accordion__body">
+                      <div class="targets-panel" data-panel="single">
+                        <div class="targets-form-grid targets-form-grid--two" data-fields="single"></div>
+                      </div>
+                      <div class="targets-panel targets-hidden" data-panel="workout">
+                        <div class="targets-form-grid targets-form-grid--two" data-fields="workout"></div>
+                      </div>
+                      <div class="targets-panel targets-hidden" data-panel="rest">
+                        <div class="targets-form-grid targets-form-grid--two" data-fields="rest"></div>
+                      </div>
+                    </div>
+
+                    <div class="targets-inline-error targets-feedback" id="macro-diff-warning" hidden>
+                      <span aria-hidden="true">!</span>
+                      <span id="macro-diff-text">کالری حاصل از ماکروها با کالری هدف اختلاف دارد. می‌توانی ذخیره کنی، ولی بهتر است یک بار مقادیر را بررسی کنی.</span>
+                    </div>
+                  </section>
+
+                  <section class="targets-card targets-card--section" data-od-id="nutrition-targets-source-card">
+                    <div class="targets-section-head">
+                      <div>
+                        <h3>منبع هدف و دسترسی</h3>
+                        <p class="targets-card__subcopy">اگر این تغییر را ذخیره کنی، منبع هدف به «تنظیم‌شده توسط من» تغییر می‌کند.</p>
+                      </div>
+                    </div>
+                    <div class="targets-form-grid">
+                      <div class="targets-summary__stat targets-source-compact">
+                        <div class="targets-source-compact__text">
+                          <small>منبع فعلی</small>
+                          <strong id="source-label">تنظیم‌شده توسط من</strong>
+                        </div>
+                        <button class="button button--secondary button--sm" type="button" id="restore-baseline">بازگشت به هدف برنامه</button>
+                      </div>
+                      <div class="targets-inline-actions">
+                        <button class="button button--quiet button--sm" type="button" id="reset-form">بازنشانی تغییرات</button>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </section>
+            </div>
+
+            <aside class="targets-aside" id="preview-column" hidden>
+              <section class="targets-card targets-preview" data-od-id="nutrition-targets-preview">
+                <div class="targets-section-head">
+                  <div>
+                    <h2>پیش‌نمایش تغییرات</h2>
+                    <p class="targets-card__subcopy">این کارت فقط تغییرات فعلی را قبل از ذخیره نشان می‌دهد.</p>
+                  </div>
+                </div>
+
+                <div class="targets-ring" id="preview-ring" aria-hidden="true">
+                  <div class="targets-ring__inner">
+                    <small>هدف کالری</small>
+                    <strong id="preview-calories">۱۸۰۰</strong>
+                    <small>کیلوکالری</small>
+                  </div>
+                </div>
+
+                <div class="targets-preview__macros">
+                  <article class="targets-preview__macro">
+                    <small>پروتئین</small>
+                    <strong id="preview-protein">۱۱۰ گرم</strong>
+                  </article>
+                  <article class="targets-preview__macro">
+                    <small>کربوهیدرات</small>
+                    <strong id="preview-carbs">۱۶۰ گرم</strong>
+                  </article>
+                  <article class="targets-preview__macro">
+                    <small>چربی</small>
+                    <strong id="preview-fat">۷۰ گرم</strong>
+                  </article>
+                </div>
+
+                <div class="targets-preview__progress">
+                  <div class="targets-progress-row">
+                    <div class="targets-progress-row__meta"><span>سهم پروتئین</span><strong id="preview-protein-share">۲۴٪</strong></div>
+                    <div class="targets-progress-row__bar"><span id="preview-protein-bar" style="width:24%"></span></div>
+                  </div>
+                  <div class="targets-progress-row">
+                    <div class="targets-progress-row__meta"><span>سهم کربوهیدرات</span><strong id="preview-carbs-share">۳۶٪</strong></div>
+                    <div class="targets-progress-row__bar"><span id="preview-carbs-bar" style="width:36%"></span></div>
+                  </div>
+                  <div class="targets-progress-row">
+                    <div class="targets-progress-row__meta"><span>سهم چربی</span><strong id="preview-fat-share">۳۵٪</strong></div>
+                    <div class="targets-progress-row__bar"><span id="preview-fat-bar" style="width:35%"></span></div>
+                  </div>
+                </div>
+              </section>
+            </aside>
+          </div>
+
+          <footer class="targets-action-bar" id="action-bar" data-od-id="nutrition-targets-actions">
+            <div class="targets-action-bar__copy">هدف‌ها فقط وقتی ذخیره می‌شوند که دکمه اصلی را بزنید.</div>
+            <div class="targets-action-bar__buttons">
+              <button class="button button--quiet" type="button" id="cancel-button">انصراف</button>
+              <button class="button button--primary" type="button" id="save-button">ذخیره هدف‌ها</button>
+            </div>
+          </footer>
+        </div>
+      </main>
+    </div>
+
+    <nav class="bottom-nav" aria-label="ناوبری پایین">
+      <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+      <a href="quick-log-botanical.html" class="bottom-nav__primary"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+      <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+      <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+      <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+    </nav>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <span class="toast__check"><svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons.svg#icon-check" /></svg></span>
+      <span id="toast-message">ذخیره شد.</span>
+      <button type="button" id="toast-undo">بستن</button>
+    </div>
+
+    <dialog class="modal" id="override-dialog" aria-labelledby="override-dialog-title">
+      <div class="modal__surface">
+        <header class="modal__header">
+          <div>
+            <h2 id="override-dialog-title">جایگزینی هدف فعلی</h2>
+            <p>با ذخیره این تغییر، هدف فعلی برنامه یا مربی با مقدارهای دستی شما جایگزین می‌شود.</p>
+          </div>
+        </header>
+        <div class="modal__body">
+          <p>اگر مطمئن هستی، ذخیره را تأیید کن. هر زمان لازم باشد می‌توانی از دکمه «بازگشت به هدف برنامه» دوباره به مقدار قبلی برگردی.</p>
+        </div>
+        <footer class="modal__footer">
+          <button class="button button--quiet" type="button" data-close-override>انصراف</button>
+          <button class="button button--primary" type="button" data-confirm-override>تأیید و ذخیره</button>
+        </footer>
+      </div>
+    </dialog>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        const storage = window.AvocadoNutritionTargets;
+        const params = new URLSearchParams(window.location.search);
+        const entry = params.get("entry") || "food-log-botanical.html";
+        const scenario = params.get("state") || "";
+        const sourceOverride = params.get("source") || "";
+        const numberFormatter = new Intl.NumberFormat("fa-IR");
+        const storageLabels = storage?.sourceLabels || {
+          self: "تنظیم‌شده توسط من",
+          plan: "برگرفته از برنامه فعال",
+          coach: "تعیین‌شده توسط مربی",
+          avocado: "پیشنهاد آووکادو",
+        };
+
+        const $ = (selector, root = document) => root.querySelector(selector);
+        const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+        const toast = $("#toast");
+        const toastMessage = $("#toast-message");
+        const toastClose = $("#toast-undo");
+        const overrideDialog = $("#override-dialog");
+        const saveButton = $("#save-button");
+        const cancelButton = $("#cancel-button");
+        const resetButton = $("#reset-form");
+        const restoreBaselineButton = $("#restore-baseline");
+        const retryButton = $("#retry-load");
+        const backLink = $("#back-link");
+        const summaryEditButton = $("#summary-edit-button");
+        const previewColumn = $("#preview-column");
+        const targetsGrid = $("#targets-content");
+        const actionBar = $("#action-bar");
+        const summaryCard = $("#summary-card");
+        const editorRegion = $("#targets-editor");
+        let mobileTab = "summary";
+
+        let saveShouldFail = scenario === "save-error";
+        let currentPanel = "single";
+        let dirty = false;
+        let hasBlockingErrors = false;
+        let initialState = storage?.read?.() || {
+          source: "self",
+          method: "grams",
+          dayMode: "single",
+          activeDay: "single",
+          single: { calories: 1800, protein: 110, carbs: 160, fat: 70 },
+          workout: { calories: 1950, protein: 120, carbs: 185, fat: 68 },
+          rest: { calories: 1700, protein: 110, carbs: 140, fat: 66 },
+          baseline: {
+            source: "plan",
+            dayMode: "single",
+            single: { calories: 1750, protein: 105, carbs: 165, fat: 65 },
+            workout: { calories: 1880, protein: 116, carbs: 178, fat: 65 },
+            rest: { calories: 1680, protein: 108, carbs: 145, fat: 62 },
+            updatedAt: "2026-07-22T09:30:00+03:30",
+          },
+          updatedAt: "2026-07-24T08:00:00+03:30",
+        };
+
+        function cloneState(value) {
+          return JSON.parse(JSON.stringify(value));
+        }
+
+        if (sourceOverride && storageLabels[sourceOverride]) {
+          initialState.source = sourceOverride;
+        }
+
+        if (scenario === "empty") {
+          initialState.single = { calories: 0, protein: 0, carbs: 0, fat: 0 };
+          initialState.workout = { calories: 0, protein: 0, carbs: 0, fat: 0 };
+          initialState.rest = { calories: 0, protein: 0, carbs: 0, fat: 0 };
+          initialState.source = "self";
+        }
+
+        if (params.get("mode") === "split") {
+          initialState.dayMode = "split";
+          initialState.activeDay = "workout";
+        }
+
+        let formState = cloneState(initialState);
+        let percentState = buildPercentState(formState);
+
+        backLink.href = entry;
+
+        function formatNumber(value) {
+          return numberFormatter.format(Math.round(Number(value) || 0));
+        }
+
+        function formatDateTime(value) {
+          if (!value) return "—";
+          try {
+            return new Intl.DateTimeFormat("fa-IR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            }).format(new Date(value));
+          } catch (_) {
+            return "—";
+          }
+        }
+
+        function sourceLabel(source) {
+          return storageLabels[source] || storageLabels.self;
+        }
+
+        function dayKeys() {
+          return formState.dayMode === "split" ? ["workout", "rest"] : ["single"];
+        }
+
+        function activeDayKey() {
+          return formState.dayMode === "split" ? currentPanel : "single";
+        }
+
+        function currentValues() {
+          return formState[activeDayKey()];
+        }
+
+        function buildPercentState(state) {
+          const result = {};
+          ["single", "workout", "rest"].forEach((key) => {
+            const day = state[key];
+            const calories = Math.max(1, Number(day.calories) || 1);
+            result[key] = {
+              protein: Math.round((((Number(day.protein) || 0) * 4) / calories) * 100),
+              carbs: Math.round((((Number(day.carbs) || 0) * 4) / calories) * 100),
+              fat: Math.max(0, 100 - Math.round((((Number(day.protein) || 0) * 4) / calories) * 100) - Math.round((((Number(day.carbs) || 0) * 4) / calories) * 100)),
+            };
+          });
+          return result;
+        }
+
+        function dayFormMarkup(key) {
+          return `
+            <div class="targets-field">
+              <label for="${key}-calories">کالری هدف</label>
+              <input id="${key}-calories" data-key="${key}" data-field="calories" type="number" min="0" inputmode="numeric" value="${formState[key].calories}" />
+              <p class="targets-field__hint">کیلوکالری در روز</p>
+              <div class="targets-feedback targets-inline-error" data-error-for="${key}-calories" hidden></div>
+            </div>
+            <div class="targets-field" data-percent-group="${key}" ${formState.method === "grams" ? "hidden" : ""}>
+              <label for="${key}-protein-percent">درصد پروتئین</label>
+              <input id="${key}-protein-percent" data-key="${key}" data-percent="protein" type="number" min="0" max="100" inputmode="numeric" value="${percentState[key].protein}" />
+              <p class="targets-field__hint" data-percent-preview="${key}-protein">حدود ${formatNumber(formState[key].protein)} گرم</p>
+              <div class="targets-feedback targets-inline-error" data-error-for="${key}-protein-percent" hidden></div>
+            </div>
+            <div class="targets-field" data-grams-group="${key}">
+              <label for="${key}-protein">پروتئین</label>
+              <input id="${key}-protein" data-key="${key}" data-field="protein" type="number" min="0" step="0.1" inputmode="decimal" value="${formState[key].protein}" />
+              <p class="targets-field__hint">گرم</p>
+              <div class="targets-feedback targets-inline-error" data-error-for="${key}-protein" hidden></div>
+            </div>
+            <div class="targets-field" data-percent-group="${key}" ${formState.method === "grams" ? "hidden" : ""}>
+              <label for="${key}-carbs-percent">درصد کربوهیدرات</label>
+              <input id="${key}-carbs-percent" data-key="${key}" data-percent="carbs" type="number" min="0" max="100" inputmode="numeric" value="${percentState[key].carbs}" />
+              <p class="targets-field__hint" data-percent-preview="${key}-carbs">حدود ${formatNumber(formState[key].carbs)} گرم</p>
+              <div class="targets-feedback targets-inline-error" data-error-for="${key}-carbs-percent" hidden></div>
+            </div>
+            <div class="targets-field" data-grams-group="${key}">
+              <label for="${key}-carbs">کربوهیدرات</label>
+              <input id="${key}-carbs" data-key="${key}" data-field="carbs" type="number" min="0" step="0.1" inputmode="decimal" value="${formState[key].carbs}" />
+              <p class="targets-field__hint">گرم</p>
+              <div class="targets-feedback targets-inline-error" data-error-for="${key}-carbs" hidden></div>
+            </div>
+            <div class="targets-field" data-percent-group="${key}" ${formState.method === "grams" ? "hidden" : ""}>
+              <label for="${key}-fat-percent">درصد چربی</label>
+              <input id="${key}-fat-percent" data-key="${key}" data-percent="fat" type="number" min="0" max="100" inputmode="numeric" value="${percentState[key].fat}" />
+              <p class="targets-field__hint" data-percent-preview="${key}-fat">حدود ${formatNumber(formState[key].fat)} گرم</p>
+              <div class="targets-feedback targets-inline-error" data-error-for="${key}-fat-percent" hidden></div>
+            </div>
+            <div class="targets-field" data-grams-group="${key}">
+              <label for="${key}-fat">چربی</label>
+              <input id="${key}-fat" data-key="${key}" data-field="fat" type="number" min="0" step="0.1" inputmode="decimal" value="${formState[key].fat}" />
+              <p class="targets-field__hint">گرم</p>
+              <div class="targets-feedback targets-inline-error" data-error-for="${key}-fat" hidden></div>
+            </div>
+            <div class="targets-field targets-field--full" data-percent-summary="${key}" ${formState.method === "grams" ? "hidden" : ""}>
+              <div class="targets-warning">
+                <span aria-hidden="true">%</span>
+                <span>مجموع درصدها: <strong data-percent-total="${key}">۰٪</strong></span>
+              </div>
+            </div>
+          `;
+        }
+
+        ["single", "workout", "rest"].forEach((key) => {
+          const container = document.querySelector(`[data-fields="${key}"]`);
+          if (container) container.innerHTML = dayFormMarkup(key);
+        });
+
+        function showToast(message) {
+          if (!toast || !toastMessage) return;
+          toastMessage.textContent = message;
+          toast.hidden = false;
+        }
+
+        function hideToast() {
+          if (toast) toast.hidden = true;
+        }
+
+        function markDirty(nextDirty) {
+          dirty = nextDirty;
+          $("#dirty-banner").hidden = !dirty;
+        }
+
+        function isMobileView() {
+          return window.matchMedia("(max-width: 47.99rem)").matches;
+        }
+
+        function updateMobileTabUi() {
+          $$("[data-mobile-tab]").forEach((button) => {
+            button.setAttribute("aria-pressed", String(button.dataset.mobileTab === mobileTab));
+          });
+          if (!isMobileView()) {
+            summaryCard.dataset.mobileTab = "";
+            editorRegion.dataset.mobileTab = "";
+            actionBar.hidden = false;
+            return;
+          }
+          summaryCard.dataset.mobileTab = mobileTab === "summary" ? "visible" : "hidden";
+          editorRegion.dataset.mobileTab = mobileTab === "edit" ? "visible" : "hidden";
+          actionBar.hidden = mobileTab !== "edit";
+        }
+
+        function updateMethodUi() {
+          $$("[data-method]").forEach((button) => {
+            button.setAttribute("aria-pressed", String(button.dataset.method === formState.method));
+          });
+          $$("[data-grams-group]").forEach((node) => {
+            node.hidden = formState.method === "percent";
+          });
+          $$("[data-percent-group],[data-percent-summary]").forEach((node) => {
+            node.hidden = formState.method === "grams";
+          });
+        }
+
+        function updateDayModeUi() {
+          $$("[data-day-mode]").forEach((button) => {
+            button.setAttribute("aria-pressed", String(button.dataset.dayMode === formState.dayMode));
+          });
+          const split = formState.dayMode === "split";
+          $("#day-tabs").hidden = !split;
+          $("#editor-subcopy").textContent = split
+            ? "برای روز تمرین و روز استراحت دو مقدار مستقل ذخیره می‌شود."
+            : "برای همه روزها یک مجموعه مقدار ذخیره می‌شود.";
+          $$("[data-panel]").forEach((panel) => {
+            const panelKey = panel.dataset.panel;
+            panel.classList.toggle("targets-hidden", split ? panelKey !== currentPanel : panelKey !== "single");
+          });
+          $("#summary-day-mode").textContent = split ? "هدف جدا برای روز تمرین و روز استراحت" : "یک هدف ثابت برای همه روزها";
+        }
+
+        function setSourceUi() {
+          const label = sourceLabel(formState.source);
+          $("#source-pill").textContent = label;
+          $("#source-label").textContent = label;
+          $("#source-pill").dataset.tone = formState.source === "plan" ? "plan" : "self";
+          $("#source-warning").hidden = formState.source === "self";
+          $("#source-warning-text").textContent = formState.source === "plan"
+            ? "با ذخیره این تغییر، هدف فعلی برنامه جایگزین می‌شود."
+            : formState.source === "coach"
+              ? "با ذخیره این تغییر، هدف تعیین‌شده توسط مربی با مقدار دستی جایگزین می‌شود."
+              : "با ذخیره این تغییر، پیشنهاد فعلی آووکادو با مقدار دستی شما جایگزین می‌شود.";
+          restoreBaselineButton.hidden = !formState.baseline || !["plan", "coach"].includes(formState.baseline.source);
+        }
+
+        function updateSummary() {
+          const summaryKey = activeDayKey();
+          const summary = formState[summaryKey];
+          $("#summary-calories").textContent = formatNumber(summary.calories);
+          $("#summary-protein").textContent = `${formatNumber(summary.protein)} گرم`;
+          $("#summary-carbs").textContent = `${formatNumber(summary.carbs)} گرم`;
+          $("#summary-fat").textContent = `${formatNumber(summary.fat)} گرم`;
+          $("#summary-updated").textContent = `آخرین بروزرسانی: ${formatDateTime(formState.updatedAt)}`;
+          const caloriePercent = Math.max(0, Math.min(100, Math.round((Number(summary.calories) || 0) / 2400 * 100)));
+          $("#summary-ring").style.setProperty("--ring-progress", `${caloriePercent / 100}turn`);
+        }
+
+        function updatePreview() {
+          const preview = currentValues();
+          const proteinCalories = (Number(preview.protein) || 0) * 4;
+          const carbsCalories = (Number(preview.carbs) || 0) * 4;
+          const fatCalories = (Number(preview.fat) || 0) * 9;
+          const totalMacroCalories = proteinCalories + carbsCalories + fatCalories;
+          const totalCalories = Math.max(1, Number(preview.calories) || 1);
+          const proteinShare = Math.round((proteinCalories / totalCalories) * 100);
+          const carbsShare = Math.round((carbsCalories / totalCalories) * 100);
+          const fatShare = Math.round((fatCalories / totalCalories) * 100);
+
+          $("#preview-calories").textContent = formatNumber(preview.calories);
+          $("#preview-protein").textContent = `${formatNumber(preview.protein)} گرم`;
+          $("#preview-carbs").textContent = `${formatNumber(preview.carbs)} گرم`;
+          $("#preview-fat").textContent = `${formatNumber(preview.fat)} گرم`;
+          $("#preview-protein-share").textContent = `${formatNumber(proteinShare)}٪`;
+          $("#preview-carbs-share").textContent = `${formatNumber(carbsShare)}٪`;
+          $("#preview-fat-share").textContent = `${formatNumber(fatShare)}٪`;
+          $("#preview-protein-bar").style.width = `${Math.max(0, Math.min(100, proteinShare))}%`;
+          $("#preview-carbs-bar").style.width = `${Math.max(0, Math.min(100, carbsShare))}%`;
+          $("#preview-fat-bar").style.width = `${Math.max(0, Math.min(100, fatShare))}%`;
+          $("#preview-ring").style.setProperty("--ring-progress", `${Math.max(0, Math.min(100, Math.round((Number(preview.calories) || 0) / 2400 * 100))) / 100}turn`);
+
+          const diff = Math.abs(totalMacroCalories - totalCalories);
+          $("#macro-diff-warning").hidden = diff <= 40;
+          $("#macro-diff-text").textContent = diff <= 40
+            ? ""
+            : `کالری حاصل از ماکروها حدود ${formatNumber(diff)} کیلوکالری با هدف روزانه اختلاف دارد. می‌توانی ذخیره کنی، ولی بهتر است یک‌بار مقادیر را بررسی کنی.`;
+
+          dayKeys().forEach((key) => {
+            const day = formState[key];
+            const cals = Math.max(1, Number(day.calories) || 1);
+            const proteinPct = Math.round((((Number(day.protein) || 0) * 4) / cals) * 100);
+            const carbsPct = Math.round((((Number(day.carbs) || 0) * 4) / cals) * 100);
+            const fatPct = Math.round((((Number(day.fat) || 0) * 9) / cals) * 100);
+            const totalPct = proteinPct + carbsPct + fatPct;
+            const totalNode = document.querySelector(`[data-percent-total="${key}"]`);
+            if (totalNode) totalNode.textContent = `${formatNumber(totalPct)}٪`;
+            const proteinHint = document.querySelector(`[data-percent-preview="${key}-protein"]`);
+            const carbsHint = document.querySelector(`[data-percent-preview="${key}-carbs"]`);
+            const fatHint = document.querySelector(`[data-percent-preview="${key}-fat"]`);
+            if (proteinHint) proteinHint.textContent = `حدود ${formatNumber(day.protein)} گرم`;
+            if (carbsHint) carbsHint.textContent = `حدود ${formatNumber(day.carbs)} گرم`;
+            if (fatHint) fatHint.textContent = `حدود ${formatNumber(day.fat)} گرم`;
+          });
+        }
+
+        function clearErrors() {
+          $$("[data-invalid]").forEach((node) => node.removeAttribute("data-invalid"));
+          $$("[data-error-for]").forEach((node) => {
+            node.hidden = true;
+            node.textContent = "";
+          });
+        }
+
+        function showFieldError(id, message) {
+          const input = document.getElementById(id);
+          const field = input?.closest(".targets-field");
+          const target = document.querySelector(`[data-error-for="${id}"]`);
+          if (field) field.dataset.invalid = "true";
+          if (target) {
+            target.hidden = false;
+            target.textContent = `⚠ ${message}`;
+          }
+        }
+
+        function validate() {
+          clearErrors();
+          hasBlockingErrors = false;
+          const warnings = [];
+
+          dayKeys().forEach((key) => {
+            ["calories", "protein", "carbs", "fat"].forEach((field) => {
+              const value = Number(formState[key][field]);
+              if (!Number.isFinite(value)) {
+                showFieldError(`${key}-${field}`, "این فیلد باید عدد معتبر داشته باشد.");
+                hasBlockingErrors = true;
+              } else if (value < 0) {
+                showFieldError(`${key}-${field}`, "مقدار منفی قابل قبول نیست.");
+                hasBlockingErrors = true;
+              } else if (field === "calories" && value === 0) {
+                showFieldError(`${key}-${field}`, "کالری هدف را وارد کن.");
+                hasBlockingErrors = true;
+              }
+            });
+
+            if (formState.method === "percent") {
+              const totalPercent = ["protein", "carbs", "fat"].reduce((sum, macro) => sum + Number(percentState[key][macro] || 0), 0);
+              if (totalPercent !== 100) {
+                showFieldError(`${key}-fat-percent`, "مجموع درصدها باید دقیقاً ۱۰۰٪ باشد.");
+                hasBlockingErrors = true;
+              }
+            }
+
+            const calories = Number(formState[key].calories) || 0;
+            if (calories > 0 && (calories < 800 || calories > 4500)) {
+              warnings.push(`کالری ${key === "single" ? "هدف روزانه" : key === "workout" ? "روز تمرین" : "روز استراحت"} کمی دور از بازه معمول است؛ اگر عمدی است می‌توانی ذخیره کنی.`);
+            }
+          });
+
+          saveButton.disabled = hasBlockingErrors || !dirty;
+          return warnings;
+        }
+
+        function renderWarnings() {
+          const warnings = validate();
+          const card = $("#macro-diff-warning");
+          if (!warnings.length) {
+            const preview = currentValues();
+            const diff = Math.abs((((Number(preview.protein) || 0) * 4) + ((Number(preview.carbs) || 0) * 4) + ((Number(preview.fat) || 0) * 9)) - (Math.max(1, Number(preview.calories) || 1)));
+            card.hidden = diff <= 40;
+            return;
+          }
+          card.hidden = false;
+          $("#macro-diff-text").textContent = warnings[0];
+        }
+
+        function updatePreviewVisibility() {
+          const shouldShow = dirty;
+          previewColumn.hidden = !shouldShow;
+          targetsGrid.classList.toggle("is-preview-hidden", !shouldShow);
+        }
+
+        function syncAll() {
+          updateMethodUi();
+          updateDayModeUi();
+          setSourceUi();
+          updateSummary();
+          updatePreview();
+          updatePreviewVisibility();
+          updateMobileTabUi();
+          renderWarnings();
+          $("#empty-banner").hidden = !(scenario === "empty" || dayKeys().every((key) => (Number(formState[key].calories) || 0) === 0));
+        }
+
+        function applyPercentToDay(key) {
+          const calories = Math.max(0, Number(formState[key].calories) || 0);
+          const proteinPct = Number(percentState[key].protein) || 0;
+          const carbsPct = Number(percentState[key].carbs) || 0;
+          const fatPct = Number(percentState[key].fat) || 0;
+          formState[key].protein = Number(((calories * proteinPct / 100) / 4).toFixed(1));
+          formState[key].carbs = Number(((calories * carbsPct / 100) / 4).toFixed(1));
+          formState[key].fat = Number(((calories * fatPct / 100) / 9).toFixed(1));
+          ["protein", "carbs", "fat"].forEach((field) => {
+            const input = document.getElementById(`${key}-${field}`);
+            if (input) input.value = formState[key][field];
+          });
+        }
+
+        function writeToForm() {
+          ["single", "workout", "rest"].forEach((key) => {
+            ["calories", "protein", "carbs", "fat"].forEach((field) => {
+              const input = document.getElementById(`${key}-${field}`);
+              if (input) input.value = formState[key][field];
+            });
+            ["protein", "carbs", "fat"].forEach((field) => {
+              const input = document.getElementById(`${key}-${field}-percent`);
+              if (input) input.value = percentState[key][field];
+            });
+          });
+        }
+
+        document.addEventListener("input", (event) => {
+          const field = event.target.closest("[data-field]");
+          if (field) {
+            formState[field.dataset.key][field.dataset.field] = Math.max(0, Number(field.value) || 0);
+            if (formState.method === "grams") {
+              percentState = buildPercentState(formState);
+            }
+            markDirty(true);
+            syncAll();
+            return;
+          }
+
+          const percentField = event.target.closest("[data-percent]");
+          if (percentField) {
+            percentState[percentField.dataset.key][percentField.dataset.percent] = Math.max(0, Number(percentField.value) || 0);
+            applyPercentToDay(percentField.dataset.key);
+            markDirty(true);
+            syncAll();
+          }
+        });
+
+        document.addEventListener("click", (event) => {
+          const method = event.target.closest("[data-method]");
+          if (method) {
+            formState.method = method.dataset.method;
+            if (formState.method === "percent") {
+              percentState = buildPercentState(formState);
+            }
+            markDirty(true);
+            syncAll();
+            return;
+          }
+
+          const dayMode = event.target.closest("[data-day-mode]");
+          if (dayMode) {
+            formState.dayMode = dayMode.dataset.dayMode;
+            currentPanel = formState.dayMode === "split" ? "workout" : "single";
+            formState.activeDay = currentPanel;
+            markDirty(true);
+            syncAll();
+            return;
+          }
+
+          const dayTab = event.target.closest("[data-day]");
+          if (dayTab) {
+            currentPanel = dayTab.dataset.day;
+            formState.activeDay = currentPanel;
+            $$("[data-day]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.day === currentPanel)));
+            syncAll();
+            return;
+          }
+
+          const mobileTabTrigger = event.target.closest("[data-mobile-tab]");
+          if (mobileTabTrigger) {
+            mobileTab = mobileTabTrigger.dataset.mobileTab;
+            updateMobileTabUi();
+            return;
+          }
+        });
+
+        function saveNow() {
+          if (saveShouldFail) {
+            saveShouldFail = false;
+            $("#error-state").hidden = false;
+            $("#error-state h2").textContent = "ذخیره انجام نشد";
+            $("#error-state p").textContent = "تغییرات شما هنوز داخل فرم مانده‌اند. دوباره ذخیره کنید تا هدف‌ها ثبت شوند.";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            return;
+          }
+          const nextState = cloneState(formState);
+          nextState.source = "self";
+          nextState.updatedAt = new Date().toISOString();
+          nextState.activeDay = formState.dayMode === "split" ? currentPanel : "single";
+          storage?.save?.(nextState);
+          initialState = cloneState(nextState);
+          formState = cloneState(nextState);
+          percentState = buildPercentState(formState);
+          markDirty(false);
+          mobileTab = isMobileView() ? "summary" : mobileTab;
+          hideToast();
+          syncAll();
+          showToast("هدف‌های تغذیه با موفقیت بروزرسانی شد.");
+        }
+
+        saveButton.addEventListener("click", () => {
+          validate();
+          if (hasBlockingErrors) return;
+          if (formState.source !== "self") {
+            overrideDialog.showModal();
+            return;
+          }
+          saveNow();
+        });
+
+        cancelButton.addEventListener("click", () => {
+          window.location.href = entry;
+        });
+
+        summaryEditButton?.addEventListener("click", () => {
+          mobileTab = "edit";
+          updateMobileTabUi();
+          const top = editorRegion.getBoundingClientRect().top + window.scrollY - 24;
+          window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+        });
+
+        resetButton.addEventListener("click", () => {
+          formState = cloneState(initialState);
+          percentState = buildPercentState(formState);
+          currentPanel = formState.dayMode === "split" ? formState.activeDay || "workout" : "single";
+          writeToForm();
+          markDirty(false);
+          syncAll();
+        });
+
+        restoreBaselineButton.addEventListener("click", () => {
+          if (!formState.baseline) return;
+          formState.dayMode = formState.baseline.dayMode || "single";
+          formState.source = formState.baseline.source || "plan";
+          formState.single = cloneState(formState.baseline.single);
+          formState.workout = cloneState(formState.baseline.workout);
+          formState.rest = cloneState(formState.baseline.rest);
+          formState.activeDay = formState.dayMode === "split" ? "workout" : "single";
+          currentPanel = formState.activeDay;
+          percentState = buildPercentState(formState);
+          writeToForm();
+          markDirty(true);
+          syncAll();
+        });
+
+        retryButton?.addEventListener("click", () => {
+          $("#error-state").hidden = true;
+          $("#targets-content").hidden = false;
+        });
+
+        toastClose?.addEventListener("click", hideToast);
+        $("[data-close-override]")?.addEventListener("click", () => overrideDialog.close());
+        $("[data-confirm-override]")?.addEventListener("click", () => {
+          overrideDialog.close();
+          saveNow();
+        });
+
+        if (scenario === "loading") {
+          $("#targets-content").hidden = true;
+          $("#loading-state").hidden = false;
+          window.setTimeout(() => {
+            $("#loading-state").hidden = true;
+            $("#targets-content").hidden = false;
+          }, 900);
+        }
+
+        if (scenario === "error") {
+          $("#targets-content").hidden = true;
+          $("#error-state").hidden = false;
+        }
+
+        $$("[data-day]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.day === currentPanel)));
+        window.addEventListener("resize", updateMobileTabUi);
+        writeToForm();
+        syncAll();
+      });
+    </script>
+  </body>
+</html>

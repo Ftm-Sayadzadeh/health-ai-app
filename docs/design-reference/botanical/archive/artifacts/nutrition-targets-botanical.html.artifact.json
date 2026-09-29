@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "nutrition-targets-botanical.html",
+  "entry": "nutrition-targets-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-24T17:10:45.457Z",
+  "updatedAt": "2026-07-24T17:10:45.457Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

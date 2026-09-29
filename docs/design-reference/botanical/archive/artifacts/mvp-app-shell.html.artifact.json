@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "mvp-app-shell.html",
+  "entry": "mvp-app-shell.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-12T12:44:20.040Z",
+  "updatedAt": "2026-07-12T12:44:20.040Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

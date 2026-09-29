@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#123f26" />
+    <title>تکمیل اطلاعات — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body class="app-body" data-page="onboarding" data-theme="botanical">
+    <main class="onboarding-shell" data-onboarding data-od-id="onboarding-page">
+      <header class="auth-top">
+        <a class="brand" href="index-botanical.html" aria-label="آووکادو">
+          <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect class="brand-mark__plan" x="7" y="9" width="29" height="11" rx="5.5" />
+            <rect class="brand-mark__actual" x="12" y="27" width="29" height="11" rx="5.5" />
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4" />
+          </svg><span>آووکادو</span>
+        </a>
+        <a class="button button--quiet button--sm" href="dashboard-botanical.html" data-save-exit>بعداً ادامه می‌دهم</a>
+      </header>
+
+      <section class="onboarding-card">
+        <div class="progress-header" aria-label="پیشرفت تکمیل اطلاعات">
+          <div class="progress-header__meta">
+            <span data-onboarding-current>مرحله ۱ از ۱۱</span>
+            <span>ذخیره موقت فعال است</span>
+          </div>
+          <div class="progress-bar" aria-hidden="true"><span data-onboarding-progress></span></div>
+        </div>
+
+        <form id="onboarding-form" class="form-stack">
+          <section class="onboarding-step" data-step="goal">
+            <p class="eyebrow">هدف اصلی</p>
+            <h1>در این دوره بیشتر دنبال چه تغییری هستید؟</h1>
+            <p>این پاسخ برای ساخت برنامه استفاده می‌شود و برچسب خوب یا بد به روز شما نمی‌زند.</p>
+            <div class="choice-grid">
+              <label class="choice-card"><input type="radio" name="goal" value="loss" required />کاهش وزن</label>
+              <label class="choice-card"><input type="radio" name="goal" value="gain" />افزایش وزن</label>
+              <label class="choice-card"><input type="radio" name="goal" value="maintain" />تثبیت وزن</label>
+              <label class="choice-card"><input type="radio" name="goal" value="healthy" />تغذیه سالم‌تر</label>
+              <label class="choice-card"><input type="radio" name="goal" value="energy" />افزایش انرژی</label>
+              <label class="choice-card"><input type="radio" name="goal" value="lifestyle" />بهبود سبک زندگی</label>
+            </div>
+            <div class="sheet-actions"><span></span><button class="button button--primary" type="button" data-next-step>ادامه</button></div>
+          </section>
+
+          <section class="onboarding-step" data-step="basics" hidden>
+            <p class="eyebrow">اطلاعات پایه</p>
+            <h1>چند مقدار پایه را وارد کنید</h1>
+            <p>اگر عددی دقیق نیست، مقدار نزدیک را وارد کنید؛ بعداً قابل ویرایش است.</p>
+            <div class="form-row">
+              <label class="field"><span class="field__label">نام</span><input name="name" required autocomplete="given-name" /></label>
+              <label class="field"><span class="field__label">سن یا تاریخ تولد</span><input name="age" required inputmode="numeric" /></label>
+              <label class="field"><span class="field__label">جنسیت</span><select name="gender" required><option value="">انتخاب کنید</option><option>زن</option><option>مرد</option><option>ترجیح می‌دهم نگویم</option></select></label>
+              <label class="field"><span class="field__label">قد</span><input name="height" required inputmode="numeric" /><small class="field__hint">سانتی‌متر</small></label>
+              <label class="field"><span class="field__label">وزن فعلی</span><input name="weight" required inputmode="decimal" /><small class="field__hint">کیلوگرم</small></label>
+              <label class="field"><span class="field__label">وزن هدف</span><input name="targetWeight" required inputmode="decimal" /><small class="field__hint">کیلوگرم</small></label>
+            </div>
+            <div class="sheet-actions"><button class="button button--secondary" type="button" data-prev-step>قبلی</button><button class="button button--primary" type="button" data-next-step>ادامه</button></div>
+          </section>
+
+          <section class="onboarding-step" data-step="activity" hidden>
+            <p class="eyebrow">فعالیت روزانه</p>
+            <h1>روز معمول شما چقدر فعال است؟</h1>
+            <div class="choice-grid">
+              <label class="choice-card"><input type="radio" name="activity" required />کم‌تحرک</label>
+              <label class="choice-card"><input type="radio" name="activity" />فعالیت سبک</label>
+              <label class="choice-card"><input type="radio" name="activity" />فعالیت متوسط</label>
+              <label class="choice-card"><input type="radio" name="activity" />فعالیت زیاد</label>
+              <label class="choice-card"><input type="radio" name="activity" />ورزشکار</label>
+            </div>
+            <div class="sheet-actions"><button class="button button--secondary" type="button" data-prev-step>قبلی</button><button class="button button--primary" type="button" data-next-step>ادامه</button></div>
+          </section>
+
+          <section class="onboarding-step" data-step="workout" hidden>
+            <p class="eyebrow">برنامه ورزشی</p>
+            <h1>اگر ورزش می‌کنید، الگوی معمول را بنویسید</h1>
+            <div class="form-row">
+              <label class="field"><span class="field__label">روزهای ورزش در هفته</span><input name="workoutDays" inputmode="numeric" /></label>
+              <label class="field"><span class="field__label">نوع ورزش</span><input name="workoutType" placeholder="پیاده‌روی، بدنسازی، یوگا..." /></label>
+              <label class="field"><span class="field__label">مدت هر جلسه</span><input name="workoutDuration" inputmode="numeric" /><small class="field__hint">دقیقه</small></label>
+              <label class="field"><span class="field__label">محل ورزش</span><select name="workoutPlace"><option>خانه</option><option>باشگاه</option><option>فضای باز</option><option>ترکیبی</option></select></label>
+            </div>
+            <div class="sheet-actions"><button class="button button--secondary" type="button" data-prev-step>قبلی</button><button class="button button--primary" type="button" data-next-step>ادامه</button></div>
+          </section>
+
+          <section class="onboarding-step" data-step="diet" hidden>
+            <p class="eyebrow">سبک تغذیه</p>
+            <h1>کدام سبک به تغذیه شما نزدیک‌تر است؟</h1>
+            <div class="chip-list">
+              <label><input type="radio" name="dietStyle" required />معمولی</label>
+              <label><input type="radio" name="dietStyle" />گیاه‌خواری</label>
+              <label><input type="radio" name="dietStyle" />وگان</label>
+              <label><input type="radio" name="dietStyle" />کم‌کربوهیدرات</label>
+              <label><input type="radio" name="dietStyle" />کتوژنیک</label>
+              <label><input type="radio" name="dietStyle" />بدون گلوتن</label>
+              <label><input type="radio" name="dietStyle" />رژیم خاص دیگر</label>
+            </div>
+            <div class="sheet-actions"><button class="button button--secondary" type="button" data-prev-step>قبلی</button><button class="button button--primary" type="button" data-next-step>ادامه</button></div>
+          </section>
+
+          <section class="onboarding-step" data-step="allergies" hidden>
+            <p class="eyebrow">حساسیت‌ها و محدودیت‌ها</p>
+            <h1>چه چیزهایی باید در برنامه لحاظ نشود؟</h1>
+            <div class="chip-list">
+              <label><input type="checkbox" name="allergyDairy" />لبنیات</label>
+              <label><input type="checkbox" name="allergyGluten" />گلوتن</label>
+              <label><input type="checkbox" name="allergyEgg" />تخم‌مرغ</label>
+              <label><input type="checkbox" name="allergyNuts" />آجیل</label>
+              <label><input type="checkbox" name="allergySeafood" />غذاهای دریایی</label>
+            </div>
+            <label class="field"><span class="field__label">مورد دیگر</span><input name="allergyOther" /></label>
+            <div class="sheet-actions"><button class="button button--secondary" type="button" data-prev-step>قبلی</button><button class="button button--primary" type="button" data-next-step>ادامه</button></div>
+          </section>
+
+          <section class="onboarding-step" data-step="conditions" hidden>
+            <p class="eyebrow">شرایط جسمی</p>
+            <h1>اگر موردی دارید، انتخاب کنید</h1>
+            <p>این اطلاعات جایگزین نظر متخصص نیست و فقط برای شخصی‌سازی محتاطانه استفاده می‌شود.</p>
+            <div class="chip-list">
+              <label><input type="checkbox" name="conditionNone" />هیچ‌کدام</label>
+              <label><input type="checkbox" name="conditionDiabetes" />دیابت</label>
+              <label><input type="checkbox" name="conditionPressure" />فشارخون</label>
+              <label><input type="checkbox" name="conditionThyroid" />مشکلات تیروئید</label>
+              <label><input type="checkbox" name="conditionDigestive" />مشکلات گوارشی</label>
+              <label><input type="checkbox" name="conditionPcos" />سندرم تخمدان پلی‌کیستیک</label>
+              <label><input type="checkbox" name="conditionAnemia" />کم‌خونی</label>
+            </div>
+            <div class="sheet-actions"><button class="button button--secondary" type="button" data-prev-step>قبلی</button><button class="button button--primary" type="button" data-next-step>ادامه</button></div>
+          </section>
+
+          <section class="onboarding-step" data-step="meds" hidden>
+            <p class="eyebrow">دارو و مکمل</p>
+            <h1>دارو یا مکمل ثابت دارید؟</h1>
+            <div class="timeline-list" id="med-list">
+              <div class="timeline-item"><span class="timeline-dot" aria-hidden="true"></span><span><strong>مورد اول</strong><small>نام، مقدار و زمان مصرف را وارد کنید</small></span><button class="button button--quiet button--sm" type="button" data-remove-row>حذف</button></div>
+            </div>
+            <div class="form-row">
+              <label class="field"><span class="field__label">نام دارو یا مکمل</span><input name="medName" /></label>
+              <label class="field"><span class="field__label">مقدار مصرف</span><input name="medAmount" /></label>
+              <label class="field"><span class="field__label">زمان مصرف</span><input name="medTime" /></label>
+            </div>
+            <div class="app-page-actions">
+              <button class="button button--secondary" type="button" data-add-row="med-list">افزودن مورد دیگر</button>
+              <button class="button button--quiet" type="button" data-next-step>رد کردن این مرحله</button>
+            </div>
+            <div class="sheet-actions"><button class="button button--secondary" type="button" data-prev-step>قبلی</button><button class="button button--primary" type="button" data-next-step>ادامه</button></div>
+          </section>
+
+          <section class="onboarding-step" data-step="habits" hidden>
+            <p class="eyebrow">عادت‌های روزانه</p>
+            <h1>ریتم روزتان را وارد کنید</h1>
+            <div class="form-row">
+              <label class="field"><span class="field__label">ساعت خواب</span><input name="sleepTime" type="time" /></label>
+              <label class="field"><span class="field__label">ساعت بیداری</span><input name="wakeTime" type="time" /></label>
+              <label class="field"><span class="field__label">تعداد وعده‌های غذایی</span><input name="mealCount" inputmode="numeric" /></label>
+              <label class="field"><span class="field__label">مصرف آب</span><input name="water" inputmode="numeric" /><small class="field__hint">لیوان در روز</small></label>
+              <label class="field"><span class="field__label">میان‌وعده</span><select name="snackLevel"><option>کم</option><option>متوسط</option><option>زیاد</option></select></label>
+            </div>
+            <div class="sheet-actions"><button class="button button--secondary" type="button" data-prev-step>قبلی</button><button class="button button--primary" type="button" data-next-step>ادامه</button></div>
+          </section>
+
+          <section class="onboarding-step" data-step="preferences" hidden>
+            <p class="eyebrow">ترجیحات غذایی</p>
+            <h1>غذاهای دلخواه و نامطلوب را مشخص کنید</h1>
+            <label class="field"><span class="field__label">جست‌وجو و انتخاب چندگانه</span><input name="foodSearch" type="search" placeholder="مثلاً عدسی، مرغ، قارچ" /></label>
+            <div class="chip-list">
+              <label><input type="checkbox" name="favChicken" />مرغ</label>
+              <label><input type="checkbox" name="favRice" />برنج</label>
+              <label><input type="checkbox" name="favLentil" />عدسی</label>
+              <label><input type="checkbox" name="avoidMushroom" />قارچ استفاده نشود</label>
+              <label><input type="checkbox" name="avoidFish" />ماهی استفاده نشود</label>
+            </div>
+            <div class="form-row">
+              <label class="field"><span class="field__label">غذاهای موردعلاقه</span><textarea name="favorites"></textarea></label>
+              <label class="field"><span class="field__label">غذاهای نامطلوب یا غیرقابل‌استفاده</span><textarea name="dislikes"></textarea></label>
+            </div>
+            <div class="sheet-actions"><button class="button button--secondary" type="button" data-prev-step>قبلی</button><button class="button button--primary" type="button" data-next-step>مرور نهایی</button></div>
+          </section>
+
+          <section class="onboarding-step" data-step="review" hidden>
+            <p class="eyebrow">مرور نهایی</p>
+            <h1>پیش از ساخت برنامه، بخش‌ها را مرور کنید</h1>
+            <div class="review-list">
+              <div class="review-item"><span><strong>هدف و اطلاعات پایه</strong><small>هدف، قد، وزن و سن قابل ویرایش است.</small></span><button class="button button--quiet button--sm" type="button" data-prev-step>ویرایش</button></div>
+              <div class="review-item"><span><strong>فعالیت و ورزش</strong><small>برای پیشنهاد تمرین و انرژی روزانه استفاده می‌شود.</small></span><button class="button button--quiet button--sm" type="button" data-prev-step>ویرایش</button></div>
+              <div class="review-item"><span><strong>تغذیه و محدودیت‌ها</strong><small>برنامه غذایی موارد انتخاب‌شده را رعایت می‌کند.</small></span><button class="button button--quiet button--sm" type="button" data-prev-step>ویرایش</button></div>
+              <div class="review-item"><span><strong>دارو، عادت‌ها و ترجیحات</strong><small>یادآوری و پیشنهاد روزانه بر همین اساس تنظیم می‌شود.</small></span><button class="button button--quiet button--sm" type="button" data-prev-step>ویرایش</button></div>
+            </div>
+            <div class="sheet-actions"><button class="button button--secondary" type="button" data-prev-step>قبلی</button><button class="button button--primary" type="submit">تأیید و ساخت برنامه</button></div>
+          </section>
+        </form>
+
+        <section id="onboarding-loading" class="state-panel" data-state="loading" aria-busy="true" hidden>
+          <h3>در حال ساخت برنامه اولیه</h3>
+          <p>پاسخ‌ها حفظ شده‌اند؛ این مرحله کمی زمان می‌برد.</p>
+          <span></span><span></span><span></span>
+        </section>
+
+        <section id="onboarding-success" class="state-panel" data-state="success" hidden>
+          <h3>اطلاعات تکمیل شد</h3>
+          <p>برنامه اولیه آماده است. می‌توانید از صفحه امروز شروع کنید و هر بخش را بعداً ویرایش کنید.</p>
+          <a class="button button--primary" href="dashboard-botanical.html">رفتن به امروز</a>
+        </section>
+      </section>
+    </main>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden><span class="toast__check"><svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons.svg#icon-check" /></svg></span><span id="toast-message">ذخیره شد.</span><button type="button" id="toast-undo">بستن</button></div>
+  </body>
+</html>

@@ -1,0 +1,959 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#123f26" />
+    <title>خوراک‌های ذخیره‌شده - آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="src/food-flow.css" />
+    <script src="app.js" defer></script>
+    <script src="src/food-flow.js" defer></script>
+    <style>
+      body[data-page="saved-foods"] {
+        overflow-x: hidden;
+        background: var(--av-color-canvas);
+      }
+
+      .saved-foods-page {
+        display: grid;
+        gap: 1.1rem;
+        min-width: 0;
+        padding-bottom: calc(var(--av-bottom-nav-height) + env(safe-area-inset-bottom) + 1.5rem);
+      }
+
+      .saved-foods-header,
+      .saved-foods-toolbar-shell,
+      .saved-foods-list-shell,
+      .saved-foods-row,
+      .saved-foods-state {
+        min-width: 0;
+      }
+
+      .saved-foods-header {
+        display: grid;
+        gap: .8rem;
+        padding-top: .15rem;
+      }
+
+      .saved-foods-header__top {
+        display: flex;
+        justify-content: flex-end;
+        gap: .85rem;
+      }
+
+      .saved-foods-back {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        min-block-size: 2.65rem;
+        padding: .55rem .9rem;
+        border: 1px solid var(--av-color-border-soft);
+        border-radius: .95rem;
+        background: var(--av-color-surface);
+        color: var(--av-color-ink-strong);
+        text-decoration: none;
+        font-size: .86rem;
+        font-weight: 700;
+        box-shadow: 0 8px 18px rgba(18, 63, 38, .05);
+      }
+
+      .saved-foods-back .icon {
+        transform: rotate(180deg);
+      }
+
+      .saved-foods-header h1,
+      .saved-foods-state h2,
+      .saved-foods-modal__head h2 {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+      }
+
+      .saved-foods-header p,
+      .saved-foods-state p,
+      .saved-foods-modal__head p,
+      .saved-foods-row small {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+      }
+
+      .saved-foods-header h1 {
+        font-size: clamp(1.55rem, 1.3rem + .7vw, 2rem);
+      }
+
+      .saved-foods-header p {
+        max-inline-size: 38rem;
+        font-size: .9rem;
+        line-height: 1.85;
+      }
+
+      .saved-foods-toolbar-shell,
+      .saved-foods-list-shell {
+        background: var(--av-color-surface);
+        border: 1px solid var(--av-color-border-soft);
+        border-radius: 1.5rem;
+        box-shadow: 0 16px 36px rgba(18, 63, 38, .04);
+      }
+
+      .saved-foods-toolbar-shell {
+        display: grid;
+        gap: .85rem;
+        padding: 1rem 1rem .95rem;
+      }
+
+      .saved-foods-toolbar__primary {
+        display: grid;
+        gap: .7rem;
+        align-items: end;
+        direction: ltr;
+      }
+
+      .saved-foods-toolbar__primary > * {
+        direction: rtl;
+      }
+
+      .saved-foods-search {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: .7rem;
+        min-block-size: 3.15rem;
+        padding: 0 1rem;
+        border: 1px solid color-mix(in srgb, var(--av-color-border-soft) 82%, white 18%);
+        border-radius: 1rem;
+        background: color-mix(in srgb, var(--av-color-canvas) 76%, white 24%);
+      }
+
+      .saved-foods-search input {
+        inline-size: 100%;
+        min-inline-size: 0;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: var(--av-color-ink-strong);
+        font: inherit;
+      }
+
+      .saved-foods-search .icon {
+        color: var(--av-color-ink-muted);
+      }
+
+      .saved-foods-toolbar__sort {
+        display: grid;
+        gap: .35rem;
+      }
+
+      .saved-foods-toolbar__sort span {
+        color: var(--av-color-ink-muted);
+        font-size: .78rem;
+        font-weight: 600;
+      }
+
+      .saved-foods-select {
+        min-block-size: 3.15rem;
+        border: 1px solid color-mix(in srgb, var(--av-color-border-soft) 82%, white 18%);
+        border-radius: 1rem;
+        background: var(--av-color-surface);
+        color: var(--av-color-ink-strong);
+        font: inherit;
+        padding-inline: .9rem 2.5rem;
+      }
+
+      .saved-foods-tabs {
+        display: flex;
+        gap: .5rem;
+        overflow-x: auto;
+        padding-top: .1rem;
+        padding-bottom: .1rem;
+        scrollbar-width: thin;
+      }
+
+      .saved-foods-tabs button {
+        flex: 0 0 auto;
+        min-block-size: 2.35rem;
+        border: 1px solid color-mix(in srgb, var(--av-color-border-soft) 88%, white 12%);
+        border-radius: .8rem;
+        background: color-mix(in srgb, var(--av-color-surface) 86%, var(--av-color-canvas) 14%);
+        color: var(--av-color-ink-muted);
+        padding: .45rem .82rem;
+        font: inherit;
+        font-size: .82rem;
+        font-weight: 650;
+      }
+
+      .saved-foods-tabs button[aria-selected="true"] {
+        background: color-mix(in srgb, var(--av-color-primary-soft) 74%, white 26%);
+        border-color: color-mix(in srgb, var(--av-color-primary) 24%, var(--av-color-border-soft) 76%);
+        color: var(--av-color-primary-strong);
+      }
+
+      .saved-foods-list-shell {
+        padding: .7rem;
+      }
+
+      .saved-foods-list {
+        display: grid;
+        gap: .75rem;
+      }
+
+      .saved-foods-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 1rem;
+        align-items: center;
+        padding: 1rem 1.05rem;
+        border: 1px solid color-mix(in srgb, var(--av-color-border-soft) 84%, white 16%);
+        border-radius: 1.1rem;
+        background: color-mix(in srgb, var(--av-color-canvas) 78%, white 22%);
+        box-shadow: 0 10px 22px rgba(18, 63, 38, .035);
+      }
+
+      .saved-foods-row strong {
+        display: block;
+        margin-bottom: .25rem;
+        color: var(--av-color-ink-strong);
+        font-size: .96rem;
+      }
+
+      .saved-foods-row__support,
+      .saved-foods-row__meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .35rem .8rem;
+        align-items: center;
+      }
+
+      .saved-foods-row__support {
+        margin-top: .5rem;
+      }
+
+      .saved-foods-row__support span,
+      .saved-foods-row__meta span {
+        color: var(--av-color-ink-muted);
+        font-size: .81rem;
+      }
+
+      .saved-foods-row__meta {
+        margin-top: .45rem;
+      }
+
+      .saved-foods-row__actions {
+        display: flex;
+        align-items: center;
+        gap: .55rem;
+        align-self: stretch;
+      }
+
+      .saved-foods-menu {
+        position: relative;
+      }
+
+      .saved-foods-menu summary {
+        list-style: none;
+        cursor: pointer;
+        inline-size: 2.6rem;
+        block-size: 2.6rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: .9rem;
+        border: 1px solid var(--av-color-border-soft);
+        background: var(--av-color-surface);
+        color: var(--av-color-ink-muted);
+        box-shadow: 0 8px 18px rgba(18, 63, 38, .04);
+      }
+
+      .saved-foods-menu summary::-webkit-details-marker { display: none; }
+
+      .saved-foods-menu__panel {
+        position: absolute;
+        inset-inline-end: 0;
+        top: calc(100% + .35rem);
+        min-inline-size: 9.5rem;
+        display: grid;
+        padding: .35rem;
+        border-radius: 1rem;
+        border: 1px solid var(--av-color-border-soft);
+        background: var(--av-color-surface);
+        box-shadow: 0 18px 32px rgba(18, 63, 38, .12);
+        z-index: 12;
+      }
+
+      .saved-foods-menu__panel button {
+        border: 0;
+        background: transparent;
+        text-align: right;
+        padding: .7rem .8rem;
+        border-radius: .75rem;
+        color: var(--av-color-ink-strong);
+        font: inherit;
+      }
+
+      .saved-foods-state {
+        display: grid;
+        place-items: center;
+        gap: .9rem;
+        min-block-size: clamp(17rem, 34vw, 22rem);
+        padding: clamp(2.25rem, 5vw, 4rem) 1.25rem;
+        text-align: center;
+        border: 1px dashed color-mix(in srgb, var(--av-color-border-soft) 74%, white 26%);
+        border-radius: 1.4rem;
+        background: color-mix(in srgb, var(--av-color-surface) 88%, var(--av-color-canvas) 12%);
+      }
+
+      .saved-foods-state__copy {
+        display: grid;
+        gap: .6rem;
+        max-inline-size: 28rem;
+      }
+
+      .saved-foods-state__actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: .75rem;
+      }
+
+      .saved-foods-empty-cta {
+        display: inline-flex;
+        inline-size: fit-content;
+      }
+
+      .saved-foods-toolbar-shell .button--primary,
+      .saved-foods-state .button--primary,
+      .saved-foods-row__actions .button--primary {
+        box-shadow: 0 12px 20px rgba(48, 110, 70, .12);
+      }
+
+      .saved-foods-modal {
+        width: min(100%, 34rem);
+        border: 0;
+        padding: 0;
+        border-radius: 28px;
+        background: transparent;
+      }
+
+      .saved-foods-modal::backdrop {
+        background: rgba(9, 27, 15, .28);
+      }
+
+      .saved-foods-modal__surface {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        background: var(--av-color-surface);
+        border: 1px solid var(--av-color-border-soft);
+        border-radius: 28px;
+        padding: 0;
+        max-height: min(86vh, 48rem);
+        overflow: hidden;
+      }
+
+      .saved-foods-modal__head {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.2rem 1.2rem 1rem;
+        border-bottom: 1px solid var(--av-color-border-soft);
+      }
+
+      .saved-foods-modal__body {
+        display: grid;
+        gap: 1rem;
+        padding: 1rem 1.2rem 1.15rem;
+        overflow: auto;
+      }
+
+      .saved-foods-modal__section {
+        display: grid;
+        gap: .85rem;
+        padding: 1rem;
+        border: 1px solid color-mix(in srgb, var(--av-color-border-soft) 82%, white 18%);
+        border-radius: 1.1rem;
+        background: color-mix(in srgb, var(--av-color-canvas) 78%, white 22%);
+      }
+
+      .saved-foods-modal__section h3,
+      .saved-foods-modal__section p {
+        margin: 0;
+      }
+
+      .saved-foods-modal__section h3 {
+        color: var(--av-color-ink-strong);
+        font-size: .95rem;
+      }
+
+      .saved-foods-modal__section p {
+        color: var(--av-color-ink-muted);
+        font-size: .82rem;
+      }
+
+      .saved-foods-modal__grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .85rem;
+      }
+
+      .saved-foods-modal__actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: .75rem;
+        padding: 1rem 1.2rem calc(1rem + env(safe-area-inset-bottom));
+        border-top: 1px solid var(--av-color-border-soft);
+        background: color-mix(in srgb, var(--av-color-surface) 96%, white 4%);
+        position: sticky;
+        bottom: 0;
+      }
+
+      .toast {
+        position: fixed;
+        inset-inline: 1rem;
+        bottom: calc(var(--av-bottom-nav-height) + env(safe-area-inset-bottom) + 1rem);
+        z-index: 80;
+      }
+
+      @media (min-width: 72rem) {
+        .saved-foods-toolbar__primary {
+          grid-template-columns: minmax(0, 1.4fr) auto minmax(11rem, 12.5rem);
+          align-items: end;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .saved-foods-header__top {
+          align-items: start;
+        }
+
+        .saved-foods-toolbar-shell,
+        .saved-foods-list-shell {
+          border-radius: 1.2rem;
+        }
+
+        .saved-foods-toolbar__primary {
+          grid-template-columns: 1fr;
+        }
+
+        .saved-foods-search,
+        .saved-foods-select {
+          min-block-size: 3.05rem;
+        }
+
+        .saved-foods-row {
+          grid-template-columns: 1fr;
+          align-items: start;
+        }
+
+        .saved-foods-row__actions,
+        .saved-foods-state__actions,
+        .saved-foods-modal__actions {
+          width: 100%;
+        }
+
+        .saved-foods-row__actions .button,
+        .saved-foods-state__actions .button,
+        .saved-foods-state__actions a,
+        .saved-foods-modal__actions .button,
+        .saved-foods-toolbar__primary .button {
+          width: 100%;
+        }
+
+        .saved-foods-tabs button {
+          min-block-size: 2.6rem;
+          padding-inline: .9rem;
+        }
+
+        .saved-foods-modal__grid {
+          grid-template-columns: 1fr;
+        }
+
+        .saved-foods-modal {
+          width: 100vw;
+          max-width: 100vw;
+          margin: auto 0 0;
+          align-self: end;
+        }
+
+        .saved-foods-modal__surface {
+          border-radius: 1.7rem 1.7rem 0 0;
+          max-height: min(92vh, 100vh);
+        }
+      }
+    </style>
+  </head>
+  <body class="app-body" data-page="saved-foods" data-theme="botanical">
+    <a class="skip-link" href="#saved-foods-main">پرش به خوراک‌های ذخیره‌شده</a>
+    <div class="app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی محصول">
+        <a class="brand" href="dashboard-botanical.html"><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true"><rect class="brand-mark__plan" x="7" y="9" width="29" height="11" rx="5.5" /><rect class="brand-mark__actual" x="12" y="27" width="29" height="11" rx="5.5" /><circle class="brand-mark__pulse" cx="39" cy="13" r="4" /></svg><span>آووکادو</span></a>
+        <nav aria-label="بخش‌های اصلی">
+          <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+          <a href="quick-log-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+          <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+          <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+          <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+        </nav>
+        <div class="side-nav__foot">مسیرهای اصلی همیشه از همین پنج بخش در دسترس هستند.</div>
+      </aside>
+
+      <main class="app-main" id="saved-foods-main" data-od-id="saved-foods-page">
+        <header class="app-topbar">
+          <div class="app-topbar__title"><span>ثبت سریع</span><strong id="saved-foods-date">جمعه ۲ مرداد</strong></div>
+          <div class="app-topbar__actions"></div>
+        </header>
+
+        <div class="app-container page-content saved-foods-page">
+          <section class="saved-foods-header" data-od-id="saved-foods-header">
+            <div class="saved-foods-header__top">
+              <a class="saved-foods-back" id="saved-foods-back-link" href="food-log-botanical.html">
+                <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-chevron-right" /></svg>
+                <span>بازگشت</span>
+              </a>
+            </div>
+            <div>
+              <h1>خوراک‌های ذخیره‌شده</h1>
+              <p>خوراک‌های پرکاربرد و سفارشی‌ات را برای ثبت سریع مدیریت کن.</p>
+            </div>
+          </section>
+
+          <section class="saved-foods-toolbar-shell" data-od-id="saved-foods-toolbar">
+            <div class="saved-foods-toolbar__primary">
+              <label class="saved-foods-search">
+                <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-search" /></svg>
+                <input id="saved-foods-search-input" type="search" placeholder="در خوراک‌های ذخیره‌شده و سفارشی جست‌وجو کن" />
+              </label>
+
+              <button class="button button--primary" id="create-custom-food" type="button">ساخت خوراک جدید</button>
+
+              <label class="saved-foods-toolbar__sort">
+                <span>مرتب‌سازی</span>
+                <select class="saved-foods-select" id="saved-foods-sort">
+                  <option value="usage">پراستفاده‌ترین</option>
+                  <option value="recent">جدیدترین</option>
+                  <option value="name">نام</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="saved-foods-tabs" role="tablist" aria-label="فیلتر نوع خوراک">
+              <button type="button" role="tab" aria-selected="true" data-filter="all">همه</button>
+              <button type="button" role="tab" aria-selected="false" data-filter="saved">ذخیره‌شده‌ها</button>
+              <button type="button" role="tab" aria-selected="false" data-filter="custom">خوراک‌های سفارشی</button>
+              <button type="button" role="tab" aria-selected="false" data-filter="combo">وعده‌های ترکیبی</button>
+            </div>
+          </section>
+
+          <section class="saved-foods-list-shell" id="saved-foods-list-shell" data-od-id="saved-foods-list-shell">
+            <div class="saved-foods-list" id="saved-foods-list"></div>
+          </section>
+
+          <section class="saved-foods-state" id="saved-foods-loading" data-od-id="saved-foods-loading" hidden>
+            <div class="saved-foods-state__copy">
+              <h2>در حال آماده‌سازی خوراک‌ها</h2>
+              <p>فهرست خوراک‌های ذخیره‌شده و سفارشی در حال بارگذاری است.</p>
+            </div>
+          </section>
+
+          <section class="saved-foods-state" id="saved-foods-empty" data-od-id="saved-foods-empty" hidden>
+            <div class="saved-foods-state__copy">
+              <h2>هنوز خوراکی ذخیره نکردی</h2>
+              <p>خوراک‌های پرکاربرد یا وعده‌های سفارشی‌ات را ذخیره کن تا ثبت وعده‌ها سریع‌تر شود.</p>
+            </div>
+            <div class="saved-foods-state__actions">
+              <button class="button button--primary saved-foods-empty-cta" id="create-first-food" type="button">ساخت اولین خوراک</button>
+              <a class="button button--secondary" id="empty-back-search" href="food-log-botanical.html">بازگشت به ثبت خوراک</a>
+            </div>
+          </section>
+
+          <section class="saved-foods-state" id="saved-foods-error" data-od-id="saved-foods-error" hidden>
+            <div class="saved-foods-state__copy">
+              <h2>دسترسی به خوراک‌های ذخیره‌شده ممکن نشد</h2>
+              <p>می‌توانی دوباره تلاش کنی یا در صورت ورود از جریان ثبت، به همان مسیر برگردی.</p>
+            </div>
+            <div class="saved-foods-state__actions">
+              <button class="button button--primary" id="retry-saved-foods" type="button">تلاش دوباره</button>
+              <a class="button button--secondary" id="error-back-search" href="food-log-botanical.html">بازگشت</a>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل">
+      <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+      <a href="quick-log-botanical.html" class="quick-log-trigger bottom-nav__primary" aria-current="page"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+      <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+      <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+      <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+    </nav>
+
+    <dialog class="saved-foods-modal" id="saved-foods-modal">
+      <form class="saved-foods-modal__surface" id="saved-foods-form" method="dialog">
+        <div class="saved-foods-modal__head">
+          <div>
+            <h2 id="saved-foods-modal-title">ساخت خوراک جدید</h2>
+            <p>خوراک سفارشی یا وعده ترکیبی را برای استفاده‌های بعدی نگه دار.</p>
+          </div>
+          <button class="button button--quiet button--sm" id="close-saved-foods-modal" type="button">بستن</button>
+        </div>
+        <div class="saved-foods-modal__body">
+          <section class="saved-foods-modal__section">
+            <div>
+              <h3>مشخصات پایه</h3>
+              <p>نام، مقدار مرجع و واحدی را وارد کن که معمولاً با آن این خوراک را ثبت می‌کنی.</p>
+            </div>
+            <div class="saved-foods-modal__grid">
+              <label class="field">
+                <span class="field__label">نام خوراک</span>
+                <input id="custom-food-name" type="text" required />
+              </label>
+              <label class="field">
+                <span class="field__label">مقدار پیش‌فرض</span>
+                <input id="custom-food-quantity" type="number" min="0.5" step="0.5" value="1" required />
+              </label>
+              <label class="field">
+                <span class="field__label">واحد</span>
+                <input id="custom-food-unit" type="text" placeholder="مثلاً کاسه" required />
+              </label>
+              <label class="field">
+                <span class="field__label">یادداشت اختیاری</span>
+                <textarea id="custom-food-note" rows="3" placeholder="مثلاً مناسب میان‌وعده عصر"></textarea>
+              </label>
+            </div>
+          </section>
+
+          <section class="saved-foods-modal__section">
+            <div>
+              <h3>ارزش غذایی</h3>
+              <p>این مقادیر برای همان مقدار و واحد پیش‌فرض ذخیره می‌شوند و بعداً در AddFoodFlow قابل بازبینی هستند.</p>
+            </div>
+            <div class="saved-foods-modal__grid">
+              <label class="field">
+                <span class="field__label">کالری</span>
+                <input id="custom-food-calories" type="number" min="0" required />
+              </label>
+              <label class="field">
+                <span class="field__label">پروتئین</span>
+                <input id="custom-food-protein" type="number" min="0" step="0.1" required />
+              </label>
+              <label class="field">
+                <span class="field__label">کربوهیدرات</span>
+                <input id="custom-food-carbs" type="number" min="0" step="0.1" required />
+              </label>
+              <label class="field">
+                <span class="field__label">چربی</span>
+                <input id="custom-food-fat" type="number" min="0" step="0.1" required />
+              </label>
+            </div>
+          </section>
+        </div>
+        <div class="saved-foods-modal__actions">
+          <button class="button button--secondary" id="cancel-saved-foods-form" type="button">انصراف</button>
+          <button class="button button--primary" type="submit">ذخیره خوراک</button>
+        </div>
+      </form>
+    </dialog>
+
+    <aside class="toast" id="saved-foods-toast" hidden>
+      <div class="toast__content">
+        <span id="saved-foods-toast-message">ذخیره شد.</span>
+        <button class="button button--quiet button--sm" id="saved-foods-toast-close" type="button">بستن</button>
+      </div>
+    </aside>
+
+    <script>
+      (() => {
+        const STORAGE_KEYS = {
+          savedFoods: "avocado-saved-foods",
+          customFoods: "avocado-custom-foods",
+          comboMeals: "avocado-combo-meals",
+          selectedFood: "avocado-selected-food",
+        };
+
+        const FLOW_CONTEXT_KEY = "avocado-food-flow-context-v1";
+        const $ = (selector, scope = document) => scope.querySelector(selector);
+        const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
+
+        let activeFilter = "all";
+        let activeSort = "usage";
+        let editingId = null;
+
+        function formatDateLabel() {
+          return new Intl.DateTimeFormat("fa-IR", { weekday: "long", day: "numeric", month: "long" }).format(new Date());
+        }
+
+        function formatNumber(value) {
+          return new Intl.NumberFormat("fa-IR", { maximumFractionDigits: 1 }).format(value);
+        }
+
+        function showToast(message) {
+          $("#saved-foods-toast-message").textContent = message;
+          $("#saved-foods-toast").hidden = false;
+        }
+
+        function hideToast() {
+          $("#saved-foods-toast").hidden = true;
+        }
+
+        function readStorage(key) {
+          try {
+            return JSON.parse(localStorage.getItem(key) || "[]");
+          } catch {
+            return [];
+          }
+        }
+
+        function writeStorage(key, value) {
+          localStorage.setItem(key, JSON.stringify(value));
+        }
+
+        function readFlowContext() {
+          try {
+            return JSON.parse(sessionStorage.getItem(FLOW_CONTEXT_KEY) || "{}");
+          } catch {
+            return {};
+          }
+        }
+
+        function getSavedFoods() {
+          return readStorage(STORAGE_KEYS.savedFoods).map((item) => ({ ...item, kind: item.kind || "saved" }));
+        }
+
+        function getCustomFoods() {
+          return readStorage(STORAGE_KEYS.customFoods).map((item) => ({ ...item, kind: item.kind || "custom" }));
+        }
+
+        function getComboMeals() {
+          return readStorage(STORAGE_KEYS.comboMeals).map((item) => ({ ...item, kind: "combo" }));
+        }
+
+        function allFoods() {
+          return [...getSavedFoods(), ...getCustomFoods(), ...getComboMeals()];
+        }
+
+        function mapFoodKind(food) {
+          if (food.kind === "combo") return "وعده ترکیبی";
+          if (food.kind === "custom") return "خوراک سفارشی";
+          return "خوراک ذخیره‌شده";
+        }
+
+        function lastUsedLabel(value) {
+          if (!value) return "هنوز استفاده نشده";
+          return new Intl.DateTimeFormat("fa-IR", { day: "numeric", month: "long" }).format(new Date(value));
+        }
+
+        function filterFoods(items, query) {
+          let result = [...items];
+          if (activeFilter !== "all") {
+            result = result.filter((item) => item.kind === activeFilter);
+          }
+          if (query.trim()) {
+            const normalized = query.trim().toLocaleLowerCase("fa");
+            result = result.filter((item) => [item.name, item.category, item.note].filter(Boolean).join(" ").toLocaleLowerCase("fa").includes(normalized));
+          }
+          result.sort((a, b) => {
+            if (activeSort === "name") return String(a.name).localeCompare(String(b.name), "fa");
+            if (activeSort === "recent") return new Date(b.savedAt || b.lastUsedAt || 0) - new Date(a.savedAt || a.lastUsedAt || 0);
+            return Number(b.usageCount || 0) - Number(a.usageCount || 0);
+          });
+          return result;
+        }
+
+        function rowTemplate(food) {
+          return `
+            <article class="saved-foods-row">
+              <div>
+                <strong>${food.name}</strong>
+                <small>${food.reference || food.defaultUnit || "۱ واحد"} · ${mapFoodKind(food)}</small>
+                <div class="saved-foods-row__support">
+                  <span><bdi dir="ltr">${formatNumber(food.calories || 0)}</bdi> kcal</span>
+                  <span>پروتئین ${formatNumber(food.protein || 0)}</span>
+                  <span>کربوهیدرات ${formatNumber(food.carbs || 0)}</span>
+                  <span>چربی ${formatNumber(food.fat || 0)}</span>
+                </div>
+                <div class="saved-foods-row__meta">
+                  <span>آخرین استفاده: ${lastUsedLabel(food.lastUsedAt)}</span>
+                  <span>دفعات استفاده: ${formatNumber(food.usageCount || 0)}</span>
+                </div>
+              </div>
+              <div class="saved-foods-row__actions">
+                <button class="button button--primary button--sm" type="button" data-open-saved-food-detail="${food.id}">افزودن</button>
+                <details class="saved-foods-menu">
+                  <summary aria-label="اقدام برای ${food.name}">⋯</summary>
+                  <div class="saved-foods-menu__panel">
+                    <button type="button" data-action="edit" data-food-id="${food.id}">ویرایش</button>
+                    <button type="button" data-action="copy" data-food-id="${food.id}">کپی</button>
+                    <button type="button" data-action="delete" data-food-id="${food.id}">حذف</button>
+                  </div>
+                </details>
+              </div>
+            </article>
+          `;
+        }
+
+        function showState(name) {
+          $("#saved-foods-list-shell").hidden = name !== "list";
+          $("#saved-foods-loading").hidden = name !== "loading";
+          $("#saved-foods-empty").hidden = name !== "empty";
+          $("#saved-foods-error").hidden = name !== "error";
+        }
+
+        function renderList() {
+          const query = $("#saved-foods-search-input").value || "";
+          if (query.trim().toLocaleLowerCase("fa") === "خطا") {
+            showState("error");
+            return;
+          }
+          const foods = filterFoods(allFoods(), query);
+          if (!foods.length) {
+            showState("empty");
+            return;
+          }
+          $("#saved-foods-list").innerHTML = foods.map(rowTemplate).join("");
+          showState("list");
+        }
+
+        function openModal(food = null) {
+          editingId = food?.id || null;
+          $("#saved-foods-modal-title").textContent = food ? "ویرایش خوراک سفارشی" : "ساخت خوراک جدید";
+          $("#custom-food-name").value = food?.name || "";
+          $("#custom-food-quantity").value = food?.defaultQuantity || 1;
+          $("#custom-food-unit").value = food?.defaultUnit || food?.reference || "";
+          $("#custom-food-calories").value = food?.calories || "";
+          $("#custom-food-protein").value = food?.protein || "";
+          $("#custom-food-carbs").value = food?.carbs || "";
+          $("#custom-food-fat").value = food?.fat || "";
+          $("#custom-food-note").value = food?.note || "";
+          $("#saved-foods-modal").showModal();
+        }
+
+        function closeModal() {
+          $("#saved-foods-modal").close();
+        }
+
+        function saveCustomFood(event) {
+          event.preventDefault();
+          const items = getCustomFoods();
+          const quantity = Number($("#custom-food-quantity").value || 1);
+          const unit = $("#custom-food-unit").value.trim();
+          const reference = `${formatNumber(quantity)} ${unit}`.trim();
+          const record = {
+            id: editingId || `custom-food-${Date.now()}`,
+            name: $("#custom-food-name").value.trim(),
+            reference,
+            defaultQuantity: quantity,
+            defaultUnit: unit,
+            category: "خوراک سفارشی",
+            calories: Number($("#custom-food-calories").value || 0),
+            protein: Number($("#custom-food-protein").value || 0),
+            carbs: Number($("#custom-food-carbs").value || 0),
+            fat: Number($("#custom-food-fat").value || 0),
+            fiber: 0,
+            sugar: 0,
+            sodium: 0,
+            units: [{ label: unit, multiplier: 1 }],
+            ingredients: $("#custom-food-note").value.trim() || "ترکیب سفارشی کاربر",
+            note: $("#custom-food-note").value.trim(),
+            kind: "custom",
+            savedAt: new Date().toISOString(),
+          };
+          const next = editingId
+            ? items.map((item) => item.id === editingId ? record : item)
+            : [record, ...items];
+          writeStorage(STORAGE_KEYS.customFoods, next);
+          closeModal();
+          renderList();
+          showToast(editingId ? "خوراک سفارشی ویرایش شد." : "خوراک سفارشی ساخته شد.");
+        }
+
+        function removeFood(foodId) {
+          writeStorage(STORAGE_KEYS.savedFoods, getSavedFoods().filter((item) => item.id !== foodId));
+          writeStorage(STORAGE_KEYS.customFoods, getCustomFoods().filter((item) => item.id !== foodId));
+          writeStorage(STORAGE_KEYS.comboMeals, getComboMeals().filter((item) => item.id !== foodId));
+          renderList();
+          showToast("خوراک حذف شد.");
+        }
+
+        function cloneFood(foodId) {
+          const target = allFoods().find((item) => item.id === foodId);
+          if (!target) return;
+          const storageKey = target.kind === "combo" ? STORAGE_KEYS.comboMeals : STORAGE_KEYS.customFoods;
+          const items = target.kind === "combo" ? getComboMeals() : getCustomFoods();
+          const copy = {
+            ...target,
+            id: `${target.kind === "combo" ? "combo" : "custom"}-copy-${Date.now()}`,
+            name: `${target.name} - کپی`,
+            kind: target.kind === "combo" ? "combo" : "custom",
+            savedAt: new Date().toISOString(),
+          };
+          writeStorage(storageKey, [copy, ...items]);
+          renderList();
+          showToast("کپی جدید ساخته شد.");
+        }
+
+        function bindEvents() {
+          $("#saved-foods-search-input").addEventListener("input", renderList);
+          $("#saved-foods-sort").addEventListener("change", (event) => {
+            activeSort = event.target.value;
+            renderList();
+          });
+          $$("[data-filter]").forEach((button) => {
+            button.addEventListener("click", () => {
+              activeFilter = button.dataset.filter;
+              $$("[data-filter]").forEach((item) => item.setAttribute("aria-selected", String(item === button)));
+              renderList();
+            });
+          });
+
+          $("#saved-foods-list").addEventListener("click", (event) => {
+            const actionButton = event.target.closest("[data-action]");
+            if (!actionButton) return;
+            const foodId = actionButton.dataset.foodId;
+            if (actionButton.dataset.action === "delete") removeFood(foodId);
+            if (actionButton.dataset.action === "copy") cloneFood(foodId);
+            if (actionButton.dataset.action === "edit") {
+              const food = allFoods().find((item) => item.id === foodId);
+              if (food?.kind === "combo") {
+                showToast("ویرایش وعده‌های ترکیبی از داخل صفحه ثبت غذا انجام می‌شود.");
+                return;
+              }
+              if (food) openModal(food);
+            }
+          });
+
+          $("#create-custom-food").addEventListener("click", () => openModal());
+          $("#create-first-food").addEventListener("click", () => openModal());
+          $("#close-saved-foods-modal").addEventListener("click", closeModal);
+          $("#cancel-saved-foods-form").addEventListener("click", closeModal);
+          $("#saved-foods-form").addEventListener("submit", saveCustomFood);
+          $("#saved-foods-toast-close").addEventListener("click", hideToast);
+          $("#retry-saved-foods").addEventListener("click", renderList);
+        }
+
+        function initLinks() {
+          const context = readFlowContext();
+          const fallbackHref = context.sourcePage || "quick-log-botanical.html";
+          $("#saved-foods-back-link").href = fallbackHref;
+          $("#empty-back-search").href = fallbackHref;
+          $("#error-back-search").href = fallbackHref;
+          $("#empty-back-search").hidden = !context.fromFlow;
+          $("#error-back-search").hidden = !context.fromFlow;
+        }
+
+        function init() {
+          $("#saved-foods-date").textContent = formatDateLabel();
+          initLinks();
+          showState("loading");
+          window.setTimeout(() => {
+            renderList();
+          }, 140);
+        }
+
+        bindEvents();
+        init();
+      })();
+    </script>
+  </body>
+</html>

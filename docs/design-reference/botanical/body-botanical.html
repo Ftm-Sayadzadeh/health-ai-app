@@ -1,0 +1,1598 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#123f26" />
+    <title>وزن و اندازه‌ها — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="src/date-utils.js" defer></script>
+    <script src="app.js" defer></script>
+    <style>
+      .body-page {
+        display: grid;
+        gap: 1.55rem;
+      }
+
+      .body-hero,
+      .body-panel,
+      .body-chart-card,
+      .body-history-card {
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 5%, var(--av-color-border));
+        background: var(--av-color-surface);
+      }
+
+      .body-hero {
+        display: grid;
+        gap: .5rem;
+        border-radius: 1.75rem 1.75rem .85rem 1.75rem;
+        background:
+          linear-gradient(150deg, color-mix(in oklch, var(--av-color-primary-soft) 72%, white) 0%, color-mix(in oklch, var(--av-color-surface) 96%, white) 100%);
+        padding: .68rem .95rem;
+      }
+
+      .body-hero__header,
+      .body-panel__header,
+      .body-history-card__header,
+      .body-chart-card__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: .65rem;
+        flex-wrap: wrap;
+      }
+
+      .body-hero__eyebrow,
+      .body-chip,
+      .history-change,
+      .chart-filter {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-block-size: 2rem;
+        border-radius: 999px;
+        font-size: .78rem;
+        font-weight: 700;
+      }
+
+      .body-hero__eyebrow {
+        padding-inline: .85rem;
+        background: color-mix(in oklch, var(--av-color-surface) 84%, white);
+        color: var(--av-color-primary);
+      }
+
+      .body-hero h1,
+      .body-panel h2,
+      .body-chart-card h2,
+      .body-history-card h2,
+      .sheet__header h2 {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+      }
+
+      .body-hero h1 {
+        margin-block-start: .1rem;
+        font-size: clamp(1.12rem, 1.02rem + .45vw, 1.5rem);
+        font-weight: 800;
+      }
+
+      .body-hero p,
+      .body-panel p,
+      .body-chart-card p,
+      .body-history-card p,
+      .sheet__header p {
+        margin: 0;
+        color: color-mix(in oklch, var(--av-color-ink-muted) 88%, white);
+      }
+
+      .body-chip-group,
+      .chart-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem;
+      }
+
+      .body-chip {
+        padding-inline: .8rem;
+        background: color-mix(in oklch, var(--av-color-plan-soft) 64%, white);
+        color: var(--av-color-plan);
+      }
+
+      .body-hero__lead {
+        display: grid;
+        gap: .18rem;
+      }
+
+      .body-hero__lead-label {
+        color: var(--av-color-ink-muted);
+        font-size: .72rem;
+      }
+
+      .body-hero__lead-value {
+        color: var(--av-color-ink-strong);
+        font-size: clamp(2.45rem, 2.02rem + 1.55vw, 3.45rem);
+        font-weight: 840;
+        line-height: .96;
+      }
+
+      .body-hero__grid {
+        display: grid;
+        gap: .8rem;
+      }
+
+      .body-hero__summary {
+        display: grid;
+        gap: .72rem;
+      }
+
+      .body-hero__stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: .6rem;
+      }
+
+      .body-stat {
+        border-radius: 1.08rem 1.08rem .5rem 1.08rem;
+        background: color-mix(in oklch, var(--av-color-surface) 92%, white);
+        padding: .82rem .92rem;
+      }
+
+      .body-stat span {
+        display: block;
+        color: var(--av-color-ink-muted);
+        font-size: .7rem;
+      }
+
+      .body-stat strong {
+        display: block;
+        margin-block-start: .12rem;
+        color: var(--av-color-ink-strong);
+        font-size: 1.08rem;
+        font-weight: 760;
+      }
+
+      .body-progress {
+        display: grid;
+        gap: .48rem;
+        border-radius: 1.1rem 1.1rem .5rem 1.1rem;
+        background: color-mix(in oklch, var(--av-color-surface) 92%, white);
+        padding: .78rem .95rem;
+      }
+
+      .body-progress__meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        color: var(--av-color-ink-muted);
+        font-size: .74rem;
+      }
+
+      .body-progress__meta strong {
+        color: var(--av-color-ink-strong);
+      }
+
+      .body-progress__track {
+        overflow: hidden;
+        block-size: .8rem;
+        border-radius: 999px;
+        background: color-mix(in oklch, var(--av-color-border) 82%, white);
+      }
+
+      .body-progress__fill {
+        display: block;
+        inline-size: var(--progress, 0%);
+        block-size: 100%;
+        border-radius: inherit;
+        background:
+          linear-gradient(90deg, var(--av-color-primary) 0%, color-mix(in oklch, var(--av-color-primary) 74%, var(--av-color-pulse)) 100%);
+      }
+
+      .body-hero__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+        align-items: end;
+      }
+
+      .body-layout {
+        display: grid;
+        gap: 1.25rem;
+      }
+
+      .body-measures-card {
+        display: grid;
+        gap: 1rem;
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 5%, var(--av-color-border));
+        border-radius: 1.35rem 1.35rem .65rem 1.35rem;
+        background: var(--av-color-surface);
+        padding: 1.18rem;
+      }
+
+      .body-chart-card,
+      .body-panel,
+      .body-history-card {
+        border-radius: 1.35rem 1.35rem .65rem 1.35rem;
+        padding: 1.18rem;
+      }
+
+      .body-chart-card {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .chart-filter {
+        border: 1px solid var(--av-color-border);
+        background: var(--av-color-surface-subtle);
+        color: var(--av-color-ink-strong);
+        padding-inline: .8rem;
+        cursor: pointer;
+      }
+
+      .chart-filter.is-active {
+        border-color: color-mix(in oklch, var(--av-color-plan) 30%, var(--av-color-border));
+        background: color-mix(in oklch, var(--av-color-plan-soft) 70%, white);
+        color: var(--av-color-plan);
+      }
+
+      .body-chart {
+        position: relative;
+        border-radius: 1.1rem 1.1rem .5rem 1.1rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 74%, white);
+        padding: 1.08rem;
+      }
+
+      .body-chart__meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .65rem;
+      }
+
+      .chart-stat {
+        border-radius: .95rem .95rem .38rem .95rem;
+        background: rgba(255, 255, 255, .82);
+        padding: .78rem .85rem;
+      }
+
+      .chart-stat span {
+        display: block;
+        color: var(--av-color-ink-muted);
+        font-size: .7rem;
+      }
+
+      .chart-stat strong {
+        display: block;
+        margin-block-start: .12rem;
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+        font-weight: 760;
+      }
+
+      .chart-stage {
+        position: relative;
+      }
+
+      .chart-tooltip {
+        position: absolute;
+        inset-block-start: .8rem;
+        inset-inline-start: .8rem;
+        display: grid;
+        gap: .15rem;
+        min-inline-size: 7rem;
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 10%, var(--av-color-border));
+        border-radius: .9rem .9rem .35rem .9rem;
+        background: rgba(255, 255, 255, .94);
+        padding: .55rem .7rem;
+        box-shadow: var(--av-shadow-2);
+        pointer-events: none;
+        opacity: 0;
+        transform: translateY(4px);
+        transition: opacity 140ms ease, transform 140ms ease;
+      }
+
+      .chart-tooltip.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .chart-tooltip strong {
+        color: var(--av-color-ink-strong);
+      }
+
+      .chart-tooltip small {
+        color: var(--av-color-ink-muted);
+      }
+
+      .body-chart svg {
+        display: block;
+        inline-size: 100%;
+        block-size: 19rem;
+      }
+
+      .body-chart__legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .85rem;
+        color: var(--av-color-ink-muted);
+        font-size: .74rem;
+      }
+
+      .legend-line {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+      }
+
+      .legend-line::before {
+        content: "";
+        inline-size: 1.4rem;
+        block-size: 0;
+        border-block-start: 3px solid var(--av-color-primary);
+      }
+
+      .legend-line--target::before {
+        border-block-start-color: var(--av-color-plan);
+        border-block-start-style: dashed;
+      }
+
+      .body-chart__empty,
+      .body-history__empty,
+      .body-measures__empty {
+        display: grid;
+        gap: .35rem;
+        place-items: center;
+        text-align: center;
+        min-block-size: 12rem;
+        border: 1px dashed var(--av-color-border);
+        border-radius: 1rem 1rem .45rem 1rem;
+        padding: 1.1rem;
+        color: var(--av-color-ink-muted);
+      }
+
+      .body-panel {
+        display: grid;
+        gap: 1rem;
+        align-content: start;
+      }
+
+      .body-panel__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+      }
+
+      .body-form {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .body-form__row {
+        display: grid;
+        gap: .95rem;
+      }
+
+      .field input[type="date"],
+      .field input[type="number"],
+      .field textarea {
+        inline-size: 100%;
+      }
+
+      .body-accordion {
+        border: 1px solid var(--av-color-border);
+        border-radius: 1rem 1rem .45rem 1rem;
+        background: var(--av-color-surface-subtle);
+        padding: .2rem .92rem 0;
+      }
+
+      .body-accordion summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        cursor: pointer;
+        list-style: none;
+        padding-block: .82rem;
+        color: var(--av-color-ink-strong);
+        font-weight: 700;
+      }
+
+      .body-accordion summary::after {
+        content: "⌄";
+        color: var(--av-color-plan);
+      }
+
+      .body-accordion[open] summary::after {
+        transform: rotate(180deg);
+      }
+
+      .body-accordion[open] {
+        padding-block-end: .92rem;
+      }
+
+      .body-accordion summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .body-accordion__content {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .measurement-grid {
+        display: grid;
+        gap: .95rem;
+      }
+
+      .upload-zone {
+        position: relative;
+        display: grid;
+        gap: .45rem;
+        place-items: center;
+        min-block-size: 9.5rem;
+        border: 1px dashed color-mix(in oklch, var(--av-color-plan) 26%, var(--av-color-border));
+        border-radius: 1rem 1rem .45rem 1rem;
+        background: color-mix(in oklch, var(--av-color-plan-soft) 34%, white);
+        padding: 1.1rem;
+        text-align: center;
+        color: var(--av-color-ink-strong);
+        cursor: pointer;
+      }
+
+      .upload-zone input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+      }
+
+      .upload-zone small {
+        color: var(--av-color-ink-muted);
+      }
+
+      .upload-preview {
+        display: none;
+        overflow: hidden;
+        inline-size: 100%;
+        border-radius: .95rem .95rem .38rem .95rem;
+        background: var(--av-color-surface);
+      }
+
+      .upload-preview.is-visible {
+        display: block;
+      }
+
+      .upload-preview img {
+        display: block;
+        inline-size: 100%;
+        max-block-size: 13rem;
+        object-fit: cover;
+      }
+
+      .upload-preview__meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .5rem;
+        padding: .78rem .85rem;
+      }
+
+      .body-history-card {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .body-measures-grid {
+        display: grid;
+        gap: .9rem;
+      }
+
+      .body-measure-card {
+        border-radius: 1rem 1rem .45rem 1rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 84%, white);
+        padding: 1rem;
+      }
+
+      .body-measure-card span {
+        display: block;
+        color: var(--av-color-ink-muted);
+        font-size: .71rem;
+      }
+
+      .body-measure-card strong {
+        display: block;
+        margin-block-start: .14rem;
+        color: var(--av-color-ink-strong);
+        font-size: 1.02rem;
+        font-weight: 760;
+      }
+
+      .body-measure-card small {
+        display: block;
+        margin-block-start: .18rem;
+        color: var(--av-color-primary);
+        font-size: .76rem;
+      }
+
+      .body-history-list {
+        display: grid;
+        gap: .82rem;
+      }
+
+      .history-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: .74rem;
+        align-items: start;
+        border-radius: 1.08rem 1.08rem .5rem 1.08rem;
+        background: white;
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 6%, var(--av-color-border));
+        padding: .92rem 1rem;
+      }
+
+      .history-row__main {
+        display: grid;
+        gap: .24rem;
+      }
+
+      .history-row__top {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .34rem .6rem;
+        align-items: center;
+      }
+
+      .history-row strong {
+        color: var(--av-color-ink-strong);
+      }
+
+      .history-row small {
+        color: var(--av-color-ink-muted);
+        line-height: 1.65;
+      }
+
+      .history-change {
+        padding-inline: .7rem;
+        background: color-mix(in oklch, var(--av-color-primary-soft) 58%, white);
+        color: var(--av-color-primary);
+        font-size: .72rem;
+      }
+
+      .history-change.is-neutral {
+        background: color-mix(in oklch, var(--av-color-surface) 84%, white);
+        color: var(--av-color-ink-muted);
+      }
+
+      .history-menu {
+        position: relative;
+      }
+
+      .history-menu summary {
+        inline-size: 2.3rem;
+        block-size: 2.3rem;
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        list-style: none;
+        cursor: pointer;
+        color: var(--av-color-ink-muted);
+      }
+
+      .history-menu summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .history-menu[open] summary {
+        background: color-mix(in oklch, var(--av-color-surface) 70%, white);
+      }
+
+      .history-menu__panel {
+        position: absolute;
+        inset-inline-end: 0;
+        inset-block-start: calc(100% + .35rem);
+        inline-size: 10rem;
+        display: grid;
+        gap: .2rem;
+        border: 1px solid var(--av-color-border);
+        border-radius: .95rem .95rem .38rem .95rem;
+        background: var(--av-color-surface);
+        box-shadow: var(--av-shadow-2);
+        padding: .35rem;
+        z-index: 5;
+      }
+
+      .history-menu__panel button {
+        justify-content: flex-start;
+      }
+
+      .body-fab {
+        position: fixed;
+        z-index: 42;
+        inset-inline: 1rem;
+        inset-block-end: calc(var(--bottom-nav-height) + 1rem);
+        min-block-size: 3.35rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: .45rem;
+        border: 0;
+        border-radius: 1rem 1rem .4rem 1rem;
+        background: var(--av-color-primary);
+        color: white;
+        box-shadow: var(--av-shadow-2);
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .hidden-mobile {
+        display: none;
+      }
+
+      @media (max-width: 55.99rem) {
+        .body-hero__stats {
+          grid-template-columns: 1fr;
+        }
+
+        .body-hero__actions .button {
+          inline-size: 100%;
+        }
+
+        .sheet-actions .button,
+        .body-panel__actions .button {
+          inline-size: 100%;
+        }
+
+        .body-chart__meta,
+        .body-measures-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .body-panel--desktop {
+          display: none;
+        }
+
+        .body-chart svg {
+          block-size: 15rem;
+        }
+
+        .history-row {
+          grid-template-columns: 1fr auto;
+        }
+      }
+
+      @media (min-width: 56rem) {
+        .body-hero {
+          padding: .62rem 1rem;
+        }
+
+        .body-hero__grid {
+          grid-template-columns: minmax(0, 1.45fr) minmax(14rem, .62fr);
+          align-items: start;
+        }
+
+        .body-layout {
+          grid-template-columns: minmax(0, 1.85fr) minmax(18rem, 1fr);
+          align-items: start;
+        }
+
+        .body-hero__actions {
+          justify-content: flex-end;
+        }
+
+        .body-panel--desktop {
+          position: sticky;
+          inset-block-start: 6rem;
+        }
+
+        .body-panel--desktop .body-accordion {
+          padding-block-start: 0;
+        }
+
+        .body-panel--desktop .body-accordion > summary {
+          display: none;
+        }
+
+        .body-panel__actions {
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .body-fab,
+        .sheet--mobile {
+          display: none;
+        }
+
+        .measurement-grid,
+        .body-measures-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body class="app-body" data-page="body" data-theme="botanical">
+    <div class="app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی محصول">
+        <a class="brand" href="dashboard-botanical.html"
+          ><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect class="brand-mark__plan" x="7" y="9" width="29" height="11" rx="5.5" />
+            <rect class="brand-mark__actual" x="12" y="27" width="29" height="11" rx="5.5" />
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4" /></svg
+          ><span>آووکادو</span></a
+        >
+          <nav aria-label="بخش‌های اصلی">
+          <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+          <a href="quick-log-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+          <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+          <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+          <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+        </nav>
+        <div class="side-nav__foot">مسیرهای اصلی همیشه از همین پنج بخش در دسترس هستند.</div>
+      </aside>
+
+      <main class="app-main" data-od-id="body-page">
+        <header class="app-topbar">
+          <div class="app-topbar__title">
+            <span>ثبت‌های بدنی</span>
+            <strong>وزن و اندازه‌ها</strong>
+          </div>
+          <div class="app-topbar__actions">
+            <a class="header-action-link" href="messages-botanical.html" aria-label="پیام‌ها"><img class="header-action-icon" src="assets/icons/icon-message.png" alt="" aria-hidden="true" /></a>
+            <a class="header-action-link header-action-link--notification" href="notifications-botanical.html" aria-label="اعلان‌ها"><img class="header-action-icon" src="assets/icons/icon-bell.png" alt="" aria-hidden="true" /><span class="header-action-badge" aria-hidden="true"></span></a>
+            <a class="avatar-link" href="settings-botanical.html" aria-label="پروفایل سارا">س</a>
+          </div>
+        </header>
+
+        <div class="app-container page-content body-page">
+          <section class="body-hero" data-od-id="body-hero">
+            <div class="body-hero__header">
+              <div>
+                <span class="body-hero__eyebrow">نمای آرام پیشرفت</span>
+                <h1>ثبت وزن و اندازه‌ها</h1>
+                <p>نمایی کوتاه و روشن از مسیر وزن شما.</p>
+              </div>
+            </div>
+
+            <div class="body-hero__grid">
+              <div class="body-hero__summary">
+                <div class="body-hero__lead">
+                  <span class="body-hero__lead-label">وزن فعلی</span>
+                  <strong class="body-hero__lead-value" id="hero-current-weight">۶۸٫۴ کیلوگرم</strong>
+                </div>
+
+                <div class="body-hero__stats">
+                  <div class="body-stat">
+                    <span>وزن هدف</span>
+                    <strong id="hero-goal-weight">۶۵ کیلوگرم</strong>
+                  </div>
+                  <div class="body-stat">
+                    <span>باقی‌مانده تا هدف</span>
+                    <strong id="hero-remaining">۳٫۴ کیلوگرم</strong>
+                  </div>
+                  <div class="body-stat">
+                    <span>تغییر ۳۰ روز گذشته</span>
+                    <strong id="hero-month-change">۰٫۹- کیلوگرم</strong>
+                  </div>
+                  <div class="body-stat">
+                    <span>آخرین ثبت</span>
+                    <strong id="hero-current-chip">جمعه ۱۸ تیر</strong>
+                  </div>
+                </div>
+
+                <div class="body-progress">
+                  <div class="body-progress__meta">
+                    <span>مسیر از وزن شروع تا هدف</span>
+                    <strong id="hero-progress-label">۴۸٪ مسیر طی شده</strong>
+                  </div>
+                  <div class="body-progress__track" aria-label="پیشرفت وزن">
+                    <span class="body-progress__fill" id="hero-progress-fill" style="--progress: 48%"></span>
+                  </div>
+                  <p id="hero-progress-copy">هر ثبت، تصویر واضح‌تری از روند شما می‌سازد.</p>
+                </div>
+              </div>
+
+              <div class="body-hero__actions">
+                <button class="button button--primary" type="button" id="hero-log-button">ثبت وزن امروز</button>
+              </div>
+            </div>
+          </section>
+
+          <div class="body-layout">
+            <section class="body-chart-card" data-od-id="weight-chart-card">
+              <div class="body-chart-card__header">
+                <div>
+                  <h2>روند وزن</h2>
+                  <p>سبز: وزن واقعی، بنفش: هدف.</p>
+                </div>
+                <div class="chart-filters" id="chart-filters">
+                  <button class="chart-filter is-active" type="button" data-range="30">۳۰ روز</button>
+                  <button class="chart-filter" type="button" data-range="90">۳ ماه</button>
+                  <button class="chart-filter" type="button" data-range="180">۶ ماه</button>
+                  <button class="chart-filter" type="button" data-range="365">یک سال</button>
+                </div>
+              </div>
+
+              <div class="body-chart" id="chart-stage"></div>
+              <div class="body-chart__legend">
+                <span class="legend-line">وزن واقعی</span>
+                <span class="legend-line legend-line--target">وزن هدف</span>
+              </div>
+            </section>
+
+            <aside class="body-panel body-panel--desktop" id="quick-entry" data-od-id="quick-log-panel">
+              <div class="body-panel__header">
+                <div>
+                  <h2>ثبت سریع</h2>
+                  <p>فقط وزن و تاریخ را وارد کنید؛ بقیه موارد اختیاری‌اند.</p>
+                </div>
+              </div>
+              <form class="body-form" data-form-scope="desktop">
+                <div class="body-form__row">
+                  <label class="field">
+                    <span class="field__label">وزن</span>
+                    <input name="weight" type="number" inputmode="decimal" step="0.1" min="1" placeholder="مثلاً ۶۸٫۴" required />
+                  </label>
+                  <label class="field">
+                    <span class="field__label">تاریخ ثبت</span>
+                    <input name="date" type="date" required />
+                  </label>
+                </div>
+
+                <details class="body-accordion">
+                  <summary>افزودن جزئیات بیشتر</summary>
+                  <div class="body-accordion__content">
+                    <div class="measurement-grid">
+                      <label class="field"><span class="field__label">دور کمر</span><input name="waist" type="number" inputmode="decimal" step="0.1" /></label>
+                      <label class="field"><span class="field__label">دور شکم</span><input name="belly" type="number" inputmode="decimal" step="0.1" /></label>
+                      <label class="field"><span class="field__label">دور باسن</span><input name="hip" type="number" inputmode="decimal" step="0.1" /></label>
+                      <label class="field"><span class="field__label">دور ران</span><input name="thigh" type="number" inputmode="decimal" step="0.1" /></label>
+                      <label class="field"><span class="field__label">دور بازو</span><input name="arm" type="number" inputmode="decimal" step="0.1" /></label>
+                    </div>
+
+                    <label class="upload-zone">
+                      <input name="photo" type="file" accept="image/*" />
+                      <strong>عکس پیشرفت را اینجا انتخاب کنید</strong>
+                      <small>فرمت‌های رایج تصویر پشتیبانی می‌شوند.</small>
+                    </label>
+                    <div class="upload-preview" data-preview></div>
+
+                    <label class="field">
+                      <span class="field__label">یادداشت</span>
+                      <textarea name="note" rows="3" placeholder="مثلاً بعد از صبحانه ثبت شد یا احساس سبک‌تری داشتم."></textarea>
+                    </label>
+                  </div>
+                </details>
+
+                <div class="body-panel__actions">
+                  <button class="button button--secondary" type="button" data-open-details>افزودن جزئیات بیشتر</button>
+                  <button class="button button--primary" type="submit">ذخیره ثبت</button>
+                </div>
+              </form>
+            </aside>
+          </div>
+
+          <section class="body-measures-card" data-od-id="body-measures-card">
+            <div class="body-history-card__header">
+              <div>
+                <h2>روند اندازه‌های بدن</h2>
+                <p>آخرین مقدار و تغییر ثبت قبلی برای اندازه‌های اصلی.</p>
+              </div>
+            </div>
+            <div class="body-measures-grid" id="measures-trend"></div>
+          </section>
+
+          <section class="body-history-card" data-od-id="history-card">
+            <div class="body-history-card__header">
+              <div>
+                <h2>تاریخچه ثبت‌ها</h2>
+                <p>تاریخ، وزن، تغییر و یک یادداشت کوتاه.</p>
+              </div>
+            </div>
+            <div class="body-history-list" id="history-list"></div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <button class="body-fab" type="button" id="mobile-log-button">
+      <span aria-hidden="true">+</span>
+      <span>ثبت وزن</span>
+    </button>
+
+    <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل">
+      <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+      <a href="quick-log-botanical.html" class="quick-log-trigger bottom-nav__primary" aria-current="page"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+      <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+      <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+      <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+    </nav>
+
+    <dialog class="sheet sheet--mobile" id="mobile-log-sheet" aria-labelledby="mobile-log-title">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__header">
+        <div>
+          <h2 id="mobile-log-title">ثبت وزن</h2>
+          <p>ثبت سریع وزن با جزئیات اختیاری.</p>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog aria-label="بستن">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-close" /></svg>
+        </button>
+      </div>
+      <form class="body-form" data-form-scope="mobile">
+        <div class="body-form__row">
+          <label class="field">
+            <span class="field__label">وزن</span>
+            <input name="weight" type="number" inputmode="decimal" step="0.1" min="1" placeholder="مثلاً ۶۸٫۴" required />
+          </label>
+          <label class="field">
+            <span class="field__label">تاریخ ثبت</span>
+            <input name="date" type="date" required />
+          </label>
+        </div>
+
+        <details class="body-accordion">
+          <summary>افزودن جزئیات بیشتر</summary>
+          <div class="body-accordion__content">
+            <div class="measurement-grid">
+              <label class="field"><span class="field__label">دور کمر</span><input name="waist" type="number" inputmode="decimal" step="0.1" /></label>
+              <label class="field"><span class="field__label">دور شکم</span><input name="belly" type="number" inputmode="decimal" step="0.1" /></label>
+              <label class="field"><span class="field__label">دور باسن</span><input name="hip" type="number" inputmode="decimal" step="0.1" /></label>
+              <label class="field"><span class="field__label">دور ران</span><input name="thigh" type="number" inputmode="decimal" step="0.1" /></label>
+              <label class="field"><span class="field__label">دور بازو</span><input name="arm" type="number" inputmode="decimal" step="0.1" /></label>
+            </div>
+
+            <label class="upload-zone">
+              <input name="photo" type="file" accept="image/*" />
+              <strong>عکس پیشرفت را اینجا انتخاب کنید</strong>
+              <small>تصویر انتخابی بعد از ذخیره در همین ثبت نگه‌داری می‌شود.</small>
+            </label>
+            <div class="upload-preview" data-preview></div>
+
+            <label class="field">
+              <span class="field__label">یادداشت</span>
+              <textarea name="note" rows="3" placeholder="اگر لازم بود نکته‌ای کوتاه اضافه کنید."></textarea>
+            </label>
+          </div>
+        </details>
+
+        <div class="sheet-actions">
+          <button class="button button--secondary" type="button" data-close-dialog>انصراف</button>
+          <button class="button button--primary" type="submit">ذخیره ثبت</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="sheet" id="delete-dialog" aria-labelledby="delete-dialog-title">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__header">
+        <div>
+          <h2 id="delete-dialog-title">حذف این ثبت</h2>
+          <p>این مورد از تاریخچه حذف می‌شود. اگر مطمئن نیستید، انصراف بزنید.</p>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog aria-label="بستن">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-close" /></svg>
+        </button>
+      </div>
+      <div class="sheet-actions">
+        <button class="button button--secondary" type="button" data-close-dialog>انصراف</button>
+        <button class="button button--danger" type="button" id="confirm-delete-button">حذف ثبت</button>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <span class="toast__check"
+        ><svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons.svg#icon-check" /></svg
+      ></span>
+      <span id="toast-message">ذخیره شد.</span>
+      <button type="button" id="toast-undo">بستن</button>
+    </div>
+
+    <script>
+      (() => {
+        const stateKey = "avocado:body-botanical";
+        const defaultState = {
+          goalWeight: 65,
+          startWeight: 72.2,
+          range: 30,
+          editingId: null,
+          deleteId: null,
+          records: [
+            {
+              id: "r1",
+              weight: 69.3,
+              date: "2026-06-20",
+              note: "شروع دوباره‌ی ثبت منظم.",
+              measures: { waist: 81, belly: 87, hip: 99, thigh: 58, arm: 29 },
+              photoName: "",
+              photoData: ""
+            },
+            {
+              id: "r2",
+              weight: 68.9,
+              date: "2026-06-29",
+              note: "ثبت عصرگاهی.",
+              measures: { waist: 80.5, belly: 86, hip: 98.5, thigh: 57.8, arm: 29 },
+              photoName: "",
+              photoData: ""
+            },
+            {
+              id: "r3",
+              weight: 68.6,
+              date: "2026-07-09",
+              note: "احساس پایدارتر در طول روز.",
+              measures: { waist: 80, belly: 85.7, hip: 98, thigh: 57.5, arm: 28.8 },
+              photoName: "",
+              photoData: ""
+            },
+            {
+              id: "r4",
+              weight: 68.4,
+              date: "2026-07-18",
+              note: "ثبت امروز بعد از صبحانه.",
+              measures: { waist: 79.8, belly: 85.2, hip: 97.8, thigh: 57.2, arm: 28.7 },
+              photoName: "",
+              photoData: ""
+            }
+          ]
+        };
+
+        let state = readState();
+        let toastTimer = null;
+
+        const $ = (selector, root = document) => root.querySelector(selector);
+        const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+        function readState() {
+          try {
+            const raw = JSON.parse(localStorage.getItem(stateKey) || "null");
+            if (!raw) return structuredClone(defaultState);
+            return {
+              goalWeight: raw.goalWeight ?? defaultState.goalWeight,
+              startWeight: raw.startWeight ?? defaultState.startWeight,
+              range: raw.range ?? defaultState.range,
+              editingId: null,
+              deleteId: null,
+              records: Array.isArray(raw.records) && raw.records.length ? raw.records : structuredClone(defaultState.records)
+            };
+          } catch {
+            return structuredClone(defaultState);
+          }
+        }
+
+        function saveState() {
+          localStorage.setItem(
+            stateKey,
+            JSON.stringify({
+              goalWeight: state.goalWeight,
+              startWeight: state.startWeight,
+              range: state.range,
+              records: state.records
+            })
+          );
+        }
+
+        function toPersianNumber(value, digits = 1) {
+          return new Intl.NumberFormat("fa-IR", {
+            minimumFractionDigits: digits,
+            maximumFractionDigits: digits
+          }).format(value);
+        }
+
+        function formatDate(dateValue) {
+          return new Intl.DateTimeFormat("fa-IR", {
+            weekday: "long",
+            day: "numeric",
+            month: "long"
+          }).format(new Date(dateValue));
+        }
+
+        function formatWeight(value) {
+          return `${toPersianNumber(value)} کیلوگرم`;
+        }
+
+        function latestRecord() {
+          return [...state.records].sort((a, b) => a.date.localeCompare(b.date)).at(-1) || null;
+        }
+
+        function sortedRecords() {
+          return [...state.records].sort((a, b) => a.date.localeCompare(b.date));
+        }
+
+        function descendingRecords() {
+          return sortedRecords().reverse();
+        }
+
+        function showToast(message, kind = "success") {
+          const toast = $("#toast");
+          const label = $("#toast-message");
+          if (!toast || !label) return;
+          window.clearTimeout(toastTimer);
+          label.textContent = message;
+          toast.dataset.kind = kind;
+          toast.hidden = false;
+          toastTimer = window.setTimeout(() => {
+            toast.hidden = true;
+          }, 3200);
+        }
+
+        function openDialog(dialog) {
+          if (!dialog) return;
+          if (typeof dialog.showModal === "function") dialog.showModal();
+          else dialog.setAttribute("open", "");
+        }
+
+        function closeDialog(dialog) {
+          if (!dialog) return;
+          if (typeof dialog.close === "function" && dialog.open) dialog.close();
+          else dialog.removeAttribute("open");
+        }
+
+        const dateUtils = window.AvocadoDate || null;
+        const todayDateOnly = dateUtils?.dateOnlyLocal?.() || (() => {
+          const now = new Date();
+          return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+        })();
+
+        function daysAgo(days) {
+          const d = dateUtils?.parseDateOnly?.(todayDateOnly) || new Date();
+          d.setDate(d.getDate() - days);
+          return d;
+        }
+
+        function monthChange() {
+          const records = sortedRecords();
+          const latest = latestRecord();
+          if (!latest || records.length < 2) return 0;
+          const threshold = daysAgo(30);
+          const baseline = records.find((item) => new Date(item.date) >= threshold) || records[0];
+          return latest.weight - baseline.weight;
+        }
+
+        function totalRangeChange(records) {
+          if (records.length < 2) return 0;
+          return records.at(-1).weight - records[0].weight;
+        }
+
+        function averageWeeklyChange(records) {
+          if (records.length < 2) return 0;
+          const first = new Date(records[0].date);
+          const last = new Date(records.at(-1).date);
+          const dayDiff = Math.max(1, Math.round((last - first) / 86400000));
+          return totalRangeChange(records) / (dayDiff / 7);
+        }
+
+        function progressPercent() {
+          const latest = latestRecord();
+          if (!latest) return 0;
+          const start = state.startWeight;
+          const goal = state.goalWeight;
+          const total = start - goal;
+          if (!total) return 0;
+          const moved = start - latest.weight;
+          return Math.max(0, Math.min(100, Math.round((moved / total) * 100)));
+        }
+
+        function remainingToGoal() {
+          const latest = latestRecord();
+          if (!latest) return 0;
+          return Math.max(0, latest.weight - state.goalWeight);
+        }
+
+        function filterRecordsByRange() {
+          const threshold = daysAgo(state.range);
+          return sortedRecords().filter((item) => new Date(item.date) >= threshold);
+        }
+
+        function buildChart() {
+          const stage = $("#chart-stage");
+          const records = filterRecordsByRange();
+          if (!records.length) {
+            stage.innerHTML = `
+              <div class="body-chart__empty">
+                <strong>هنوز داده‌ی کافی برای این بازه ندارید</strong>
+                <p>با چند ثبت منظم، نمودار روند وزن به‌صورت آرام و واضح نمایش داده می‌شود.</p>
+              </div>
+            `;
+            return;
+          }
+
+          const minWeight = Math.min(...records.map((item) => item.weight), state.goalWeight) - 0.4;
+          const maxWeight = Math.max(...records.map((item) => item.weight), state.goalWeight) + 0.4;
+          const range = maxWeight - minWeight || 1;
+          const step = records.length > 1 ? 100 / (records.length - 1) : 50;
+          const totalChange = totalRangeChange(records);
+          const weeklyChange = averageWeeklyChange(records);
+          const actualPoints = records
+            .map((item, index) => {
+              const x = records.length === 1 ? 50 : index * step;
+              const y = 92 - (((item.weight - minWeight) / range) * 78);
+              return `${x},${y.toFixed(2)}`;
+            })
+            .join(" ");
+          const goalY = 92 - (((state.goalWeight - minWeight) / range) * 78);
+          const labels = records
+            .map((item, index) => {
+              const x = records.length === 1 ? 50 : index * step;
+              return `<text x="${x}" y="99" text-anchor="middle" font-size="4" fill="var(--av-color-ink-muted)">${new Intl.DateTimeFormat("fa-IR", { day: "numeric", month: "short" }).format(new Date(item.date))}</text>`;
+            })
+            .join("");
+          const circles = records
+            .map((item, index) => {
+              const x = records.length === 1 ? 50 : index * step;
+              const y = 92 - (((item.weight - minWeight) / range) * 78);
+              return `<circle cx="${x}" cy="${y.toFixed(2)}" r="2.2" fill="var(--av-color-primary)" data-point-index="${index}" data-weight="${item.weight}" data-date="${item.date}"></circle>`;
+            })
+            .join("");
+
+          stage.innerHTML = `
+            <div class="body-chart__meta">
+              <div class="chart-stat">
+                <span>تغییر کل بازه</span>
+                <strong>${totalChange > 0 ? "+" : ""}${toPersianNumber(totalChange)} کیلوگرم</strong>
+              </div>
+              <div class="chart-stat">
+                <span>میانگین تغییر هفتگی</span>
+                <strong>${weeklyChange > 0 ? "+" : ""}${toPersianNumber(weeklyChange)} کیلوگرم</strong>
+              </div>
+            </div>
+            <div class="chart-stage">
+              <div class="chart-tooltip" id="chart-tooltip">
+                <strong>${formatWeight(records.at(-1).weight)}</strong>
+                <small>${formatDate(records.at(-1).date)}</small>
+              </div>
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="نمودار روند وزن">
+                <text x="1" y="9" font-size="4.2" fill="var(--av-color-ink-muted)">کیلوگرم</text>
+                <line x1="0" y1="${goalY.toFixed(2)}" x2="100" y2="${goalY.toFixed(2)}" stroke="var(--av-color-plan)" stroke-width="1.4" stroke-dasharray="4 3"></line>
+                <polyline points="${actualPoints}" fill="none" stroke="var(--av-color-primary)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                ${circles}
+                ${labels}
+              </svg>
+            </div>
+          `;
+
+          const tooltip = $("#chart-tooltip", stage);
+          $$("[data-point-index]", stage).forEach((point) => {
+            const show = () => {
+              tooltip.querySelector("strong").textContent = formatWeight(Number(point.dataset.weight));
+              tooltip.querySelector("small").textContent = formatDate(point.dataset.date);
+              tooltip.classList.add("is-visible");
+            };
+            point.addEventListener("mouseenter", show);
+            point.addEventListener("focus", show);
+            point.addEventListener("click", show);
+          });
+        }
+
+        function renderHero() {
+          const latest = latestRecord();
+          const currentWeight = latest ? latest.weight : state.startWeight;
+          const monthDelta = monthChange();
+          const sign = monthDelta > 0 ? "+" : "";
+          $("#hero-current-chip").textContent = latest ? formatDate(latest.date) : "بدون ثبت";
+          $("#hero-current-weight").textContent = formatWeight(currentWeight);
+          $("#hero-goal-weight").textContent = formatWeight(state.goalWeight);
+          $("#hero-remaining").textContent = `${toPersianNumber(remainingToGoal())} کیلوگرم`;
+          $("#hero-month-change").textContent = `${sign}${toPersianNumber(monthDelta)} کیلوگرم`;
+          $("#hero-progress-label").textContent = `${new Intl.NumberFormat("fa-IR").format(progressPercent())}٪ مسیر طی شده`;
+          $("#hero-progress-fill").style.setProperty("--progress", `${progressPercent()}%`);
+          $("#hero-progress-copy").textContent =
+            remainingToGoal() === 0
+              ? "به وزن هدف رسیده‌اید و می‌توانید فقط روند آرام نگه‌داری را دنبال کنید."
+              : `تا وزن هدف حدود ${toPersianNumber(remainingToGoal())} کیلوگرم فاصله مانده است.`;
+        }
+
+        function renderFilters() {
+          $$(".chart-filter").forEach((button) => {
+            button.classList.toggle("is-active", Number(button.dataset.range) === state.range);
+          });
+        }
+
+        function renderHistory() {
+          const list = $("#history-list");
+          const rows = descendingRecords();
+          if (!rows.length) {
+            list.innerHTML = `
+              <div class="body-history__empty">
+                <strong>هنوز ثبتی در تاریخچه ندارید</strong>
+                <p>اولین ثبت وزن یا اندازه‌ها از همین صفحه به تاریخچه اضافه می‌شود.</p>
+              </div>
+            `;
+            return;
+          }
+
+          list.innerHTML = rows
+            .map((record, index) => {
+              const chronological = sortedRecords();
+              const currentIndex = chronological.findIndex((item) => item.id === record.id);
+              const previous = currentIndex > 0 ? chronological[currentIndex - 1] : null;
+              const change = previous ? record.weight - previous.weight : 0;
+              const changeText = previous
+                ? `${change > 0 ? "+" : ""}${toPersianNumber(change)} کیلوگرم`
+                : "بدون مقایسه";
+              const noteText = record.note?.trim() || "بدون یادداشت";
+              return `
+                <article class="history-row" data-record-id="${record.id}">
+                  <div class="history-row__main">
+                    <div class="history-row__top">
+                      <strong>${formatDate(record.date)}</strong>
+                      <span>${formatWeight(record.weight)}</span>
+                      <span class="history-change${previous ? "" : " is-neutral"}">${changeText}</span>
+                    </div>
+                    <small>${noteText}</small>
+                  </div>
+                  <details class="history-menu">
+                    <summary aria-label="بیشتر">⋯</summary>
+                    <div class="history-menu__panel">
+                      <button class="button button--quiet button--sm" type="button" data-edit-id="${record.id}">ویرایش</button>
+                      <button class="button button--quiet button--sm" type="button" data-delete-id="${record.id}">حذف</button>
+                    </div>
+                  </details>
+                </article>
+              `;
+            })
+            .join("");
+        }
+
+        function renderMeasuresTrend() {
+          const stage = $("#measures-trend");
+          const chronological = sortedRecords();
+          const fields = [
+            { key: "waist", label: "دور کمر" },
+            { key: "belly", label: "دور شکم" },
+            { key: "hip", label: "دور باسن" }
+          ];
+
+          const cards = fields
+            .map((field) => {
+              const withValues = chronological.filter((item) => item.measures?.[field.key] !== null && item.measures?.[field.key] !== undefined);
+              if (!withValues.length) return null;
+              const latest = withValues.at(-1);
+              const previous = withValues.length > 1 ? withValues.at(-2) : null;
+              const delta = previous ? latest.measures[field.key] - previous.measures[field.key] : null;
+              return `
+                <article class="body-measure-card">
+                  <span>${field.label}</span>
+                  <strong>${toPersianNumber(latest.measures[field.key])} سانتی‌متر</strong>
+                  <small>${delta === null ? "هنوز مقایسه‌ای وجود ندارد" : `${delta > 0 ? "+" : ""}${toPersianNumber(delta)} سانتی‌متر نسبت به ثبت قبلی`}</small>
+                </article>
+              `;
+            })
+            .filter(Boolean);
+
+          if (!cards.length) {
+            stage.innerHTML = `
+              <div class="body-measures__empty">
+                <strong>هنوز داده‌ای برای اندازه‌های بدن ثبت نشده است</strong>
+                <p>بعد از ثبت دور کمر، دور شکم یا دور باسن، آخرین تغییر اینجا نمایش داده می‌شود.</p>
+              </div>
+            `;
+            return;
+          }
+
+          stage.innerHTML = cards.join("");
+        }
+
+        function setUploadPreview(form, fileName, fileData) {
+          const preview = $("[data-preview]", form);
+          if (!preview) return;
+          if (!fileData) {
+            preview.classList.remove("is-visible");
+            preview.innerHTML = "";
+            return;
+          }
+          preview.classList.add("is-visible");
+          preview.innerHTML = `
+            <img src="${fileData}" alt="پیش‌نمایش عکس پیشرفت" />
+            <div class="upload-preview__meta">
+              <small>${fileName || "عکس انتخاب‌شده"}</small>
+              <button class="button button--quiet button--sm" type="button" data-clear-photo>حذف عکس</button>
+            </div>
+          `;
+        }
+
+        function fillForm(form, record = null) {
+          const today = todayDateOnly;
+          form.reset();
+          form.dataset.editingId = record?.id || "";
+          form.elements.weight.value = record ? record.weight : "";
+          form.elements.date.value = record ? record.date : today;
+          form.elements.waist.value = record?.measures?.waist ?? "";
+          form.elements.belly.value = record?.measures?.belly ?? "";
+          form.elements.hip.value = record?.measures?.hip ?? "";
+          form.elements.thigh.value = record?.measures?.thigh ?? "";
+          form.elements.arm.value = record?.measures?.arm ?? "";
+          form.elements.note.value = record?.note ?? "";
+          form.dataset.photoName = record?.photoName || "";
+          form.dataset.photoData = record?.photoData || "";
+          setUploadPreview(form, form.dataset.photoName, form.dataset.photoData);
+        }
+
+        function syncForms(record = null) {
+          $$("form[data-form-scope]").forEach((form) => fillForm(form, record));
+        }
+
+        function parseFormRecord(form) {
+          const weight = Number(form.elements.weight.value);
+          const date = form.elements.date.value;
+          if (!weight || !date) return null;
+          return {
+            id: form.dataset.editingId || `r${Date.now()}`,
+            weight,
+            date,
+            note: form.elements.note.value.trim(),
+            measures: {
+              waist: Number(form.elements.waist.value) || null,
+              belly: Number(form.elements.belly.value) || null,
+              hip: Number(form.elements.hip.value) || null,
+              thigh: Number(form.elements.thigh.value) || null,
+              arm: Number(form.elements.arm.value) || null
+            },
+            photoName: form.dataset.photoName || "",
+            photoData: form.dataset.photoData || ""
+          };
+        }
+
+        function upsertRecord(record) {
+          const index = state.records.findIndex((item) => item.id === record.id);
+          if (index >= 0) state.records[index] = record;
+          else state.records.push(record);
+          state.records.sort((a, b) => a.date.localeCompare(b.date));
+          saveState();
+          renderAll();
+        }
+
+        function renderAll() {
+          renderHero();
+          renderFilters();
+          buildChart();
+          renderMeasuresTrend();
+          renderHistory();
+        }
+
+        function openWeightEntry() {
+          if (window.matchMedia("(max-width: 55.99rem)").matches) {
+            syncForms(null);
+            openDialog($("#mobile-log-sheet"));
+          } else {
+            const desktopForm = $('form[data-form-scope="desktop"]');
+            syncForms(null);
+            desktopForm?.elements.weight.focus();
+          }
+        }
+
+        function handleFormSubmit(form) {
+          const record = parseFormRecord(form);
+          if (!record) {
+            showToast("برای ذخیره، وزن و تاریخ را کامل کنید.", "error");
+            return;
+          }
+          const editing = Boolean(form.dataset.editingId);
+          upsertRecord(record);
+          syncForms(null);
+          if (form.dataset.formScope === "mobile") closeDialog($("#mobile-log-sheet"));
+          showToast(editing ? "ثبت انتخاب‌شده ویرایش شد." : "ثبت وزن امروز ذخیره شد");
+        }
+
+        async function handleFileChange(input) {
+          const form = input.closest("form");
+          const file = input.files?.[0];
+          if (!form) return;
+          if (!file) {
+            form.dataset.photoName = "";
+            form.dataset.photoData = "";
+            setUploadPreview(form, "", "");
+            return;
+          }
+          try {
+            const dataUrl = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(String(reader.result || ""));
+              reader.onerror = () => reject(new Error("file-read-failed"));
+              reader.readAsDataURL(file);
+            });
+            form.dataset.photoName = file.name;
+            form.dataset.photoData = dataUrl;
+            setUploadPreview(form, file.name, dataUrl);
+          } catch {
+            showToast("عکس پیشرفت خوانده نشد. دوباره تلاش کنید.", "error");
+          }
+        }
+
+        $("#hero-log-button").addEventListener("click", openWeightEntry);
+        $("#mobile-log-button").addEventListener("click", openWeightEntry);
+
+        $("#chart-filters").addEventListener("click", (event) => {
+          const filter = event.target.closest("[data-range]");
+          if (!filter) return;
+          state.range = Number(filter.dataset.range);
+          saveState();
+          renderFilters();
+          buildChart();
+        });
+
+        $$("form[data-form-scope]").forEach((form) => {
+          fillForm(form);
+          form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            handleFormSubmit(form);
+          });
+          form.addEventListener("change", (event) => {
+            const fileInput = event.target.closest('input[type="file"]');
+            if (fileInput) handleFileChange(fileInput);
+          });
+          form.addEventListener("click", (event) => {
+            const clear = event.target.closest("[data-clear-photo]");
+            if (!clear) return;
+            form.dataset.photoName = "";
+            form.dataset.photoData = "";
+            form.elements.photo.value = "";
+            setUploadPreview(form, "", "");
+          });
+          form.addEventListener("click", (event) => {
+            const openDetails = event.target.closest("[data-open-details]");
+            if (!openDetails) return;
+            const accordion = $(".body-accordion", form);
+            if (!accordion) return;
+            accordion.open = !accordion.open;
+          });
+        });
+
+        $("#history-list").addEventListener("click", (event) => {
+          const editButton = event.target.closest("[data-edit-id]");
+          const deleteButton = event.target.closest("[data-delete-id]");
+          if (editButton) {
+            const record = state.records.find((item) => item.id === editButton.dataset.editId);
+            if (!record) return;
+            syncForms(record);
+            if (window.matchMedia("(max-width: 55.99rem)").matches) {
+              openDialog($("#mobile-log-sheet"));
+            } else {
+              $('form[data-form-scope="desktop"]')?.elements.weight.focus();
+            }
+            event.target.closest("details")?.removeAttribute("open");
+          }
+          if (deleteButton) {
+            state.deleteId = deleteButton.dataset.deleteId;
+            openDialog($("#delete-dialog"));
+            event.target.closest("details")?.removeAttribute("open");
+          }
+        });
+
+        $("#confirm-delete-button").addEventListener("click", () => {
+          if (!state.deleteId) return;
+          state.records = state.records.filter((item) => item.id !== state.deleteId);
+          state.deleteId = null;
+          saveState();
+          renderAll();
+          closeDialog($("#delete-dialog"));
+          showToast("ثبت انتخاب‌شده از تاریخچه حذف شد.");
+        });
+
+        $$("[data-close-dialog]").forEach((button) => {
+          button.addEventListener("click", () => closeDialog(button.closest("dialog")));
+        });
+
+        $$("dialog").forEach((dialog) => {
+          dialog.addEventListener("click", (event) => {
+            if (event.target === dialog) closeDialog(dialog);
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          $$("details.history-menu[open]").forEach((menu) => {
+            if (!menu.contains(event.target)) menu.removeAttribute("open");
+          });
+        });
+
+        $("#toast-undo")?.addEventListener("click", () => {
+          $("#toast").hidden = true;
+        });
+
+        renderAll();
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="original">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0d685d" />
+    <title>امروز — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body class="app-body" data-page="dashboard" data-theme="original">
+    <a class="skip-link" href="#dashboard-main">پرش به محتوای امروز</a>
+    <div class="app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی محصول">
+        <a class="brand" href="dashboard-botanical.html"
+          ><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect
+              class="brand-mark__plan"
+              x="7"
+              y="9"
+              width="29"
+              height="11"
+              rx="5.5"
+            />
+            <rect
+              class="brand-mark__actual"
+              x="12"
+              y="27"
+              width="29"
+              height="11"
+              rx="5.5"
+            />
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4" /></svg
+          ><span>آووکادو</span></a
+        >
+        <nav aria-label="بخش‌های اصلی">
+          <a href="dashboard-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+          <a href="food-log-botanical.html"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت غذا</span></a>
+          <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+          <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">پروفایل</span></a>
+        </nav>
+        <div class="side-nav__foot">
+          کالری‌ها مقادیر دستی واردشده توسط شما هستند.
+        </div>
+      </aside>
+      <main class="app-main" id="dashboard-main" data-od-id="dashboard-page">
+        <header class="app-topbar">
+          <div class="app-topbar__title">
+            <span>صبح بخیر، سارا</span><strong>چهارشنبه، ۱۹ تیر ۱۴۰۵</strong>
+          </div>
+          <div class="app-topbar__actions">
+            <button
+              class="icon-button notification-button"
+              type="button"
+              aria-label="اعلان‌ها"
+              data-open-dialog="notifications-dialog"
+            >
+              <svg class="icon" aria-hidden="true">
+                <use href="assets/icons.svg#icon-bell" />
+              </svg></button
+            ><a
+              class="avatar-link"
+              href="settings-botanical.html"
+              aria-label="پروفایل سارا"
+              >س</a
+            >
+          </div>
+        </header>
+        <div class="app-container page-content">
+          <div class="page-heading">
+            <div>
+              <h1>امروز</h1>
+              <p>چیزی که همین حالا به کارتان می‌آید.</p>
+            </div>
+          </div>
+          <section class="daily-hero" aria-label="خلاصه و اقدام اصلی امروز">
+            <button
+              class="daily-action"
+              type="button"
+              data-open-food
+              data-od-id="dashboard-add-food"
+            >
+              <span class="daily-action__icon"
+                ><svg class="icon icon--lg" aria-hidden="true">
+                  <use href="assets/icons.svg#icon-plus" /></svg></span
+              ><span
+                ><strong>ثبت غذایی که خوردید</strong
+                ><small>نام، مقدار و کالری دستی</small></span
+              ><img
+                class="daily-action__art"
+                src="avocado-slice.png"
+                alt=""
+                aria-hidden="true"
+              />
+            </button>
+            <div class="daily-stat">
+              <article class="stat-panel">
+                <span>ثبت‌شده امروز</span
+                ><strong id="today-count">۴ مورد</strong
+                ><small id="today-meals">در ۲ وعده</small>
+              </article>
+              <article class="stat-panel">
+                <span>کالری دستی امروز</span
+                ><strong class="bidi" id="today-calories">۵۶۰ kcal</strong
+                ><small>جمع مقادیر واردشده</small>
+              </article>
+            </div>
+          </section>
+
+          <div class="dashboard-grid">
+            <div class="dashboard-primary">
+              <section
+                class="dashboard-section"
+                aria-labelledby="meals-title"
+                data-od-id="dashboard-meals"
+              >
+                <div class="section-bar">
+                  <div>
+                    <h2 id="meals-title">غذای ثبت‌شده امروز</h2>
+                    <p>آنچه واقعاً خورده‌اید</p>
+                  </div>
+                  <span class="semantic-label semantic-label--actual"
+                    ><i
+                      class="track-marker track-marker--actual"
+                      aria-hidden="true"
+                    ></i
+                    >ثبت واقعی</span
+                  >
+                </div>
+                <div class="meal-groups" id="meal-groups">
+                  <article class="meal-group" data-meal-group="breakfast">
+                    <header class="meal-group__header">
+                      <div class="meal-group__title">
+                        <span
+                          ><svg class="icon" aria-hidden="true">
+                            <use
+                              href="assets/icons.svg#icon-utensils"
+                            /></svg></span
+                        ><span
+                          ><strong>صبحانه</strong
+                          ><small data-meal-count>۳ مورد</small></span
+                        >
+                      </div>
+                      <button
+                        class="icon-button"
+                        type="button"
+                        aria-label="افزودن به صبحانه"
+                        data-open-food
+                        data-meal="breakfast"
+                      >
+                        <svg class="icon" aria-hidden="true">
+                          <use href="assets/icons.svg#icon-plus" />
+                        </svg>
+                      </button>
+                    </header>
+                    <div data-meal-list="breakfast"></div>
+                  </article>
+                  <article class="meal-group" data-meal-group="lunch">
+                    <header class="meal-group__header">
+                      <div class="meal-group__title">
+                        <span
+                          ><svg class="icon" aria-hidden="true">
+                            <use
+                              href="assets/icons.svg#icon-utensils"
+                            /></svg></span
+                        ><span
+                          ><strong>ناهار</strong
+                          ><small data-meal-count>ثبت نشده</small></span
+                        >
+                      </div>
+                      <button
+                        class="icon-button"
+                        type="button"
+                        aria-label="افزودن به ناهار"
+                        data-open-food
+                        data-meal="lunch"
+                      >
+                        <svg class="icon" aria-hidden="true">
+                          <use href="assets/icons.svg#icon-plus" />
+                        </svg>
+                      </button>
+                    </header>
+                    <div data-meal-list="lunch"></div>
+                    <div class="meal-group__empty" data-meal-empty="lunch">
+                      <span>هنوز غذایی برای ناهار ثبت نشده است.</span
+                      ><button
+                        class="button button--quiet button--sm"
+                        type="button"
+                        data-open-food
+                        data-meal="lunch"
+                      >
+                        ثبت غذا
+                      </button>
+                    </div>
+                  </article>
+                  <article class="meal-group" data-meal-group="dinner">
+                    <header class="meal-group__header">
+                      <div class="meal-group__title">
+                        <span
+                          ><svg class="icon" aria-hidden="true">
+                            <use
+                              href="assets/icons.svg#icon-utensils"
+                            /></svg></span
+                        ><span
+                          ><strong>شام</strong
+                          ><small data-meal-count>ثبت نشده</small></span
+                        >
+                      </div>
+                      <button
+                        class="icon-button"
+                        type="button"
+                        aria-label="افزودن به شام"
+                        data-open-food
+                        data-meal="dinner"
+                      >
+                        <svg class="icon" aria-hidden="true">
+                          <use href="assets/icons.svg#icon-plus" />
+                        </svg>
+                      </button>
+                    </header>
+                    <div data-meal-list="dinner"></div>
+                    <div class="meal-group__empty" data-meal-empty="dinner">
+                      <span>شام امروز هنوز ثبت نشده است.</span
+                      ><button
+                        class="button button--quiet button--sm"
+                        type="button"
+                        data-open-food
+                        data-meal="dinner"
+                      >
+                        ثبت غذا
+                      </button>
+                    </div>
+                  </article>
+                  <article class="meal-group" data-meal-group="snack">
+                    <header class="meal-group__header">
+                      <div class="meal-group__title">
+                        <span
+                          ><svg class="icon" aria-hidden="true">
+                            <use
+                              href="assets/icons.svg#icon-utensils"
+                            /></svg></span
+                        ><span
+                          ><strong>میان‌وعده</strong
+                          ><small data-meal-count>۱ مورد</small></span
+                        >
+                      </div>
+                      <button
+                        class="icon-button"
+                        type="button"
+                        aria-label="افزودن به میان‌وعده"
+                        data-open-food
+                        data-meal="snack"
+                      >
+                        <svg class="icon" aria-hidden="true">
+                          <use href="assets/icons.svg#icon-plus" />
+                        </svg>
+                      </button>
+                    </header>
+                    <div data-meal-list="snack"></div>
+                  </article>
+                  <article class="meal-group" data-meal-group="other">
+                    <header class="meal-group__header">
+                      <div class="meal-group__title">
+                        <span
+                          ><svg class="icon" aria-hidden="true">
+                            <use
+                              href="assets/icons.svg#icon-utensils"
+                            /></svg></span
+                        ><span
+                          ><strong>سایر</strong
+                          ><small data-meal-count>ثبت نشده</small></span
+                        >
+                      </div>
+                      <button
+                        class="icon-button"
+                        type="button"
+                        aria-label="افزودن به سایر"
+                        data-open-food
+                        data-meal="other"
+                      >
+                        <svg class="icon" aria-hidden="true">
+                          <use href="assets/icons.svg#icon-plus" />
+                        </svg>
+                      </button>
+                    </header>
+                    <div data-meal-list="other"></div>
+                    <div class="meal-group__empty" data-meal-empty="other">
+                      <span>مورد دیگری ثبت نشده است.</span
+                      ><button
+                        class="button button--quiet button--sm"
+                        type="button"
+                        data-open-food
+                        data-meal="other"
+                      >
+                        ثبت غذا
+                      </button>
+                    </div>
+                  </article>
+                </div>
+              </section>
+            </div>
+
+            <aside
+              class="dashboard-secondary"
+              aria-label="برنامه‌ها و میان‌برهای امروز"
+            >
+              <section class="dashboard-section">
+                <div class="section-bar">
+                  <div>
+                    <h2>برنامه‌های فعال</h2>
+                    <p>آنچه قصد دارید انجام دهید</p>
+                  </div>
+                  <span class="semantic-label"
+                    ><i class="track-marker" aria-hidden="true"></i>برنامه</span
+                  >
+                </div>
+                <div class="shortcut-grid">
+                  <article class="shortcut shortcut--plan">
+                    <div>
+                      <div class="shortcut__top">
+                        <span class="shortcut__type"
+                          ><svg class="icon icon--sm" aria-hidden="true">
+                            <use href="assets/icons.svg#icon-plan" /></svg
+                          >برنامه غذایی</span
+                        ><span class="status-chip">ناهار</span>
+                      </div>
+                      <h3>مرغ و برنج با سالاد</h3>
+                      <p>برنامه متعادل چهار هفته‌ای · ساعت ۱۳:۳۰</p>
+                    </div>
+                    <button
+                      class="button button--plan button--sm"
+                      type="button"
+                      data-open-food
+                      data-source="plan"
+                      data-name="مرغ و برنج با سالاد"
+                      data-amount="۱ بشقاب"
+                      data-calories="۵۲۰"
+                      data-meal="lunch"
+                    >
+                      پیش‌پرکردن فرم ثبت
+                    </button>
+                  </article>
+                  <a class="shortcut shortcut--workout" href="plans-botanical.html"
+                    ><div class="shortcut__top">
+                      <span class="shortcut__type"
+                        ><svg class="icon icon--sm" aria-hidden="true">
+                          <use href="assets/icons.svg#icon-dumbbell" /></svg
+                        >برنامه تمرینی</span
+                      ><span class="status-chip">امروز</span>
+                    </div>
+                    <div>
+                      <h3>قدرت پایه · جلسه ۳</h3>
+                      <p>۴ حرکت · حدود ۳۵ دقیقه</p>
+                    </div></a
+                  >
+                </div>
+              </section>
+
+              <section class="dashboard-section">
+                <div class="section-bar">
+                  <div>
+                    <h2>ادامه مسیر</h2>
+                    <p>هر زمان آماده بودید</p>
+                  </div>
+                </div>
+                <div class="prompt-list">
+                  <div class="progress-prompt">
+                    <div class="progress-prompt__ring progress-70">
+                      <span>۷۰٪</span>
+                    </div>
+                    <span
+                      ><strong>اطلاعات سلامت</strong
+                      ><small>دو بخش دیگر باقی مانده</small></span
+                    ><a
+                      class="button button--secondary button--sm"
+                      href="settings-botanical.html"
+                      >ادامه</a
+                    >
+                  </div>
+                  <div class="progress-prompt">
+                    <div class="progress-prompt__ring progress-44">
+                      <span>۴/۹</span>
+                    </div>
+                    <span
+                      ><strong>پرسش‌نامه تغذیه</strong
+                      ><small>از پرسش چهارم ادامه دهید</small></span
+                    ><a
+                      class="button button--secondary button--sm"
+                      href="settings-botanical.html"
+                      >ادامه</a
+                    >
+                  </div>
+                </div>
+              </section>
+
+              <section
+                class="dashboard-section"
+                data-od-id="dashboard-reuse-foods"
+              >
+                <div class="section-bar">
+                  <div>
+                    <h2>انتخاب سریع</h2>
+                    <p>فقط فرم را پر می‌کند</p>
+                  </div>
+                </div>
+                <div
+                  class="tabs"
+                  role="tablist"
+                  aria-label="خوراک‌های قابل استفاده دوباره"
+                >
+                  <button
+                    id="recent-tab"
+                    type="button"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="recent-panel"
+                  >
+                    اخیر</button
+                  ><button
+                    id="saved-tab"
+                    type="button"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="saved-panel"
+                  >
+                    ذخیره‌شده
+                  </button>
+                </div>
+                <div
+                  id="recent-panel"
+                  role="tabpanel"
+                  aria-labelledby="recent-tab"
+                  class="reuse-list"
+                >
+                  <button
+                    class="reuse-item"
+                    type="button"
+                    data-open-food
+                    data-source="recent"
+                    data-name="ماست کم‌چرب"
+                    data-amount="۱۵۰ گرم"
+                    data-calories="۹۵"
+                    data-meal="snack"
+                  >
+                    <span class="reuse-item__glyph">م</span
+                    ><span
+                      ><strong>ماست کم‌چرب</strong
+                      ><small>دیروز · ۱۵۰ گرم</small></span
+                    ><span class="reuse-item__add">+</span></button
+                  ><button
+                    class="reuse-item"
+                    type="button"
+                    data-open-food
+                    data-source="recent"
+                    data-name="قهوه با شیر"
+                    data-amount="۱ فنجان"
+                    data-calories="۹۲"
+                    data-meal="snack"
+                  >
+                    <span class="reuse-item__glyph">ق</span
+                    ><span
+                      ><strong>قهوه با شیر</strong
+                      ><small>امروز · ۱ فنجان</small></span
+                    ><span class="reuse-item__add">+</span>
+                  </button>
+                </div>
+                <div
+                  id="saved-panel"
+                  role="tabpanel"
+                  aria-labelledby="saved-tab"
+                  class="reuse-list"
+                  hidden
+                >
+                  <button
+                    class="reuse-item"
+                    type="button"
+                    data-open-food
+                    data-source="saved"
+                    data-name="صبحانه همیشگی"
+                    data-amount="۱ مجموعه"
+                    data-calories="۴۷۰"
+                    data-meal="breakfast"
+                  >
+                    <span class="reuse-item__glyph"
+                      ><svg class="icon icon--sm" aria-hidden="true">
+                        <use href="assets/icons.svg#icon-star" /></svg></span
+                    ><span
+                      ><strong>صبحانه همیشگی</strong
+                      ><small>نان، پنیر، تخم‌مرغ و چای</small></span
+                    ><span class="reuse-item__add">+</span></button
+                  ><button
+                    class="reuse-item"
+                    type="button"
+                    data-open-food
+                    data-source="saved"
+                    data-name="سیب و ماست"
+                    data-amount="۱ میان‌وعده"
+                    data-calories="۱۷۵"
+                    data-meal="snack"
+                  >
+                    <span class="reuse-item__glyph"
+                      ><svg class="icon icon--sm" aria-hidden="true">
+                        <use href="assets/icons.svg#icon-star" /></svg></span
+                    ><span
+                      ><strong>سیب و ماست</strong
+                      ><small>مورد شخصی ذخیره‌شده</small></span
+                    ><span class="reuse-item__add">+</span>
+                  </button>
+                </div>
+              </section>
+
+              <section class="dashboard-section">
+                <div class="section-bar">
+                  <div>
+                    <h2>خلاصه روز</h2>
+                    <p>پیشرفت ثبت، نه امتیاز سلامت</p>
+                  </div>
+                </div>
+                <div class="daily-progress">
+                  <div class="progress-copy">
+                    <span id="day-progress-copy">۲ وعده از ۵ گروه ثبت شده</span
+                    ><span id="day-progress-percent">۴۰٪</span>
+                  </div>
+                  <div class="progress-track">
+                    <span class="progress-40" id="day-progress-bar"></span>
+                  </div>
+                  <div class="calorie-note">
+                    <svg class="icon icon--sm" aria-hidden="true">
+                      <use href="assets/icons.svg#icon-info" /></svg
+                    ><span
+                      >جمع کالری فقط بر اساس اعدادی است که خودتان دستی وارد
+                      کرده‌اید.</span
+                    >
+                  </div>
+                </div>
+              </section>
+            </aside>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل">
+      <a href="dashboard-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+      <a href="food-log-botanical.html"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت غذا</span></a>
+      <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+      <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">پروفایل</span></a>
+    </nav>
+
+    <dialog class="sheet" id="food-dialog" aria-labelledby="food-dialog-title">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__header">
+        <div>
+          <h2 id="food-dialog-title">ثبت غذایی که خوردید</h2>
+          <p>مقدار واقعی و کالری دستی را پیش از ثبت بررسی کنید.</p>
+        </div>
+        <button
+          class="icon-button"
+          type="button"
+          data-close-dialog
+          aria-label="بستن"
+        >
+          <svg class="icon" aria-hidden="true">
+            <use href="assets/icons.svg#icon-close" />
+          </svg>
+        </button>
+      </div>
+      <div class="prefill-notice" id="prefill-notice" hidden>
+        <svg class="icon icon--sm" aria-hidden="true">
+          <use href="assets/icons.svg#icon-info" /></svg
+        ><span id="prefill-text"
+          >این اطلاعات فقط فرم را پر کرده و هنوز ثبت نشده است.</span
+        >
+      </div>
+      <form class="form-stack" id="food-form">
+        <label class="field"
+          ><span class="field__label">نام خوراک</span
+          ><input
+            id="food-name"
+            name="name"
+            type="text"
+            required
+            autocomplete="off"
+            placeholder="مثلاً نان سنگک و پنیر" /></label
+        ><label class="field"
+          ><span class="field__label">مقدار واقعی</span
+          ><input
+            id="food-amount"
+            name="amount"
+            type="text"
+            required
+            placeholder="مثلاً ۱ سهم" /></label
+        ><label class="field"
+          ><span class="field__label"
+            >کالری دستی <small class="field__optional">· اختیاری</small></span
+          ><input
+            id="food-calories"
+            name="calories"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9۰-۹]*"
+            dir="ltr"
+            placeholder="مثلاً ۳۲۰"
+          /><small class="field__hint"
+            >این مقدار توسط شما وارد می‌شود و تأیید پزشکی آووکادو نیست.</small
+          ></label
+        ><label class="field"
+          ><span class="field__label">وعده</span
+          ><select id="food-meal" name="meal">
+            <option value="breakfast">صبحانه</option>
+            <option value="lunch">ناهار</option>
+            <option value="dinner">شام</option>
+            <option value="snack">میان‌وعده</option>
+            <option value="other">سایر</option>
+          </select></label
+        >
+        <div class="sheet-actions">
+          <button
+            class="button button--secondary"
+            type="button"
+            data-close-dialog
+          >
+            انصراف</button
+          ><button class="button button--primary" type="submit">
+            ثبت به‌عنوان خورده‌شده
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog
+      class="modal"
+      id="notifications-dialog"
+      aria-labelledby="notifications-title"
+    >
+      <div class="sheet__header">
+        <div>
+          <h2 id="notifications-title">اعلان‌ها</h2>
+          <p>دو مورد تازه</p>
+        </div>
+        <button
+          class="icon-button"
+          type="button"
+          data-close-dialog
+          aria-label="بستن"
+        >
+          <svg class="icon" aria-hidden="true">
+            <use href="assets/icons.svg#icon-close" />
+          </svg>
+        </button>
+      </div>
+      <div class="prompt-list">
+        <div class="progress-prompt">
+          <span class="reuse-item__glyph"
+            ><svg class="icon" aria-hidden="true">
+              <use href="assets/icons.svg#icon-profile" /></svg></span
+          ><span
+            ><strong>اطلاعات سلامت نیمه‌کاره است</strong
+            ><small>پاسخ‌های قبلی شما ذخیره شده‌اند.</small></span
+          >
+        </div>
+        <div class="progress-prompt">
+          <span class="reuse-item__glyph"
+            ><svg class="icon" aria-hidden="true">
+              <use href="assets/icons.svg#icon-plan" /></svg></span
+          ><span
+            ><strong>برنامه تمرینی امروز</strong
+            ><small>جلسه سوم برای امروز آماده است.</small></span
+          >
+        </div>
+      </div>
+    </dialog>
+    <div
+      class="toast"
+      id="toast"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      hidden
+    >
+      <span class="toast__check"
+        ><svg class="icon icon--sm" aria-hidden="true">
+          <use href="assets/icons.svg#icon-check" /></svg></span
+      ><span id="toast-message">خوراک به ثبت امروز اضافه شد.</span
+      ><button type="button" id="toast-undo">واگردانی</button>
+    </div>
+  </body>
+</html>

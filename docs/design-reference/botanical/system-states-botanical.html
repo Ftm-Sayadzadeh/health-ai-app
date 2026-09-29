@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" /><meta name="theme-color" content="#123f26" /><title>حالت‌های سیستمی — آووکادو</title><link rel="icon" type="image/png" href="4-2.png" /><link rel="stylesheet" href="tokens/tokens.css" /><link rel="stylesheet" href="styles.css" /><script src="app.js" defer></script></head>
+  <body class="app-body" data-page="system-states" data-theme="botanical">
+    <main class="app-container page-content" data-od-id="system-states-page">
+      <header class="page-heading"><div><h1>حالت‌های عمومی و سیستمی</h1><p>نمونه‌های قابل استفاده برای خطا، آفلاین، permission و صفحات بدون داده.</p></div><a class="button button--primary" href="dashboard-botanical.html">بازگشت به امروز</a></header>
+      <section class="state-grid">
+        <article class="state-panel" data-state="empty"><img class="permission-art" src="avocado-half.png" alt="" /><h3>صفحه ۴۰۴</h3><p>این مسیر در آووکادو پیدا نشد.</p><a class="button button--secondary button--sm" href="dashboard-botanical.html">رفتن به امروز</a></article>
+        <article class="state-panel" data-state="error"><h3>خطای اینترنت</h3><p>اتصال کامل نیست. ثبت‌های محلی محفوظ می‌مانند.</p><button class="button button--secondary button--sm" data-action-toast="اتصال دوباره بررسی شد.">تلاش دوباره</button></article>
+        <article class="state-panel" data-state="error"><h3>خطای سرور</h3><p>دریافت اطلاعات کامل نشد. بعداً دوباره تلاش کنید.</p></article>
+        <article class="state-panel"><h3>حالت آفلاین</h3><p>می‌توانید ثبت‌های امروز را ادامه دهید؛ همگام‌سازی بعداً انجام می‌شود.</p></article>
+        <article class="state-panel" data-state="loading"><span></span><span></span><span></span></article>
+        <article class="state-panel" data-state="success"><h3>موفقیت</h3><p>مورد تازه ذخیره شد و در مقصد مربوطه دیده می‌شود.</p></article>
+        <article class="state-panel" data-state="empty"><h3>بدون داده</h3><p>برای نمایش این بخش چند ثبت دیگر لازم است.</p></article>
+        <article class="state-panel"><h3>تعمیرات</h3><p>بخشی از سرویس در حال به‌روزرسانی است. داده‌های شما محفوظ است.</p></article>
+        <article class="state-panel"><h3>اجازه دوربین</h3><p>برای ثبت غذا با عکس، اجازه دوربین لازم است.</p><button class="button button--primary button--sm" data-action-toast="درخواست اجازه دوربین نمایش داده شد.">اجازه دوربین</button></article>
+        <article class="state-panel"><h3>اجازه اعلان‌ها</h3><p>برای یادآوری آب، تمرین و دارو از اعلان استفاده می‌شود.</p><button class="button button--primary button--sm" data-action-toast="درخواست اجازه اعلان نمایش داده شد.">اجازه اعلان</button></article>
+        <article class="state-panel"><h3>اجازه فایل‌ها</h3><p>برای بارگذاری PDF یا تصویر برنامه، دسترسی فایل لازم است.</p><button class="button button--primary button--sm" data-action-toast="انتخاب فایل باز شد.">انتخاب فایل</button></article>
+      </section>
+    </main>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden><span class="toast__check"><svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons.svg#icon-check" /></svg></span><span id="toast-message">انجام شد.</span><button type="button" id="toast-undo">بستن</button></div>
+  </body>
+</html>

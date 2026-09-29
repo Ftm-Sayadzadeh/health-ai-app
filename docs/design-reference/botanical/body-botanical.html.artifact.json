@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "body-botanical.html",
+  "entry": "body-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-31T09:32:30.846Z",
+  "updatedAt": "2026-07-31T09:32:30.846Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#123f26" />
+    <title>ثبت سریع — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body[data-page="quick-log"] .page-content {
+        padding-block-end: calc(var(--av-bottom-nav-height) + env(safe-area-inset-bottom) + var(--av-space-8));
+      }
+
+      body[data-page="quick-log"] .quick-log-page-shell {
+        width: min(100%, 48rem);
+        display: grid;
+        gap: 1rem;
+      }
+
+      body[data-page="quick-log"] .quick-log-page-shell .page-heading {
+        display: grid;
+        gap: .7rem;
+        padding: 0;
+        border: 0;
+        background: transparent;
+      }
+
+      body[data-page="quick-log"] .quick-log-breadcrumb {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        color: var(--av-color-ink-muted);
+        font-size: .78rem;
+      }
+
+      body[data-page="quick-log"] .quick-log-breadcrumb .icon {
+        inline-size: .9rem;
+        block-size: .9rem;
+        transform: rotate(180deg);
+      }
+
+      body[data-page="quick-log"] .quick-log-page-shell h1 {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+        font-size: clamp(1.7rem, 1.38rem + 1vw, 2.15rem);
+        font-weight: 800;
+        line-height: 1.4;
+      }
+
+      body[data-page="quick-log"] .quick-log-page-shell .page-heading p {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+        font-size: .96rem;
+      }
+
+      body[data-page="quick-log"] .quick-log-page-card {
+        display: grid;
+        gap: .9rem;
+        width: min(100%, 53.125rem);
+        margin-inline: auto;
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 4%, var(--av-color-border));
+        border-radius: 1.2rem 1.2rem .5rem 1.2rem;
+        background: color-mix(in oklch, var(--av-color-surface) 96%, var(--av-color-canvas));
+        padding: .7rem;
+        box-shadow: none;
+      }
+
+      body[data-page="quick-log"] .quick-log-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      body[data-page="quick-log"] .quick-log-card {
+        min-block-size: 10rem;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: .6rem;
+        border: 1px solid var(--av-color-border);
+        border-radius: 1.15rem 1.15rem .45rem 1.15rem;
+        padding: 1.25rem;
+        background: var(--card-surface, var(--av-color-surface));
+        color: inherit;
+        text-decoration: none;
+        transition: transform 180ms var(--ease-out), border-color 180ms var(--ease-out), background-color 180ms var(--ease-out);
+      }
+
+      body[data-page="quick-log"] .quick-log-card:hover {
+        transform: translateY(-4px);
+        border-color: color-mix(in oklch, var(--av-color-primary) 28%, var(--av-color-border-strong));
+      }
+
+      body[data-page="quick-log"] .quick-log-card:focus-visible {
+        outline: 3px solid var(--av-color-focus);
+        outline-offset: 3px;
+      }
+
+      body[data-page="quick-log"] .quick-log-card__head {
+        display: flex;
+        align-items: start;
+        justify-content: flex-start;
+      }
+
+      body[data-page="quick-log"] .quick-log-card__icon {
+        inline-size: 3rem;
+        block-size: 3rem;
+        display: grid;
+        place-items: center;
+        border-radius: .95rem .95rem .35rem .95rem;
+        background: var(--card-icon-surface, var(--av-color-surface-subtle));
+      }
+
+      body[data-page="quick-log"] .quick-log-card__icon img {
+        inline-size: 2.75rem;
+        block-size: 2.75rem;
+        object-fit: contain;
+      }
+
+      body[data-page="quick-log"] .quick-log-card__body {
+        display: grid;
+        align-content: start;
+        gap: .25rem;
+      }
+
+      body[data-page="quick-log"] .quick-log-card__body strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      body[data-page="quick-log"] .quick-log-card__body p {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+        font-size: .82rem;
+        line-height: 1.65;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      body[data-page="quick-log"] .quick-log-card__foot {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .55rem;
+        color: var(--av-color-ink-strong);
+        font-size: .82rem;
+        font-weight: 650;
+      }
+
+      body[data-page="quick-log"] .quick-log-card__foot img {
+        inline-size: 1rem;
+        block-size: 1rem;
+        object-fit: contain;
+        opacity: .9;
+        filter: brightness(0) saturate(100%) invert(16%) sepia(24%) saturate(1133%) hue-rotate(95deg) brightness(94%) contrast(92%);
+        transition: transform 180ms var(--ease-out);
+      }
+
+      body[data-page="quick-log"] .quick-log-card:hover .quick-log-card__foot img {
+        transform: translateX(-4px);
+      }
+
+      body[data-page="quick-log"] .quick-log-card[data-tone="food"] {
+        --card-surface: color-mix(in oklch, var(--av-color-pulse) 8%, var(--av-color-surface));
+        --card-icon-surface: color-mix(in oklch, var(--av-color-pulse) 16%, var(--av-color-surface));
+      }
+
+      body[data-page="quick-log"] .quick-log-card[data-tone="water"] {
+        --card-surface: color-mix(in oklch, var(--av-color-focus) 8%, var(--av-color-surface));
+        --card-icon-surface: color-mix(in oklch, var(--av-color-focus) 16%, var(--av-color-surface));
+      }
+
+      body[data-page="quick-log"] .quick-log-card[data-tone="body"] {
+        --card-surface: color-mix(in oklch, var(--av-color-primary) 7%, var(--av-color-surface));
+        --card-icon-surface: color-mix(in oklch, var(--av-color-primary) 14%, var(--av-color-surface));
+      }
+
+      body[data-page="quick-log"] .quick-log-card[data-tone="workout"] {
+        --card-surface: color-mix(in oklch, var(--av-color-plan) 8%, var(--av-color-surface));
+        --card-icon-surface: color-mix(in oklch, var(--av-color-plan) 14%, var(--av-color-surface));
+      }
+
+      body[data-page="quick-log"] .quick-log-note {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: .5rem;
+        margin: 0;
+        color: var(--av-color-ink-muted);
+        font-size: .8rem;
+        text-align: center;
+      }
+
+      body[data-page="quick-log"] .quick-log-note .icon {
+        inline-size: 1rem;
+        block-size: 1rem;
+        color: var(--av-color-primary);
+      }
+
+      @media (max-width: 40rem) {
+        body[data-page="quick-log"] .quick-log-page-card {
+          padding: .6rem;
+        }
+
+        body[data-page="quick-log"] .quick-log-grid {
+          gap: .8rem;
+        }
+
+        body[data-page="quick-log"] .quick-log-card {
+          min-block-size: 9.5rem;
+          padding: 1rem;
+          gap: .55rem;
+        }
+
+        body[data-page="quick-log"] .quick-log-card__icon {
+          inline-size: 2.75rem;
+          block-size: 2.75rem;
+        }
+
+        body[data-page="quick-log"] .quick-log-card__icon img {
+          inline-size: 2.4rem;
+          block-size: 2.4rem;
+        }
+
+        body[data-page="quick-log"] .quick-log-card__body strong {
+          font-size: .95rem;
+        }
+
+        body[data-page="quick-log"] .quick-log-card__body p,
+        body[data-page="quick-log"] .quick-log-card__foot {
+          font-size: .78rem;
+        }
+      }
+
+      @media (max-width: 25rem) {
+        body[data-page="quick-log"] .quick-log-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+    <script src="app.js" defer></script>
+  </head>
+  <body class="app-body" data-page="quick-log" data-theme="botanical">
+    <a class="skip-link" href="#quick-log-main">پرش به ثبت سریع</a>
+    <div class="app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی محصول">
+        <a class="brand" href="dashboard-botanical.html"><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true"><rect class="brand-mark__plan" x="7" y="9" width="29" height="11" rx="5.5" /><rect class="brand-mark__actual" x="12" y="27" width="29" height="11" rx="5.5" /><circle class="brand-mark__pulse" cx="39" cy="13" r="4" /></svg><span>آووکادو</span></a>
+        <nav aria-label="بخش‌های اصلی">
+          <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+          <a href="quick-log-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+          <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+          <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+          <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+        </nav>
+        <div class="side-nav__foot">مسیرهای اصلی همیشه از همین پنج بخش در دسترس هستند.</div>
+      </aside>
+
+      <main class="app-main" id="quick-log-main" data-od-id="quick-log-page">
+        <header class="app-topbar">
+          <div class="app-topbar__title">
+            <span>ثبت روزانه</span>
+            <strong>ثبت سریع</strong>
+          </div>
+          <div class="app-topbar__actions">
+            <a class="header-action-link" href="messages-botanical.html" aria-label="پیام‌ها">
+              <img class="header-action-icon" src="assets/icons/icon-message.png" alt="" aria-hidden="true" />
+            </a>
+            <a class="header-action-link header-action-link--notification" href="notifications-botanical.html" aria-label="اعلان‌ها">
+              <img class="header-action-icon" src="assets/icons/icon-bell.png" alt="" aria-hidden="true" />
+              <span class="header-action-badge" aria-hidden="true"></span>
+            </a>
+            <a class="avatar-link" href="settings-botanical.html" aria-label="پروفایل سارا">س</a>
+          </div>
+        </header>
+
+        <div class="app-container page-content">
+          <div class="quick-log-page-shell">
+            <div class="page-heading" data-od-id="quick-log-header">
+              <span class="quick-log-breadcrumb"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-arrow" /></svg>امروز / ثبت سریع</span>
+              <div>
+                <h1>چی رو می‌خوای ثبت کنی؟</h1>
+                <p>غذا، آب، وزن یا تمرینت رو انتخاب کن و سریع ثبتش کن.</p>
+              </div>
+            </div>
+
+            <section class="dashboard-section quick-log-page-card" data-od-id="quick-log-grid-section">
+              <div class="quick-log-grid">
+                <a class="quick-log-card" href="food-log-botanical.html" data-tone="food">
+                  <div class="quick-log-card__head">
+                    <span class="quick-log-card__icon" aria-hidden="true"><img src="assets/icons/icons8-healthy-food-calories-calculator-64.png" alt="" /></span>
+                  </div>
+                  <div class="quick-log-card__body">
+                    <strong>غذا</strong>
+                    <p>وعده یا خوراکی‌ای که خوردی رو اضافه کن.</p>
+                  </div>
+                  <span class="quick-log-card__foot">ثبت غذا<img src="icons8-chevron-left-24.png" alt="" aria-hidden="true" /></span>
+                </a>
+
+                <a class="quick-log-card" href="water-botanical.html" data-tone="water">
+                  <div class="quick-log-card__head">
+                    <span class="quick-log-card__icon" aria-hidden="true"><img src="assets/icons/icons8-water-bottle-64.png" alt="" /></span>
+                  </div>
+                  <div class="quick-log-card__body">
+                    <strong>آب</strong>
+                    <p>مقدار آبی که نوشیدی رو ثبت کن.</p>
+                  </div>
+                  <span class="quick-log-card__foot">ثبت آب<img src="icons8-chevron-left-24.png" alt="" aria-hidden="true" /></span>
+                </a>
+
+                <a class="quick-log-card" href="body-botanical.html" data-tone="body">
+                  <div class="quick-log-card__head">
+                    <span class="quick-log-card__icon" aria-hidden="true"><img src="assets/icons/icons8-scale-64.png" alt="" /></span>
+                  </div>
+                  <div class="quick-log-card__body">
+                    <strong>وزن و اندازه‌ها</strong>
+                    <p>وزن یا اندازه‌های جدید بدنت رو وارد کن.</p>
+                  </div>
+                  <span class="quick-log-card__foot">ثبت وزن<img src="icons8-chevron-left-24.png" alt="" aria-hidden="true" /></span>
+                </a>
+
+                <a class="quick-log-card" href="workout-botanical.html" data-tone="workout">
+                  <div class="quick-log-card__head">
+                    <span class="quick-log-card__icon" aria-hidden="true"><img src="assets/icons/icons8-dumbbell-64.png" alt="" /></span>
+                  </div>
+                  <div class="quick-log-card__body">
+                    <strong>تمرین</strong>
+                    <p>تمرین امروز یا فعالیتی که انجام دادی رو ثبت کن.</p>
+                  </div>
+                  <span class="quick-log-card__foot">ثبت تمرین<img src="icons8-chevron-left-24.png" alt="" aria-hidden="true" /></span>
+                </a>
+              </div>
+
+              <p class="quick-log-note"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-check" /></svg>هیچ چیزی بدون تأیید تو ذخیره نمی‌شه.</p>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل">
+      <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+      <a href="quick-log-botanical.html" class="quick-log-trigger bottom-nav__primary" aria-current="page"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+      <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+      <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+      <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+    </nav>
+  </body>
+</html>

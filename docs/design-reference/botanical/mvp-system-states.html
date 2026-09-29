@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#123f26" />
+    <title>حالت‌های سیستم MVP — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <style>
+      @font-face { font-family: Kalameh; src: url("assets/fonts/kalameh/Kalameh-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+      @font-face { font-family: Kalameh; src: url("assets/fonts/kalameh/Kalameh-SemiBold.ttf") format("truetype"); font-weight: 650; font-display: swap; }
+      @font-face { font-family: Kalameh; src: url("assets/fonts/kalameh/Kalameh-Bold.ttf") format("truetype"); font-weight: 780; font-display: swap; }
+      * { box-sizing: border-box; }
+      html { background: var(--av-color-canvas); color: var(--av-color-ink); }
+      body { margin: 0; font-family: var(--av-font-body); line-height: var(--av-leading-body); }
+      button { font: inherit; color: inherit; }
+      :where(a, button):focus-visible { outline: 3px solid var(--av-color-focus); outline-offset: 3px; }
+      .page { max-inline-size: 76rem; margin-inline: auto; padding: clamp(1rem, 3vw, 2rem); }
+      .intro { display: grid; gap: .55rem; margin-block-end: 1.25rem; }
+      .intro h1 { margin: 0; color: var(--av-color-ink-strong); font-size: clamp(1.65rem, 3vw, 2.4rem); line-height: 1.35; }
+      .intro p { max-inline-size: 48rem; margin: 0; color: var(--av-color-ink-muted); }
+      .grid { display: grid; gap: 1rem; }
+      .state { display: grid; gap: .7rem; border: 1px solid var(--av-color-border); border-radius: 1.25rem 1.25rem .6rem 1.25rem; background: var(--av-color-surface); padding: 1rem; }
+      .state h2 { margin: 0; color: var(--av-color-ink-strong); font-size: 1rem; }
+      .state p { margin: 0; color: var(--av-color-ink-muted); }
+      .state[data-kind="empty"] { border-style: dashed; }
+      .state[data-kind="success"] { background: var(--av-color-success-soft); border-color: color-mix(in oklch, var(--av-color-success) 28%, var(--av-color-border)); }
+      .state[data-kind="error"], .state[data-kind="danger"] { background: var(--av-color-danger-soft); border-color: color-mix(in oklch, var(--av-color-danger) 28%, var(--av-color-border)); }
+      .state[data-kind="warning"] { background: var(--av-color-warning-soft); border-color: color-mix(in oklch, var(--av-color-warning) 30%, var(--av-color-border)); }
+      .button { min-block-size: 2.75rem; display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: 1rem 1rem .45rem 1rem; padding: .68rem .95rem; font-weight: 650; cursor: pointer; }
+      .button--primary { background: var(--av-color-primary); color: white; }
+      .button--secondary { border-color: var(--av-color-border-strong); background: var(--av-color-surface); color: var(--av-color-ink-strong); }
+      .button--danger { background: var(--av-color-danger); color: white; }
+      .button:disabled { opacity: .5; cursor: not-allowed; }
+      .actions { display: flex; flex-wrap: wrap; gap: .55rem; }
+      .skeleton { display: grid; gap: .6rem; }
+      .skeleton span { block-size: .85rem; border-radius: 999px; background: linear-gradient(90deg, var(--av-color-surface-subtle), var(--av-color-border), var(--av-color-surface-subtle)); background-size: 200% 100%; animation: shimmer 1.5s linear infinite; }
+      .skeleton span:nth-child(2) { inline-size: 75%; }
+      .skeleton span:nth-child(3) { inline-size: 50%; }
+      @keyframes shimmer { to { background-position: -200% 0; } }
+      .field-error { border: 1px solid color-mix(in oklch, var(--av-color-danger) 30%, var(--av-color-border)); border-radius: 1rem; background: var(--av-color-danger-soft); padding: .75rem; color: var(--av-color-ink-strong); }
+      .toast { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .65rem; border-radius: 1.2rem 1.2rem .45rem 1.2rem; background: var(--av-color-ink-strong); padding: .75rem .85rem; color: white; }
+      .toast button { border: 0; background: transparent; color: var(--av-color-pulse); font-weight: 650; }
+      .readonly { opacity: .74; }
+      .readonly .button { pointer-events: none; }
+      .breakpoints { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+      .bp { border: 1px solid var(--av-color-border); border-radius: 1rem; padding: .75rem; background: var(--av-color-surface); }
+      .bp strong { display: block; color: var(--av-color-ink-strong); font-variant-numeric: tabular-nums; }
+      .bp span { color: var(--av-color-ink-muted); font-size: var(--av-text-xs); }
+      @media (min-width: 44rem) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .breakpoints { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (min-width: 72rem) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; } }
+    </style>
+  </head>
+  <body>
+    <main class="page" data-od-id="system-states-page">
+      <section class="intro" data-od-id="system-states-intro">
+        <h1>الگوهای حالت سیستم</h1>
+        <p>حالت‌ها در هر صفحه همان ساختار محتوا را حفظ می‌کنند، داده واردشده را نگه می‌دارند و با متن، شکل و وضعیت قابل دسترس توضیح داده می‌شوند.</p>
+      </section>
+
+      <section class="state" data-od-id="responsive-state-rules">
+        <h2>نمونه‌های واکنش‌گرا</h2>
+        <div class="breakpoints">
+          <div class="bp"><strong dir="ltr">360px</strong><span>یک ستون؛ CTA در دسترس.</span></div>
+          <div class="bp"><strong dir="ltr">390px</strong><span>شیت امن و تمام‌عرض.</span></div>
+          <div class="bp"><strong dir="ltr">430px</strong><span>فرم تک‌ستونه.</span></div>
+          <div class="bp"><strong dir="ltr">768px</strong><span>کارت‌های دو ستونه.</span></div>
+          <div class="bp"><strong dir="ltr">1024px</strong><span>ریل RTL در صورت نیاز.</span></div>
+          <div class="bp"><strong dir="ltr">1440px</strong><span>عرض کنترل‌شده.</span></div>
+        </div>
+      </section>
+
+      <section class="grid" aria-label="حالت‌های سیستم">
+        <article class="state" aria-busy="true" data-od-id="loading-state"><h2>Loading</h2><p>در حال دریافت اطلاعات امروز...</p></article>
+        <article class="state" data-od-id="skeleton-state"><h2>Skeleton</h2><div class="skeleton" aria-busy="true" aria-label="در حال بارگذاری"><span></span><span></span><span></span></div></article>
+        <article class="state" data-kind="empty" data-od-id="empty-state"><h2>Empty</h2><p>هنوز چیزی برای امروز ثبت نشده است.</p><div class="actions"><button class="button button--primary">ثبت خوراک</button></div></article>
+        <article class="state" data-od-id="populated-state"><h2>Populated</h2><p>۳ خوراک در ۲ وعده ثبت شده است.</p><div class="actions"><button class="button button--secondary">ویرایش</button></div></article>
+        <article class="state" data-kind="warning" data-od-id="partial-data-state"><h2>Partial data</h2><p>پرسش‌نامه تغذیه تا مرحله ۵ ذخیره شده است.</p><div class="actions"><button class="button button--primary">ادامه دهید</button></div></article>
+        <article class="state" data-kind="success" data-od-id="success-state"><h2>Success</h2><p>میان‌وعده به ثبت امروز اضافه شد.</p></article>
+        <article class="state" data-kind="error" data-od-id="field-validation-error-state"><h2>Field validation</h2><div class="field-error" role="alert">کالری را وارد کنید. مقدار قبلی حفظ شده است.</div></article>
+        <article class="state" data-kind="error" data-od-id="form-validation-summary-state"><h2>Form summary</h2><p>۳ مورد نیاز به بررسی دارد: وعده، مقدار و کالری.</p><div class="actions"><button class="button button--secondary">رفتن به اولین خطا</button></div></article>
+        <article class="state" data-kind="error" data-od-id="api-error-state"><h2>API error</h2><p>ذخیره کامل نشد. داده‌های شما محفوظ است؛ دوباره تلاش کنید.</p><div class="actions"><button class="button button--secondary">تلاش دوباره</button></div></article>
+        <article class="state" data-kind="warning" data-od-id="offline-state"><h2>Offline</h2><p>آفلاین هستید. تغییرها محلی نگه داشته می‌شوند.</p><div class="actions"><button class="button button--secondary">بررسی اتصال</button></div></article>
+        <article class="state" data-kind="warning" data-od-id="permission-denied-state"><h2>Permission denied</h2><p>دسترسی فایل داده نشد. می‌توانید فایل را دستی انتخاب کنید.</p></article>
+        <article class="state" data-kind="danger" data-od-id="session-expired-state"><h2>Session expired</h2><p>نشست منقضی شد. پس از ورود، به همین مسیر برمی‌گردید.</p><div class="actions"><button class="button button--primary">ورود دوباره</button></div></article>
+        <article class="state" data-kind="empty" data-od-id="not-found-state"><h2>404</h2><p>این صفحه پیدا نشد.</p><div class="actions"><button class="button button--secondary">بازگشت به امروز</button></div></article>
+        <article class="state" data-od-id="disabled-state"><h2>Disabled</h2><p>این اقدام تا تکمیل اطلاعات پایه در دسترس نیست.</p><div class="actions"><button class="button" disabled>فعال‌سازی برنامه</button></div></article>
+        <article class="state readonly" data-od-id="archived-read-only-state"><h2>Archived read-only</h2><p>این برنامه بایگانی شده و فقط قابل مشاهده است.</p><div class="actions"><button class="button button--secondary">مشاهده فایل</button></div></article>
+        <article class="state" data-kind="danger" data-od-id="destructive-confirmation-state"><h2>Destructive confirmation</h2><p>خوراک ذخیره‌شده حذف شود؟ این کار روی ثبت‌های قبلی اثر نمی‌گذارد.</p><div class="actions"><button class="button button--danger">حذف</button><button class="button button--secondary">انصراف</button></div></article>
+        <article class="toast" role="status" aria-live="polite" data-od-id="toast-state"><span>✓</span><span>اطلاعات ذخیره شد.</span><button>بستن</button></article>
+        <article class="toast" role="status" aria-live="polite" data-od-id="undo-toast-state"><span>↶</span><span>خوراک حذف شد.</span><button>برگردان</button></article>
+      </section>
+    </main>
+  </body>
+</html>

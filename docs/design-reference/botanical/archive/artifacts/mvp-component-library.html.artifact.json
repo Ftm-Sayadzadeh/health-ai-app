@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "mvp-component-library.html",
+  "entry": "mvp-component-library.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-12T12:49:46.044Z",
+  "updatedAt": "2026-07-12T12:49:46.044Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#123f26" />
+    <meta
+      name="description"
+      content="آووکادو؛ همراه روزانه برای ثبت غذای مصرف‌شده، مدیریت برنامه غذایی و تمرینی و دنبال‌کردن مسیر سلامت."
+    />
+    <title>آووکادو — نسخه سبز هماهنگ با لوگو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body data-page="landing" data-theme="botanical">
+    <a class="skip-link" href="#main-content">پرش به محتوای اصلی</a>
+
+    <header
+      class="marketing-header"
+      aria-label="سربرگ اصلی"
+      data-od-id="landing-header"
+    >
+      <div class="marketing-header__inner">
+        <a
+          class="brand"
+          href="index.html"
+          aria-label="آووکادو؛ صفحه اصلی"
+          data-od-id="landing-brand"
+        >
+          <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect
+              class="brand-mark__plan"
+              x="7"
+              y="9"
+              width="29"
+              height="11"
+              rx="5.5"
+            />
+            <rect
+              class="brand-mark__actual"
+              x="12"
+              y="27"
+              width="29"
+              height="11"
+              rx="5.5"
+            />
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4" />
+          </svg>
+          <span>آووکادو</span>
+        </a>
+        <nav class="marketing-nav" aria-label="ناوبری وب‌سایت">
+          <a href="#daily-life">ثبت روزانه</a>
+          <a href="#plans">برنامه‌ها</a>
+          <a href="#profile">اطلاعات سلامت</a>
+          <a href="#how">نحوه کار</a>
+        </nav>
+        <div class="header-actions">
+          <a class="button button--quiet" href="auth.html">ورود</a>
+          <a class="button button--primary" href="auth.html"
+            >شروع با شماره همراه</a
+          >
+        </div>
+        <button
+          class="icon-button menu-button"
+          type="button"
+          aria-label="بازکردن فهرست"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          data-menu-toggle
+        >
+          <svg class="icon" aria-hidden="true">
+            <use href="assets/icons.svg#icon-menu" />
+          </svg>
+        </button>
+      </div>
+    </header>
+    <div class="mobile-menu" id="mobile-menu" hidden>
+      <nav aria-label="ناوبری موبایل">
+        <a href="#daily-life">ثبت روزانه</a><a href="#plans">برنامه‌ها</a
+        ><a href="#profile">اطلاعات سلامت</a><a href="#how">نحوه کار</a>
+      </nav>
+      <a class="button button--primary button--full" href="auth.html"
+        >ورود یا ساخت حساب</a
+      >
+    </div>
+
+    <main id="main-content" class="marketing-main">
+      <section class="landing-hero" data-od-id="landing-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">همراه روزانه سلامت، به زبان فارسی</p>
+          <h1 data-od-id="landing-title">
+            برنامه روشن،<br /><span>ثبت واقعی.</span>
+          </h1>
+          <p>
+            آووکادو کمک می‌کند غذایی را که واقعاً خورده‌اید سریع ثبت کنید،
+            برنامه‌های غذایی و تمرینی‌تان را جدا و منظم نگه دارید و هر روز
+            بدانید قدم بعدی چیست.
+          </p>
+          <div class="hero-actions">
+            <a
+              class="button button--primary button--lg"
+              href="auth.html"
+              data-od-id="landing-primary-cta"
+              >شروع رایگان با شماره همراه<svg
+                class="icon rtl-flip"
+                aria-hidden="true"
+              >
+                <use href="assets/icons.svg#icon-arrow" /></svg
+            ></a>
+            <a
+              class="button button--secondary button--lg"
+              href="#daily-life"
+              data-od-id="landing-secondary-cta"
+              >دیدن تجربه روزانه</a
+            >
+          </div>
+          <div
+            class="hero-trust"
+            role="group"
+            aria-label="ویژگی‌های قابل اعتماد"
+          >
+            <span
+              ><svg class="icon icon--sm" aria-hidden="true">
+                <use href="assets/icons.svg#icon-shield" /></svg
+              >اطلاعات شما برای خودتان است</span
+            >
+            <span
+              ><svg class="icon icon--sm" aria-hidden="true">
+                <use href="assets/icons.svg#icon-check" /></svg
+              >بدون الزام به تکمیل فرم طولانی</span
+            >
+          </div>
+        </div>
+        <div class="hero-product-stage">
+          <img
+            class="hero-mascot"
+            src="avocado-smiling.png"
+            alt=""
+            aria-hidden="true"
+          />
+          <img
+            class="hero-food-accent hero-food-accent--tomato"
+            src="tomato-slice.png"
+            alt=""
+            aria-hidden="true"
+          />
+          <img
+            class="hero-food-accent hero-food-accent--cucumber"
+            src="cucumber-slice.png"
+            alt=""
+            aria-hidden="true"
+          />
+          <div
+            class="product-preview"
+            role="img"
+            aria-label="پیش‌نمایش داشبورد آووکادو"
+            data-od-id="landing-product-preview"
+          >
+          <div class="preview-top">
+            <div>
+              <span>صبح بخیر، سارا</span><strong>چهارشنبه، ۱۹ تیر</strong>
+            </div>
+            <div class="preview-avatar">س</div>
+          </div>
+          <div class="preview-action">
+            <span class="preview-action__icon"
+              ><svg class="icon icon--lg" aria-hidden="true">
+                <use href="assets/icons.svg#icon-plus" /></svg></span
+            ><span
+              ><strong>ثبت غذایی که خوردید</strong
+              ><small>اخیر، ذخیره‌شده یا جست‌وجو</small></span
+            ><svg class="icon rtl-flip" aria-hidden="true">
+              <use href="assets/icons.svg#icon-arrow" />
+            </svg>
+          </div>
+          <div class="preview-lanes">
+            <div class="preview-lane preview-lane--actual">
+              <i
+                class="track-marker track-marker--actual"
+                aria-hidden="true"
+              ></i
+              ><span
+                ><span>غذای ثبت‌شده امروز</span
+                ><strong>صبحانه و میان‌وعده</strong></span
+              ><b>۷۲۰ kcal</b>
+            </div>
+            <div class="preview-lane preview-lane--plan">
+              <i class="track-marker" aria-hidden="true"></i
+              ><span
+                ><span>برنامه غذایی فعال</span
+                ><strong>ناهار · مرغ و برنج</strong></span
+              ><b>13:30</b>
+            </div>
+          </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="marketing-section"
+        aria-labelledby="problem-title"
+        data-od-id="landing-problem"
+      >
+        <header class="section-heading section-heading--center">
+          <p class="eyebrow">برای یک روز معمولی</p>
+          <h2 id="problem-title">سلامت وقتی کاربردی است که وسط زندگی جا شود</h2>
+          <p>
+            آووکادو برای لحظه‌های کوتاه بین کار، رفت‌وآمد و وعده‌ها طراحی شده؛
+            نه برای ساعت‌ها ورود اطلاعات و دنبال‌کردن جدول‌های پیچیده.
+          </p>
+        </header>
+        <div class="problem-strip">
+          <article>
+            <span>۰۱</span>
+            <h3>ثبت سریع، بدون شروع از صفر</h3>
+            <p>خوراک‌های اخیر و ذخیره‌شده قبل از جست‌وجو در دسترس‌اند.</p>
+          </article>
+          <article>
+            <span>۰۲</span>
+            <h3>امروز، قبل از آرشیو</h3>
+            <p>اول چیزی را می‌بینید که همین حالا به کارتان می‌آید.</p>
+          </article>
+          <article>
+            <span>۰۳</span>
+            <h3>واقعیت، بدون قضاوت</h3>
+            <p>آنچه خورده‌اید ثبت می‌شود؛ بدون برچسب خوب، بد یا شکست.</p>
+          </article>
+        </div>
+      </section>
+
+      <div class="marketing-band">
+        <section
+          class="marketing-section story-grid"
+          id="daily-life"
+          data-od-id="landing-daily-log"
+        >
+          <div class="story-copy">
+            <p class="eyebrow">ثبت خوراک روزانه</p>
+            <h3>غذایی را ثبت کنید که واقعاً خورده‌اید</h3>
+            <p>
+              نام خوراک، مقدار و کالری دستی را وارد کنید یا از خوراک‌های اخیر
+              استفاده کنید. آووکادو عددی را به‌عنوان مقدار پزشکی یا قطعی محاسبه
+              نمی‌کند.
+            </p>
+            <div class="story-list">
+              <div>
+                <i>۱</i
+                ><span
+                  ><strong>وعده را انتخاب کنید</strong
+                  ><small>صبحانه، ناهار، شام، میان‌وعده یا سایر</small></span
+                >
+              </div>
+              <div>
+                <i>۲</i
+                ><span
+                  ><strong>مقدار واقعی را تأیید کنید</strong
+                  ><small
+                    >حتی اگر از یک برنامه یا خوراک اخیر شروع کرده‌اید</small
+                  ></span
+                >
+              </div>
+              <div>
+                <i>۳</i
+                ><span
+                  ><strong>ثبت کنید و ادامه دهید</strong
+                  ><small>بدون مراحل اضافه و صفحه‌های غیرضروری</small></span
+                >
+              </div>
+            </div>
+          </div>
+          <div
+            class="story-visual"
+            role="img"
+            aria-label="نمونه فهرست غذای ثبت‌شده"
+          >
+            <img
+              class="story-food-art"
+              src="healthy-bowl.png"
+              alt=""
+              aria-hidden="true"
+            />
+            <div class="log-row">
+              <span class="log-glyph">ن</span
+              ><span
+                ><strong>نان سنگک و پنیر</strong
+                ><small>صبحانه · ۱ سهم</small></span
+              ><b class="bidi">۳۲۰ kcal</b>
+            </div>
+            <div class="log-row">
+              <span class="log-glyph">ق</span
+              ><span
+                ><strong>قهوه با شیر</strong
+                ><small>میان‌وعده · ۱ فنجان</small></span
+              ><b class="bidi">۹۰ kcal</b>
+            </div>
+            <div class="log-row">
+              <span class="log-glyph">س</span
+              ><span><strong>سیب</strong><small>میان‌وعده · ۱ عدد</small></span
+              ><b class="bidi">۸۰ kcal</b>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section
+        class="marketing-section story-grid story-grid--reverse"
+        id="plans"
+        data-od-id="landing-plans"
+      >
+        <div class="story-copy">
+          <p class="eyebrow">برنامه غذایی و تمرینی</p>
+          <h3>قصد فردا با واقعیت امروز یکی نیست</h3>
+          <p>
+            برنامه غذایی می‌گوید قصد داشته‌اید چه بخورید. ثبت روزانه می‌گوید چه
+            خورده‌اید. آووکادو این دو را هرگز خودکار یکی نمی‌کند.
+          </p>
+          <div class="story-list">
+            <div>
+              <i>•</i
+              ><span
+                ><strong>برنامه غذایی فعال</strong
+                ><small>روزها، وعده‌ها، مقدارها و منبع برنامه</small></span
+              >
+            </div>
+            <div>
+              <i>•</i
+              ><span
+                ><strong>برنامه تمرینی در دسترس</strong
+                ><small>حرکت‌ها، زمان، وسایل و یادداشت مربی</small></span
+              >
+            </div>
+            <div>
+              <i>•</i
+              ><span
+                ><strong>تبدیل فقط با تأیید شما</strong
+                ><small
+                  >مورد برنامه فقط فرم ثبت را پر می‌کند؛ ارسال خودکار
+                  نیست</small
+                ></span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="story-visual story-visual--light plan-actual-demo">
+          <img
+            class="plan-sprout"
+            src="sprout-stage-4.png"
+            alt=""
+            aria-hidden="true"
+          />
+          <article>
+            <header>
+              <i class="track-marker" aria-hidden="true"></i>
+              <h4>برنامه غذایی</h4>
+            </header>
+            <p>ناهار پیشنهادی: مرغ و برنج · ساعت ۱۳:۳۰</p>
+          </article>
+          <div class="bridge-arrow">
+            <svg class="icon rtl-flip" aria-hidden="true">
+              <use href="assets/icons.svg#icon-arrow" /></svg
+            ><span>پیش‌پرکردن فرم + تأیید مقدار واقعی</span>
+          </div>
+          <article>
+            <header>
+              <i
+                class="track-marker track-marker--actual"
+                aria-hidden="true"
+              ></i>
+              <h4>غذای ثبت‌شده امروز</h4>
+            </header>
+            <p>تا وقتی شما تأیید نکنید، چیزی به‌عنوان مصرف‌شده ثبت نمی‌شود.</p>
+          </article>
+        </div>
+      </section>
+
+      <div class="marketing-band">
+        <section
+          class="marketing-section"
+          id="profile"
+          data-od-id="landing-profile-features"
+        >
+          <header class="section-heading">
+            <p class="eyebrow">چیزهایی که هر روز کار را آسان‌تر می‌کنند</p>
+            <h2>اطلاعات لازم، درست در جای خودش</h2>
+          </header>
+          <div class="feature-columns">
+            <article class="feature-column">
+              <svg class="icon" aria-hidden="true">
+                <use href="assets/icons.svg#icon-star" />
+              </svg>
+              <h3>خوراک‌های اخیر و ذخیره‌شده</h3>
+              <p>
+                موارد پرتکرار را با مقدار قبلی باز کنید، ویرایش کنید و فقط بعد
+                از تأیید ثبت کنید.
+              </p>
+            </article>
+            <article class="feature-column">
+              <svg class="icon" aria-hidden="true">
+                <use href="assets/icons.svg#icon-profile" />
+              </svg>
+              <h3>پروفایل سلامت قابل تکمیل</h3>
+              <p>
+                هر بخش را وقتی آماده بودید تکمیل کنید؛ دیدن محصول به یک فرم
+                طولانی وابسته نیست.
+              </p>
+            </article>
+            <article class="feature-column">
+              <svg class="icon" aria-hidden="true">
+                <use href="assets/icons.svg#icon-upload" />
+              </svg>
+              <h3>پرسش‌نامه و بارگذاری برنامه</h3>
+              <p>
+                پاسخ‌ها را ذخیره کنید و فایل برنامه غذایی یا تمرینی را به‌صورت
+                PDF یا تصویر نگه دارید.
+              </p>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <section class="marketing-section" data-od-id="landing-future-ai">
+        <div class="future-panel">
+          <div>
+            <p class="eyebrow">گزارش‌ها و پیشنهادهای آینده</p>
+            <h2>بینش شخصی‌تر، با مرزهای روشن</h2>
+            <p>
+              نسخه‌های آینده می‌توانند روندهای ساده و پیشنهادهای هوشمند را بر
+              اساس داده‌های خودتان نشان دهند. این پیشنهادها جایگزین پزشک، متخصص
+              تغذیه یا مربی واجد صلاحیت نیستند.
+            </p>
+          </div>
+          <div class="future-tags">
+            <span>گزارش روندهای ساده</span><span>شفافیت منبع داده</span
+            ><span>قابل ویرایش و اختیاری</span><span>بدون ادعای تشخیص</span>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="marketing-section"
+        id="how"
+        data-od-id="landing-how-it-works"
+      >
+        <header class="section-heading section-heading--center">
+          <p class="eyebrow">شروع در سه قدم</p>
+          <h2>حساب بسازید و همان روز استفاده کنید</h2>
+        </header>
+        <div class="steps">
+          <article class="step">
+            <h3>ورود با شماره همراه</h3>
+            <p>بدون رمز عبور؛ یک کد شش‌رقمی برای تأیید شماره.</p>
+          </article>
+          <article class="step">
+            <h3>رفتن مستقیم به امروز</h3>
+            <p>پروفایل سلامت اختیاری است و بعداً هم می‌توانید کاملش کنید.</p>
+          </article>
+          <article class="step">
+            <h3>اولین خوراک را ثبت کنید</h3>
+            <p>
+              نام، مقدار و کالری دستی را ثبت کنید یا از موارد اخیر شروع کنید.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <div class="marketing-band">
+        <section
+          class="marketing-section"
+          id="trust"
+          data-od-id="landing-trust"
+        >
+          <header class="section-heading">
+            <p class="eyebrow">اعتماد از رفتار محصول می‌آید</p>
+            <h2>همراه روزانه، نه مرجع تشخیص</h2>
+          </header>
+          <div class="trust-grid">
+            <article class="trust-item">
+              <svg class="icon" aria-hidden="true">
+                <use href="assets/icons.svg#icon-lock" />
+              </svg>
+              <div>
+                <h3>کنترل با شماست</h3>
+                <p>
+                  افزودن، ویرایش و حذف اطلاعات با اقدام صریح شما انجام می‌شود.
+                </p>
+              </div>
+            </article>
+            <article class="trust-item">
+              <svg class="icon" aria-hidden="true">
+                <use href="assets/icons.svg#icon-info" />
+              </svg>
+              <div>
+                <h3>اعداد با منبع روشن</h3>
+                <p>
+                  کالری‌های داشبورد همان مقادیری‌اند که خودتان دستی وارد
+                  کرده‌اید.
+                </p>
+              </div>
+            </article>
+            <article class="trust-item">
+              <svg class="icon" aria-hidden="true">
+                <use href="assets/icons.svg#icon-shield" />
+              </svg>
+              <div>
+                <h3>بدون ادعای پزشکی</h3>
+                <p>آووکادو ابزار ثبت و برنامه‌ریزی است، نه جایگزین متخصص.</p>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <section class="marketing-section" data-od-id="landing-final-cta">
+        <div class="final-cta">
+          <img
+            class="final-cta__art"
+            src="avocado-half.png"
+            alt=""
+            aria-hidden="true"
+          />
+          <div>
+            <h2>امروز را همان‌طور که بوده ثبت کنید</h2>
+            <p>شروع با شماره همراه کمتر از یک دقیقه زمان می‌برد.</p>
+          </div>
+          <a class="button button--lg" href="auth.html"
+            >شروع با آووکادو<svg class="icon rtl-flip" aria-hidden="true">
+              <use href="assets/icons.svg#icon-arrow" /></svg
+          ></a>
+        </div>
+      </section>
+    </main>
+
+    <footer
+      class="marketing-footer"
+      aria-label="پاورقی"
+      data-od-id="landing-footer"
+    >
+      <div class="marketing-footer__inner">
+        <div class="footer-brand">
+          <a class="brand" href="index.html"
+            ><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+              <rect
+                class="brand-mark__plan"
+                x="7"
+                y="9"
+                width="29"
+                height="11"
+                rx="5.5"
+              />
+              <rect
+                class="brand-mark__actual"
+                x="12"
+                y="27"
+                width="29"
+                height="11"
+                rx="5.5"
+              />
+              <circle class="brand-mark__pulse" cx="39" cy="13" r="4" /></svg
+            ><span>آووکادو</span></a
+          >
+          <p>
+            همراه فارسی روزانه برای ثبت خوراک واقعی، مدیریت برنامه‌ها و
+            دنبال‌کردن مسیر سلامت بدون قضاوت.
+          </p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <strong>محصول</strong><a href="#daily-life">ثبت خوراک</a
+            ><a href="#plans">برنامه‌ها</a><a href="#profile">پروفایل سلامت</a>
+          </div>
+          <div>
+            <strong>شروع</strong><a href="auth.html">ورود یا ثبت‌نام</a
+            ><a href="#how">نحوه کار</a
+            ><a href="dashboard-botanical.html">نمونه داشبورد</a>
+          </div>
+          <div>
+            <strong>اطلاعات</strong><a href="#trust">حریم خصوصی</a
+            ><a href="#trust">شرایط استفاده</a
+            ><a href="#trust">محدودیت‌های سلامت</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© ۱۴۰۵ آووکادو</span
+          ><span>پیشنهادهای آووکادو جایگزین نظر متخصص نیستند.</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

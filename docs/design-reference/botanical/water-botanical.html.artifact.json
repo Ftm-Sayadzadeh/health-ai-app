@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "water-botanical.html",
+  "entry": "water-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-31T09:33:10.482Z",
+  "updatedAt": "2026-07-31T09:33:10.482Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

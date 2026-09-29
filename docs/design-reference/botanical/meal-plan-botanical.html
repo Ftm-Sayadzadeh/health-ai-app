@@ -1,0 +1,1807 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#123f26" />
+    <title>برنامه غذایی من — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+    <style>
+      .meal-plan-page {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .meal-plan-hero,
+      .meal-tab-shell,
+      .meal-panel,
+      .meal-meal-card,
+      .meal-summary-card,
+      .meal-day-card,
+      .meal-shopping-card,
+      .meal-state,
+      .meal-menu,
+      .meal-substitute-card {
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 7%, var(--av-color-border));
+        background: var(--av-color-surface);
+      }
+
+      .meal-plan-hero,
+      .meal-tab-shell,
+      .meal-panel,
+      .meal-summary-card,
+      .meal-day-card,
+      .meal-shopping-card,
+      .meal-state {
+        border-radius: 1.4rem 1.4rem 0.7rem 1.4rem;
+      }
+
+      .meal-plan-hero {
+        display: grid;
+        gap: 0.95rem;
+        padding: 1rem;
+      }
+
+      .meal-breadcrumb {
+        display: inline-flex;
+        inline-size: fit-content;
+        align-items: center;
+        gap: 0.35rem;
+        color: var(--av-color-ink-muted);
+        font-size: 0.8rem;
+      }
+
+      .meal-breadcrumb strong {
+        color: var(--av-color-ink-strong);
+      }
+
+      .meal-plan-hero__top {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 0.75rem;
+      }
+
+      .meal-plan-hero__copy {
+        display: grid;
+        gap: 0.42rem;
+      }
+
+      .meal-plan-hero h1,
+      .meal-panel h2,
+      .meal-state h2,
+      .meal-summary-card h2,
+      .meal-shopping-card h2 {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+      }
+
+      .meal-plan-hero h1 {
+        font-size: clamp(1.65rem, 1.25rem + 0.9vw, 2.15rem);
+      }
+
+      .meal-plan-hero p,
+      .meal-panel p,
+      .meal-state p,
+      .meal-summary-card p,
+      .meal-shopping-card p {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+      }
+
+      .meal-hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        align-items: center;
+      }
+
+      .meal-chip,
+      .meal-status-pill,
+      .meal-minor-pill,
+      .meal-menu__button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.45rem 0.76rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      .meal-chip {
+        background: color-mix(in oklch, var(--av-color-plan) 12%, white);
+        color: var(--av-color-plan);
+      }
+
+      .meal-chip.is-active {
+        background: color-mix(in oklch, var(--av-color-primary-soft) 78%, white);
+        color: var(--av-color-primary);
+      }
+
+      .meal-menu {
+        position: relative;
+        border-radius: 999px;
+      }
+
+      .meal-menu__button {
+        border: 0;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 78%, white);
+        color: var(--av-color-ink-strong);
+        cursor: pointer;
+      }
+
+      .meal-menu__panel {
+        position: absolute;
+        inset-inline-end: 0;
+        inset-block-start: calc(100% + 0.5rem);
+        min-inline-size: 12rem;
+        z-index: 10;
+        display: grid;
+        gap: 0.25rem;
+        padding: 0.45rem;
+        border: 1px solid var(--av-color-border);
+        border-radius: 1rem 1rem 0.45rem 1rem;
+        background: var(--av-color-surface);
+        box-shadow: var(--av-shadow-2);
+      }
+
+      .meal-menu__panel[hidden] {
+        display: none;
+      }
+
+      .meal-menu__panel a,
+      .meal-menu__panel button {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.6rem;
+        min-block-size: 2.7rem;
+        padding: 0.55rem 0.7rem;
+        border: 0;
+        border-radius: 0.8rem;
+        background: transparent;
+        color: var(--av-color-ink-strong);
+        font: inherit;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .meal-menu__panel a:hover,
+      .meal-menu__panel button:hover {
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 78%, white);
+      }
+
+      .meal-hero-progress {
+        display: grid;
+        gap: 0.45rem;
+      }
+
+      .meal-hero-progress__row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        color: var(--av-color-ink-muted);
+        font-size: 0.82rem;
+      }
+
+      .meal-hero-progress__track,
+      .meal-summary-bar__track {
+        position: relative;
+        block-size: 0.55rem;
+        overflow: hidden;
+        border-radius: 999px;
+        background: color-mix(in oklch, var(--av-color-primary-soft) 56%, white);
+      }
+
+      .meal-hero-progress__fill,
+      .meal-summary-bar__fill {
+        position: absolute;
+        inset-block: 0;
+        inset-inline-start: 0;
+        inline-size: var(--progress, 0%);
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--av-color-primary), color-mix(in oklch, var(--av-color-primary) 76%, white));
+      }
+
+      .meal-tab-shell {
+        padding: 0.35rem;
+      }
+
+      .meal-tablist {
+        display: flex;
+        gap: 0.4rem;
+        overflow: auto hidden;
+        scrollbar-width: none;
+      }
+
+      .meal-tablist::-webkit-scrollbar {
+        display: none;
+      }
+
+      .meal-tab {
+        min-block-size: 2.9rem;
+        padding-inline: 1rem;
+        border: 1px solid transparent;
+        border-radius: 1rem 1rem 0.45rem 1rem;
+        background: transparent;
+        color: var(--av-color-ink-muted);
+        font: inherit;
+        font-weight: 700;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+
+      .meal-tab[aria-selected="true"] {
+        border-color: color-mix(in oklch, var(--av-color-primary) 18%, var(--av-color-border));
+        background: color-mix(in oklch, var(--av-color-primary-soft) 78%, white);
+        color: var(--av-color-primary);
+      }
+
+      .meal-panel {
+        display: grid;
+        gap: 1rem;
+        padding: 1rem;
+      }
+
+      .meal-panel[hidden] {
+        display: none;
+      }
+
+      .meal-today-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
+        gap: 1rem;
+        align-items: start;
+      }
+
+      .meal-meals-list {
+        display: grid;
+        gap: 0.85rem;
+      }
+
+      .meal-summary-card {
+        display: grid;
+        gap: 0.9rem;
+        padding: 1rem;
+        position: sticky;
+        inset-block-start: calc(var(--header-height) + 1rem);
+      }
+
+      .meal-summary-card__header,
+      .meal-summary-meta,
+      .meal-card__top,
+      .meal-card__meta,
+      .meal-card__status-row,
+      .meal-week-header,
+      .meal-shopping-toolbar,
+      .meal-shopping-summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .meal-summary-card__value {
+        display: grid;
+        gap: 0.2rem;
+      }
+
+      .meal-summary-card__value strong {
+        color: var(--av-color-ink-strong);
+        font-size: clamp(1.9rem, 1.4rem + 0.9vw, 2.5rem);
+        line-height: 1;
+      }
+
+      .meal-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.7rem;
+      }
+
+      .meal-summary-item {
+        display: grid;
+        gap: 0.18rem;
+        padding: 0.82rem;
+        border-radius: 1rem 1rem 0.42rem 1rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 78%, white);
+      }
+
+      .meal-summary-item span {
+        color: var(--av-color-ink-muted);
+        font-size: 0.8rem;
+      }
+
+      .meal-summary-item strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+      }
+
+      .meal-summary-bar {
+        display: grid;
+        gap: 0.42rem;
+      }
+
+      .meal-summary-bar__copy {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.6rem;
+        color: var(--av-color-ink-muted);
+        font-size: 0.8rem;
+      }
+
+      .meal-meal-card {
+        display: grid;
+        gap: 0.8rem;
+        padding: 1rem;
+        border-radius: 1.2rem 1.2rem 0.55rem 1.2rem;
+      }
+
+      .meal-meal-card[data-state="ready"] {
+        background: color-mix(in oklch, var(--av-color-primary-soft) 28%, white);
+      }
+
+      .meal-meal-card[data-state="future"] {
+        background: var(--av-color-surface);
+      }
+
+      .meal-meal-card[data-state="completed"] {
+        background: color-mix(in oklch, var(--av-color-primary-soft) 40%, white);
+      }
+
+      .meal-card__title-wrap {
+        display: grid;
+        gap: 0.24rem;
+      }
+
+      .meal-card__title-wrap h3 {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+        font-size: 1.08rem;
+      }
+
+      .meal-card__subtitle {
+        color: var(--av-color-ink-muted);
+        font-size: 0.82rem;
+      }
+
+      .meal-status-pill {
+        background: color-mix(in oklch, var(--state-soft, var(--av-color-surface-subtle)) 78%, white);
+        color: var(--state-ink, var(--av-color-ink-strong));
+      }
+
+      .meal-status-pill.is-ready {
+        --state-soft: var(--av-color-primary-soft);
+        --state-ink: var(--av-color-primary);
+      }
+
+      .meal-status-pill.is-future {
+        --state-soft: var(--av-color-surface-subtle);
+        --state-ink: var(--av-color-ink-muted);
+      }
+
+      .meal-status-pill.is-complete {
+        --state-soft: var(--av-color-primary-soft);
+        --state-ink: var(--av-color-primary);
+      }
+
+      .meal-card__facts {
+        display: grid;
+        gap: 0.55rem;
+      }
+
+      .meal-card__facts strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1.02rem;
+        line-height: 1.7;
+      }
+
+      .meal-card__facts p {
+        color: var(--av-color-ink-muted);
+        font-size: 0.9rem;
+      }
+
+      .meal-card__meta {
+        justify-content: flex-start;
+      }
+
+      .meal-minor-pill {
+        background: color-mix(in oklch, var(--av-color-plan) 10%, white);
+        color: var(--av-color-plan);
+      }
+
+      .meal-minor-pill.is-neutral {
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 72%, white);
+        color: var(--av-color-ink-muted);
+      }
+
+      .meal-card__footer {
+        display: grid;
+        gap: 0.7rem;
+      }
+
+      .meal-card__actions {
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
+
+      .meal-complete-note {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.42rem;
+        color: var(--av-color-primary);
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      .meal-complete-note i {
+        inline-size: 1.15rem;
+        block-size: 1.15rem;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: color-mix(in oklch, var(--av-color-primary-soft) 72%, white);
+        font-style: normal;
+      }
+
+      .meal-card__mobile-toggle {
+        display: none;
+      }
+
+      .meal-card__collapsible {
+        display: grid;
+        gap: 0.8rem;
+      }
+
+      .meal-substitute-card {
+        display: grid;
+        gap: 0.6rem;
+        padding: 0.9rem;
+        border-radius: 1rem 1rem 0.42rem 1rem;
+        background: color-mix(in oklch, var(--av-color-plan) 8%, white);
+      }
+
+      .meal-substitute-card strong {
+        color: var(--av-color-plan);
+      }
+
+      .meal-substitute-list {
+        display: grid;
+        gap: 0.4rem;
+      }
+
+      .meal-substitute-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.7rem;
+        padding: 0.65rem 0.75rem;
+        border-radius: 0.85rem;
+        background: color-mix(in oklch, var(--av-color-surface) 90%, white);
+        border: 1px solid color-mix(in oklch, var(--av-color-plan) 12%, var(--av-color-border));
+      }
+
+      .meal-substitute-option strong,
+      .meal-substitute-option span {
+        color: var(--av-color-ink-strong);
+        font-size: 0.84rem;
+      }
+
+      .meal-week-header {
+        align-items: start;
+      }
+
+      .meal-week-grid {
+        display: grid;
+        gap: 0.8rem;
+      }
+
+      .meal-day-card {
+        padding: 0.9rem;
+      }
+
+      .meal-day-card summary {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 0.75rem;
+        cursor: pointer;
+        list-style: none;
+      }
+
+      .meal-day-card summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .meal-day-main {
+        display: grid;
+        gap: 0.18rem;
+      }
+
+      .meal-day-main strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+      }
+
+      .meal-day-main span {
+        color: var(--av-color-ink-muted);
+        font-size: 0.8rem;
+      }
+
+      .meal-day-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.38rem 0.65rem;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 700;
+      }
+
+      .meal-day-status.is-today {
+        background: color-mix(in oklch, var(--av-color-primary-soft) 78%, white);
+        color: var(--av-color-primary);
+      }
+
+      .meal-day-status.is-complete {
+        background: color-mix(in oklch, var(--av-color-primary-soft) 60%, white);
+        color: var(--av-color-primary);
+      }
+
+      .meal-day-status.is-upcoming {
+        background: color-mix(in oklch, var(--av-color-plan) 10%, white);
+        color: var(--av-color-plan);
+      }
+
+      .meal-day-body {
+        display: grid;
+        gap: 0.65rem;
+        padding-block-start: 0.8rem;
+      }
+
+      .meal-day-list {
+        display: grid;
+        gap: 0.45rem;
+      }
+
+      .meal-day-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.6rem;
+        padding: 0.7rem 0.75rem;
+        border-radius: 0.85rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 78%, white);
+        color: var(--av-color-ink-muted);
+      }
+
+      .meal-day-list strong {
+        color: var(--av-color-ink-strong);
+        font-size: 0.87rem;
+      }
+
+      .meal-shopping-summary {
+        padding: 0.9rem 1rem;
+        border-radius: 1rem 1rem 0.45rem 1rem;
+        background: color-mix(in oklch, var(--av-color-primary-soft) 28%, white);
+      }
+
+      .meal-shopping-summary strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+      }
+
+      .meal-shopping-toolbar {
+        align-items: stretch;
+      }
+
+      .meal-shopping-toolbar .button,
+      .meal-shopping-toolbar .report-action-link {
+        min-block-size: 2.7rem;
+      }
+
+      .meal-shopping-groups {
+        display: grid;
+        gap: 0.8rem;
+      }
+
+      .meal-shopping-card {
+        display: grid;
+        gap: 0.75rem;
+        padding: 0.95rem;
+      }
+
+      .meal-shopping-list {
+        display: grid;
+        gap: 0.55rem;
+      }
+
+      .meal-shopping-item {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 0.65rem;
+        align-items: center;
+        padding: 0.75rem 0.8rem;
+        border-radius: 0.9rem 0.9rem 0.4rem 0.9rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 72%, white);
+      }
+
+      .meal-shopping-item input {
+        inline-size: 1.05rem;
+        block-size: 1.05rem;
+        accent-color: var(--av-color-primary);
+      }
+
+      .meal-shopping-item strong {
+        color: var(--av-color-ink-strong);
+        font-size: 0.9rem;
+      }
+
+      .meal-shopping-item span,
+      .meal-shopping-item small {
+        color: var(--av-color-ink-muted);
+        font-size: 0.78rem;
+      }
+
+      .meal-shopping-item.is-done strong,
+      .meal-shopping-item.is-done span {
+        color: var(--av-color-ink-muted);
+        text-decoration: line-through;
+      }
+
+      .meal-state {
+        display: grid;
+        gap: 0.8rem;
+        padding: 1.25rem;
+      }
+
+      .meal-state button,
+      .meal-state a {
+        inline-size: fit-content;
+      }
+
+      .meal-skeleton {
+        display: grid;
+        gap: 0.65rem;
+      }
+
+      .meal-skeleton span {
+        display: block;
+        block-size: 0.95rem;
+        border-radius: 999px;
+        background: linear-gradient(
+          90deg,
+          color-mix(in oklch, var(--av-color-surface-subtle) 84%, white),
+          color-mix(in oklch, var(--av-color-primary-soft) 44%, white),
+          color-mix(in oklch, var(--av-color-surface-subtle) 84%, white)
+        );
+        background-size: 200% 100%;
+        animation: mealShimmer 1.4s linear infinite;
+      }
+
+      .meal-skeleton span:first-child {
+        inline-size: 34%;
+        block-size: 2.6rem;
+      }
+
+      .meal-skeleton span:last-child {
+        inline-size: 72%;
+      }
+
+      @keyframes mealShimmer {
+        to {
+          background-position: -200% 0;
+        }
+      }
+
+      .meal-detail-list {
+        display: grid;
+        gap: 0.55rem;
+      }
+
+      .meal-detail-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.75rem 0.8rem;
+        border-radius: 0.9rem 0.9rem 0.4rem 0.9rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 74%, white);
+      }
+
+      .meal-detail-row strong {
+        color: var(--av-color-ink-strong);
+      }
+
+      .meal-detail-row span,
+      .meal-detail-row bdi {
+        color: var(--av-color-ink-muted);
+        font-size: 0.82rem;
+      }
+
+      @media (max-width: 980px) {
+        .meal-today-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .meal-summary-card {
+          position: static;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .meal-plan-hero,
+        .meal-panel,
+        .meal-state,
+        .meal-summary-card,
+        .meal-shopping-card,
+        .meal-meal-card,
+        .meal-day-card {
+          padding: 0.95rem;
+        }
+
+        .meal-card__actions,
+        .meal-shopping-toolbar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .meal-card__actions .button,
+        .meal-card__actions .report-action-link,
+        .meal-shopping-toolbar .button,
+        .meal-shopping-toolbar .report-action-link {
+          inline-size: 100%;
+          justify-content: center;
+        }
+
+        .meal-summary-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .meal-card__mobile-toggle {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-block-size: 2.6rem;
+          padding-inline: 0.85rem;
+          border: 1px solid var(--av-color-border);
+          border-radius: 0.9rem;
+          background: transparent;
+          color: var(--av-color-ink-strong);
+          font: inherit;
+          font-weight: 700;
+          cursor: pointer;
+        }
+
+        .meal-card__collapsible[hidden] {
+          display: none;
+        }
+      }
+
+      @media (min-width: 761px) {
+        .meal-card__collapsible[hidden] {
+          display: grid !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="app-body" data-page="meal-plan" data-theme="botanical">
+    <div class="app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی محصول">
+        <a class="brand" href="dashboard-botanical.html">
+          <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect class="brand-mark__plan" x="7" y="9" width="29" height="11" rx="5.5" />
+            <rect class="brand-mark__actual" x="12" y="27" width="29" height="11" rx="5.5" />
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4" />
+          </svg>
+          <span>آووکادو</span>
+        </a>
+        <nav aria-label="بخش‌های اصلی">
+          <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+          <a href="quick-log-botanical.html"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+          <a href="plans-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+          <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+          <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+        </nav>
+        <div class="side-nav__foot">مسیرهای اصلی همیشه از همین پنج بخش در دسترس هستند.</div>
+      </aside>
+
+      <main class="app-main" data-od-id="meal-plan-page">
+        <header class="app-topbar">
+          <div class="app-topbar__title">
+            <span>برنامه‌ها</span>
+            <strong>جزئیات برنامه غذایی فعال</strong>
+          </div>
+          <div class="app-topbar__actions">
+            <a class="header-action-link" href="messages-botanical.html" aria-label="پیام‌ها"><img class="header-action-icon" src="assets/icons/icon-message.png" alt="" aria-hidden="true" /></a>
+            <a class="header-action-link header-action-link--notification" href="notifications-botanical.html" aria-label="اعلان‌ها"><img class="header-action-icon" src="assets/icons/icon-bell.png" alt="" aria-hidden="true" /><span class="header-action-badge" aria-hidden="true"></span></a>
+            <a class="avatar-link" href="settings-botanical.html" aria-label="پروفایل سارا">س</a>
+          </div>
+        </header>
+
+        <div class="app-container page-content meal-plan-page">
+          <section class="meal-plan-hero" data-od-id="meal-plan-hero">
+            <span class="meal-breadcrumb">
+              <a href="plans-botanical.html">برنامه‌ها</a>
+              <span>/</span>
+              <strong>برنامه غذایی من</strong>
+            </span>
+
+            <div class="meal-plan-hero__top">
+              <div class="meal-plan-hero__copy">
+                <h1>برنامه غذایی من</h1>
+                <p>برنامه متعادل چهار هفته‌ای</p>
+                <div class="meal-hero-meta">
+                  <span class="meal-chip is-active">فعال</span>
+                  <span class="meal-chip">هفته دوم · روز ۱۰ از ۲۸</span>
+                  <a class="button button--quiet button--sm" href="nutrition-targets-botanical.html?entry=meal-plan-botanical.html&source=plan">هدف تغذیه‌ای برنامه</a>
+                </div>
+              </div>
+
+              <div class="meal-menu" data-meal-menu>
+                <button class="meal-menu__button" type="button" data-meal-menu-toggle aria-expanded="false">
+                  <span>•••</span>
+                </button>
+                <div class="meal-menu__panel" hidden>
+                  <a href="workout-botanical.html#weekly-plan">برنامه تمرینی<span>↗</span></a>
+                  <button type="button" data-action-toast="خلاصه این برنامه برای مرور بعدی علامت‌گذاری شد.">یادآوری برنامه</button>
+                  <button type="button" data-action-toast="نسخه اشتراکی برنامه غذایی آماده شد.">اشتراک‌گذاری برنامه</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="meal-hero-progress">
+              <div class="meal-hero-progress__row">
+                <span>پیشرفت کل برنامه</span>
+                <strong id="hero-progress-label">۳۶٪ مسیر طی شده</strong>
+              </div>
+              <div class="meal-hero-progress__track">
+                <span class="meal-hero-progress__fill" id="hero-progress-fill" style="--progress:36%"></span>
+              </div>
+            </div>
+          </section>
+
+          <div class="meal-tab-shell">
+            <div class="meal-tablist" role="tablist" aria-label="بخش‌های برنامه غذایی">
+              <button class="meal-tab" id="tab-today" type="button" role="tab" aria-selected="true" aria-controls="panel-today">امروز</button>
+              <button class="meal-tab" id="tab-week" type="button" role="tab" aria-selected="false" aria-controls="panel-week">برنامه هفته</button>
+              <button class="meal-tab" id="tab-shopping" type="button" role="tab" aria-selected="false" aria-controls="panel-shopping">لیست خرید</button>
+            </div>
+          </div>
+
+          <section class="meal-state" id="meal-loading-state" data-od-id="meal-loading-state">
+            <h2>در حال آماده‌سازی برنامه امروز</h2>
+            <div class="meal-skeleton" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </section>
+
+          <section class="meal-state" id="meal-empty-state" data-od-id="meal-empty-state" hidden>
+            <h2>هنوز برنامه فعالی برای شما ساخته نشده است</h2>
+            <p>پس از تکمیل اطلاعات، برنامه غذایی فعال از همین‌جا در دسترس قرار می‌گیرد.</p>
+            <a class="button button--primary" href="onboarding-botanical.html">تکمیل اطلاعات</a>
+          </section>
+
+          <section class="meal-state" id="meal-error-state" data-od-id="meal-error-state" hidden>
+            <h2>برنامه فعلاً بارگذاری نشد</h2>
+            <p>ثبت‌های روزانه شما محفوظ هستند. برای دیدن برنامه، دوباره تلاش کنید.</p>
+            <button class="button button--secondary" type="button" id="retry-plan-button">تلاش دوباره</button>
+          </section>
+
+          <section class="meal-panel" id="panel-today" role="tabpanel" aria-labelledby="tab-today" data-od-id="today-panel" hidden>
+            <div class="meal-today-grid" id="today-meals">
+              <div class="meal-meals-list" id="today-meals-list"></div>
+
+              <aside class="meal-summary-card" data-od-id="today-summary-card">
+                <div class="meal-summary-card__header">
+                  <div>
+                    <h2>خلاصه امروز</h2>
+                    <p>مرور سریع قبل از ثبت یا اصلاح وعده‌ها</p>
+                  </div>
+                </div>
+
+                <div class="meal-summary-card__value">
+                  <span>باقی‌مانده امروز</span>
+                  <strong id="summary-remaining">۱٬۲۷۰ kcal</strong>
+                </div>
+
+                <div class="meal-summary-grid">
+                  <div class="meal-summary-item">
+                    <span>هدف برنامه</span>
+                    <strong id="summary-goal">۱٬۷۵۰ kcal</strong>
+                    <a class="button button--quiet button--sm" href="nutrition-targets-botanical.html?entry=meal-plan-botanical.html&source=plan">هدف تغذیه‌ای برنامه</a>
+                  </div>
+                  <div class="meal-summary-item">
+                    <span>ثبت‌شده</span>
+                    <strong id="summary-logged">۴۸۰ kcal</strong>
+                  </div>
+                  <div class="meal-summary-item">
+                    <span>وعده‌های ثبت‌شده</span>
+                    <strong id="summary-count">۱ از ۵ وعده</strong>
+                  </div>
+                  <div class="meal-summary-item">
+                    <span>وضعیت امروز</span>
+                    <strong id="summary-status">آرام و قابل‌پیگیری</strong>
+                  </div>
+                </div>
+
+                <div class="meal-summary-bar">
+                  <div class="meal-summary-bar__copy">
+                    <span>پیشرفت روزانه</span>
+                    <strong id="summary-progress-label">۲۷٪</strong>
+                  </div>
+                  <div class="meal-summary-bar__track">
+                    <span class="meal-summary-bar__fill" id="summary-progress-fill" style="--progress:27%"></span>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <section class="meal-panel" id="panel-week" role="tabpanel" aria-labelledby="tab-week" data-od-id="week-panel" hidden>
+            <div class="meal-week-header">
+              <div>
+                <h2>برنامه هفته</h2>
+                <p>مرور هفت روز، کالری برنامه و وضعیت هر روز بدون نمایش هم‌زمان تب‌های دیگر.</p>
+              </div>
+              <span class="meal-chip">هفته دوم · ۷ روز برنامه</span>
+            </div>
+
+            <div class="meal-week-grid" id="week-grid"></div>
+          </section>
+
+          <section class="meal-panel" id="panel-shopping" role="tabpanel" aria-labelledby="tab-shopping" data-od-id="shopping-panel" hidden>
+            <div class="meal-shopping-summary">
+              <span>وضعیت خرید</span>
+              <strong id="shopping-summary-text">۵ مورد از ۹ مورد باقی مانده</strong>
+            </div>
+
+            <div class="meal-shopping-toolbar">
+              <button class="button button--primary" type="button" id="add-shopping-item-button">افزودن مورد</button>
+              <button class="button button--secondary" type="button" id="check-all-shopping-button">علامت‌زدن همه</button>
+              <button class="button button--secondary" type="button" id="clear-purchased-button">پاک‌کردن موارد خریداری‌شده</button>
+              <button class="button button--secondary" type="button" id="share-shopping-button">اشتراک‌گذاری لیست</button>
+            </div>
+
+            <div class="meal-shopping-groups" id="shopping-groups"></div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل">
+      <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+      <a href="quick-log-botanical.html" class="quick-log-trigger bottom-nav__primary"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+      <a href="plans-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+      <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+      <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+    </nav>
+
+    <dialog class="sheet" id="meal-detail-sheet" aria-labelledby="meal-detail-title">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__header">
+        <div>
+          <h2 id="meal-detail-title">جزئیات وعده</h2>
+          <p id="meal-detail-copy">مواد، مقدار و توضیح همراه غذا.</p>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog aria-label="بستن">
+          <svg class="icon" aria-hidden="true">
+            <use href="assets/icons.svg#icon-close"></use>
+          </svg>
+        </button>
+      </div>
+      <div class="meal-detail-list" id="meal-detail-list"></div>
+      <p class="muted-copy" id="meal-detail-note">مقدار واقعی را هنگام ثبت، در صورت نیاز اصلاح کنید.</p>
+    </dialog>
+
+    <dialog class="sheet" id="meal-substitute-sheet" aria-labelledby="meal-substitute-title">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__header">
+        <div>
+          <h2 id="meal-substitute-title">انتخاب جایگزین</h2>
+          <p id="meal-substitute-copy">جایگزینی هم‌ارزش برای همین وعده انتخاب کنید.</p>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog aria-label="بستن">
+          <svg class="icon" aria-hidden="true">
+            <use href="assets/icons.svg#icon-close"></use>
+          </svg>
+        </button>
+      </div>
+      <div class="meal-substitute-list" id="meal-substitute-list"></div>
+    </dialog>
+
+    <dialog class="sheet" id="shopping-add-sheet" aria-labelledby="shopping-add-title">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__header">
+        <div>
+          <h2 id="shopping-add-title">افزودن مورد خرید</h2>
+          <p>یک مورد جدید را با مقدار و دسته‌بندی اضافه کنید.</p>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog aria-label="بستن">
+          <svg class="icon" aria-hidden="true">
+            <use href="assets/icons.svg#icon-close"></use>
+          </svg>
+        </button>
+      </div>
+      <form class="form-stack" id="shopping-add-form">
+        <label class="field">
+          <span class="field__label">نام ماده غذایی</span>
+          <input name="name" required />
+        </label>
+        <label class="field">
+          <span class="field__label">مقدار</span>
+          <input name="amount" required />
+        </label>
+        <label class="field">
+          <span class="field__label">دسته‌بندی</span>
+          <select name="category" required>
+            <option>پروتئین</option>
+            <option>غلات</option>
+            <option>لبنیات</option>
+            <option>میوه‌ها</option>
+            <option>سبزیجات</option>
+            <option>سایر موارد</option>
+          </select>
+        </label>
+        <div class="sheet-actions">
+          <button class="button button--secondary" type="button" data-close-dialog>انصراف</button>
+          <button class="button button--primary" type="submit">افزودن مورد</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <span class="toast__check">
+        <svg class="icon icon--sm" aria-hidden="true">
+          <use href="assets/icons.svg#icon-check"></use>
+        </svg>
+      </span>
+      <span id="toast-message">ثبت شد.</span>
+      <button type="button" id="toast-undo">بستن</button>
+    </div>
+
+    <script>
+      (() => {
+        const $ = (selector, scope = document) => scope.querySelector(selector);
+        const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
+
+        const mealNames = {
+          breakfast: "صبحانه",
+          snackMorning: "میان‌وعده صبح",
+          lunch: "ناهار",
+          snackEvening: "میان‌وعده عصر",
+          dinner: "شام",
+        };
+
+        const state = {
+          loading: true,
+          error: false,
+          activeTab: "today",
+          dailyGoal: 1750,
+          loggedCalories: 480,
+          meals: [
+            {
+              id: "breakfast",
+              mealKey: "breakfast",
+              label: "صبحانه",
+              time: "۸:۳۰",
+              state: "completed",
+              title: "نان سنگک، پنیر و گردو",
+              amount: "۲ کف دست نان + ۳۰ گرم پنیر + ۲ عدد گردو",
+              details: "چای کم‌رنگ یا سبزی خوردن در کنار این وعده پیشنهاد شده است.",
+              calories: 420,
+              loggedCalories: 420,
+              note: "به خورده‌شده‌های امروز اضافه شد",
+              alternatives: [
+                { title: "املت گوجه و نان", amount: "۱ بشقاب کوچک", calories: 430 },
+                { title: "ماست، میوه و گردو", amount: "۱ کاسه", calories: 390 },
+              ],
+              ingredients: [
+                ["نان سنگک", "۲ کف دست", "۲۱۰ kcal"],
+                ["پنیر", "۳۰ گرم", "۹۰ kcal"],
+                ["گردو", "۲ عدد", "۱۲۰ kcal"],
+              ],
+            },
+            {
+              id: "snack-morning",
+              mealKey: "snackMorning",
+              label: "میان‌وعده صبح",
+              time: "۱۱:۰۰",
+              state: "future",
+              title: "سیب و دارچین",
+              amount: "۱ عدد سیب متوسط + کمی دارچین",
+              details: "اگر بیرون از خانه هستید، این میان‌وعده سریع و سبک می‌ماند.",
+              calories: 110,
+              note: "",
+              alternatives: [
+                { title: "موز کوچک", amount: "۱ عدد", calories: 105 },
+              ],
+              ingredients: [
+                ["سیب", "۱ عدد", "۹۵ kcal"],
+                ["دارچین", "۱ پینچ", "۱۵ kcal"],
+              ],
+            },
+            {
+              id: "lunch",
+              mealKey: "lunch",
+              label: "ناهار",
+              time: "۱۳:۳۰",
+              state: "ready",
+              title: "مرغ و برنج با سالاد",
+              amount: "۱۲۰ گرم مرغ + ۸ قاشق برنج + سالاد فصل",
+              details: "سالاد با آب‌لیمو یا کمی روغن زیتون، بدون سس سنگین بهتر است.",
+              calories: 520,
+              note: "",
+              alternatives: [
+                { title: "ماهی و سیب‌زمینی آبپز", amount: "۱ بشقاب", calories: 510 },
+                { title: "عدس‌پلو با ماست", amount: "۱ بشقاب متوسط", calories: 530 },
+              ],
+              ingredients: [
+                ["مرغ", "۱۲۰ گرم", "۲۴۰ kcal"],
+                ["برنج", "۸ قاشق", "۲۰۰ kcal"],
+                ["سالاد", "۱ کاسه", "۸۰ kcal"],
+              ],
+            },
+            {
+              id: "snack-evening",
+              mealKey: "snackEvening",
+              label: "میان‌وعده عصر",
+              time: "۱۷:۳۰",
+              state: "future",
+              title: "ماست و خیار",
+              amount: "۱ کاسه کوچک ماست + خیار خردشده",
+              details: "برای عصرهای شلوغ، این گزینه سبک و قابل‌تهیه سریع است.",
+              calories: 140,
+              note: "",
+              alternatives: [
+                { title: "شیر و خرما", amount: "۱ لیوان + ۲ عدد خرما", calories: 150 },
+              ],
+              ingredients: [
+                ["ماست", "۱ کاسه کوچک", "۱۰۰ kcal"],
+                ["خیار", "نصف عدد", "۴۰ kcal"],
+              ],
+            },
+            {
+              id: "dinner",
+              mealKey: "dinner",
+              label: "شام",
+              time: "۲۰:۳۰",
+              state: "future",
+              title: "سوپ سبزیجات و نان",
+              amount: "۱ کاسه سوپ + ۱ کف دست نان",
+              details: "اگر شام دیرتر شد، مقدار نان را سبک‌تر نگه دارید.",
+              calories: 360,
+              note: "",
+              alternatives: [
+                { title: "کوکو سبزی و ماست", amount: "۱ بشقاب سبک", calories: 370 },
+              ],
+              ingredients: [
+                ["سوپ سبزیجات", "۱ کاسه", "۲۷۰ kcal"],
+                ["نان", "۱ کف دست", "۹۰ kcal"],
+              ],
+            },
+          ],
+          week: [
+            {
+              day: "شنبه",
+              meals: 5,
+              calories: 1760,
+              status: "complete",
+              note: "همه وعده‌ها ثبت شده‌اند.",
+              items: ["صبحانه سبک", "ناهار با مرغ", "شام سوپ جو"],
+            },
+            {
+              day: "یکشنبه",
+              meals: 5,
+              calories: 1730,
+              status: "today",
+              note: "روز جاری · ۱ وعده ثبت شده",
+              items: ["صبحانه نان و پنیر", "ناهار مرغ و برنج", "شام سوپ سبزیجات"],
+            },
+            {
+              day: "دوشنبه",
+              meals: 5,
+              calories: 1710,
+              status: "upcoming",
+              note: "خرید چند قلم قبل از عصر لازم است.",
+              items: ["صبحانه اوتمیل", "ناهار عدس‌پلو", "شام املت"],
+            },
+            {
+              day: "سه‌شنبه",
+              meals: 4,
+              calories: 1690,
+              status: "upcoming",
+              note: "وعده‌ها فشرده‌تر و سبک‌تر شده‌اند.",
+              items: ["صبحانه ماست و میوه", "ناهار تن ماهی", "شام سالاد کامل"],
+            },
+            {
+              day: "چهارشنبه",
+              meals: 5,
+              calories: 1780,
+              status: "upcoming",
+              note: "روز کامل با میان‌وعده عصر.",
+              items: ["صبحانه نان سنگک", "ناهار خوراک مرغ", "شام سوپ"],
+            },
+            {
+              day: "پنجشنبه",
+              meals: 5,
+              calories: 1750,
+              status: "upcoming",
+              note: "نزدیک‌ترین روز به هدف کالری هفتگی.",
+              items: ["صبحانه تخم‌مرغ", "ناهار کباب تابه‌ای", "شام سالاد"],
+            },
+            {
+              day: "جمعه",
+              meals: 4,
+              calories: 1680,
+              status: "upcoming",
+              note: "روز سبک‌تر برای پایان هفته.",
+              items: ["صبحانه سبک", "ناهار خانگی", "شام سبک"],
+            },
+          ],
+          shopping: [
+            { id: "shop-1", category: "پروتئین", name: "سینه مرغ", amount: "۸۰۰ گرم", done: false },
+            { id: "shop-2", category: "غلات", name: "برنج", amount: "۱ کیلوگرم", done: true },
+            { id: "shop-3", category: "لبنیات", name: "پنیر", amount: "۲۰۰ گرم", done: false },
+            { id: "shop-4", category: "میوه‌ها", name: "سیب", amount: "۶ عدد", done: false },
+            { id: "shop-5", category: "سبزیجات", name: "خیار", amount: "۵ عدد", done: false },
+            { id: "shop-6", category: "سبزیجات", name: "کاهو", amount: "۱ عدد", done: true },
+            { id: "shop-7", category: "سایر موارد", name: "گردو", amount: "۱ بسته کوچک", done: false },
+            { id: "shop-8", category: "لبنیات", name: "ماست", amount: "۱ سطل کوچک", done: true },
+            { id: "shop-9", category: "پروتئین", name: "ماهی", amount: "۴۰۰ گرم", done: false },
+          ],
+          currentMealId: null,
+        };
+
+        const tabs = {
+          today: { tab: $("#tab-today"), panel: $("#panel-today") },
+          week: { tab: $("#tab-week"), panel: $("#panel-week") },
+          shopping: { tab: $("#tab-shopping"), panel: $("#panel-shopping") },
+        };
+
+        const loadingState = $("#meal-loading-state");
+        const emptyState = $("#meal-empty-state");
+        const errorState = $("#meal-error-state");
+        const todayList = $("#today-meals-list");
+        const weekGrid = $("#week-grid");
+        const shoppingGroups = $("#shopping-groups");
+        const toast = $("#toast");
+        const toastMessage = $("#toast-message");
+        let toastTimer = null;
+
+        function showToast(message) {
+          if (!toast || !toastMessage) return;
+          window.clearTimeout(toastTimer);
+          toastMessage.textContent = message;
+          toast.hidden = false;
+          toastTimer = window.setTimeout(() => {
+            toast.hidden = true;
+          }, 2400);
+        }
+
+        function openDialog(dialog) {
+          if (!dialog) return;
+          if (typeof dialog.showModal === "function") dialog.showModal();
+          else dialog.setAttribute("open", "");
+        }
+
+        function closeDialog(dialog) {
+          if (!dialog) return;
+          if (typeof dialog.close === "function" && dialog.open) dialog.close();
+          else dialog.removeAttribute("open");
+        }
+
+        function setTab(nextTab, updateUrl = true) {
+          state.activeTab = nextTab;
+          Object.entries(tabs).forEach(([key, entry]) => {
+            const active = key === nextTab;
+            entry.tab?.setAttribute("aria-selected", String(active));
+            if (entry.panel) entry.panel.hidden = !active;
+          });
+          if (updateUrl) {
+            const url = new URL(window.location.href);
+            url.searchParams.set("tab", nextTab);
+            history.replaceState({}, "", `${url.pathname}?${url.searchParams.toString()}${url.hash}`);
+          }
+        }
+
+        function formatNumber(value) {
+          return new Intl.NumberFormat("fa-IR").format(value);
+        }
+
+        function updateTodaySummary() {
+          const completedMeals = state.meals.filter((meal) => meal.state === "completed");
+          const logged = completedMeals.reduce((sum, meal) => sum + (meal.loggedCalories || meal.calories), 0);
+          state.loggedCalories = logged;
+          const remaining = Math.max(0, state.dailyGoal - logged);
+          const progress = Math.min(100, Math.round((logged / state.dailyGoal) * 100));
+
+          $("#summary-goal").textContent = `${formatNumber(state.dailyGoal)} kcal`;
+          $("#summary-logged").textContent = `${formatNumber(logged)} kcal`;
+          $("#summary-remaining").textContent = `${formatNumber(remaining)} kcal`;
+          $("#summary-count").textContent = `${formatNumber(completedMeals.length)} از ${formatNumber(state.meals.length)} وعده`;
+          $("#summary-progress-label").textContent = `${formatNumber(progress)}٪`;
+          $("#summary-progress-fill").style.setProperty("--progress", `${progress}%`);
+
+          $("#summary-status").textContent =
+            completedMeals.length >= 3
+              ? "بیشتر وعده‌های امروز روشن شده‌اند"
+              : completedMeals.length >= 1
+                ? "شروع روزانه ثبت شده است"
+                : "هنوز چیزی ثبت نشده است";
+        }
+
+        function renderTodayMeals() {
+          todayList.innerHTML = state.meals
+            .map((meal) => {
+              const statusCopy =
+                meal.state === "completed"
+                  ? "ثبت‌شده"
+                  : meal.state === "ready"
+                    ? "آماده ثبت"
+                    : "آینده";
+
+              const actions = meal.state === "completed"
+                ? `
+                  <button class="button button--secondary" type="button" data-adjust-meal="${meal.id}">
+                    اصلاح مقدار واقعی
+                  </button>
+                  <button class="button button--quiet" type="button" data-open-detail="${meal.id}">
+                    مشاهده جزئیات
+                  </button>
+                `
+                : `
+                  <button
+                    class="button button--primary"
+                    type="button"
+                    data-log-meal="${meal.id}"
+                  >
+                    افزودن به خورده‌شده‌های امروز
+                  </button>
+                  <button class="button button--secondary" type="button" data-open-detail="${meal.id}">
+                    مشاهده جزئیات
+                  </button>
+                `;
+
+              return `
+                <article class="meal-meal-card" data-state="${meal.state}" data-meal-id="${meal.id}" data-od-id="meal-${meal.id}">
+                  <div class="meal-card__top">
+                    <div class="meal-card__title-wrap">
+                      <span class="meal-card__subtitle">${meal.label} · ساعت ${meal.time}</span>
+                      <h3>${meal.title}</h3>
+                    </div>
+                    <span class="meal-status-pill ${meal.state === "completed" ? "is-complete" : meal.state === "ready" ? "is-ready" : "is-future"}">
+                      ${statusCopy}
+                    </span>
+                  </div>
+
+                  <button class="meal-card__mobile-toggle" type="button" data-toggle-meal="${meal.id}">
+                    جزئیات وعده
+                  </button>
+
+                  <div class="meal-card__collapsible" ${meal.state === "completed" ? "" : "hidden"}>
+                    <div class="meal-card__facts">
+                      <strong>${meal.amount}</strong>
+                      <p>${meal.details}</p>
+                    </div>
+
+                    <div class="meal-card__meta">
+                      <span class="meal-minor-pill is-neutral">حدود ${formatNumber(meal.calories)} kcal</span>
+                      ${meal.alternatives?.length ? `<span class="meal-minor-pill"> ${formatNumber(meal.alternatives.length)} گزینه جایگزین</span>` : ""}
+                    </div>
+
+                    ${
+                      meal.note
+                        ? `<span class="meal-complete-note"><i>✓</i>${meal.note}</span>`
+                        : ""
+                    }
+
+                    ${
+                      meal.alternatives?.length
+                        ? `
+                          <div class="meal-substitute-card">
+                            <strong>جایگزین‌های این وعده</strong>
+                            <div class="meal-substitute-list">
+                              ${meal.alternatives
+                                .slice(0, 2)
+                                .map(
+                                  (alternative) => `
+                                    <div class="meal-substitute-option">
+                                      <div>
+                                        <strong>${alternative.title}</strong>
+                                        <span>${alternative.amount}</span>
+                                      </div>
+                                      <span>${formatNumber(alternative.calories)} kcal</span>
+                                    </div>
+                                  `
+                                )
+                                .join("")}
+                            </div>
+                          </div>
+                        `
+                        : ""
+                    }
+
+                    <div class="meal-card__actions">
+                      ${actions}
+                      ${
+                        meal.alternatives?.length
+                          ? `<button class="button button--quiet" type="button" data-open-substitute="${meal.id}">انتخاب جایگزین</button>`
+                          : ""
+                      }
+                    </div>
+                  </div>
+                </article>
+              `;
+            })
+            .join("");
+        }
+
+        function renderWeek() {
+          weekGrid.innerHTML = state.week
+            .map((day, index) => `
+              <details class="meal-day-card" ${day.status === "today" ? "open" : ""} data-od-id="week-day-${index + 1}">
+                <summary>
+                  <div class="meal-day-main">
+                    <strong>${day.day}</strong>
+                    <span>${formatNumber(day.meals)} وعده · ${formatNumber(day.calories)} kcal</span>
+                  </div>
+                  <span class="meal-day-status ${day.status === "today" ? "is-today" : day.status === "complete" ? "is-complete" : "is-upcoming"}">
+                    ${
+                      day.status === "today"
+                        ? "امروز"
+                        : day.status === "complete"
+                          ? "ثبت‌شده"
+                          : "پیش‌رو"
+                    }
+                  </span>
+                </summary>
+                <div class="meal-day-body">
+                  <p>${day.note}</p>
+                  <ul class="meal-day-list">
+                    ${day.items
+                      .map(
+                        (item) => `
+                          <li>
+                            <strong>${item}</strong>
+                            <span>در برنامه هفته دیده می‌شود</span>
+                          </li>
+                        `
+                      )
+                      .join("")}
+                  </ul>
+                </div>
+              </details>
+            `)
+            .join("");
+        }
+
+        function groupedShopping() {
+          return state.shopping.reduce((acc, item) => {
+            if (!acc[item.category]) acc[item.category] = [];
+            acc[item.category].push(item);
+            return acc;
+          }, {});
+        }
+
+        function updateShoppingSummary() {
+          const remaining = state.shopping.filter((item) => !item.done).length;
+          $("#shopping-summary-text").textContent = `${formatNumber(remaining)} مورد از ${formatNumber(state.shopping.length)} مورد باقی مانده`;
+        }
+
+        function renderShopping() {
+          const groups = groupedShopping();
+          shoppingGroups.innerHTML = Object.entries(groups)
+            .map(
+              ([category, items]) => `
+                <section class="meal-shopping-card" data-od-id="shopping-${category}">
+                  <h2>${category}</h2>
+                  <div class="meal-shopping-list">
+                    ${items
+                      .map(
+                        (item) => `
+                          <label class="meal-shopping-item ${item.done ? "is-done" : ""}" data-shopping-id="${item.id}">
+                            <input type="checkbox" ${item.done ? "checked" : ""} data-shopping-check="${item.id}" />
+                            <div>
+                              <strong>${item.name}</strong>
+                              <small>${category}</small>
+                            </div>
+                            <span>${item.amount}</span>
+                          </label>
+                        `
+                      )
+                      .join("")}
+                  </div>
+                </section>
+              `
+            )
+            .join("");
+
+          updateShoppingSummary();
+        }
+
+        function renderStates() {
+          const hasActivePlan = true;
+          loadingState.hidden = !state.loading;
+          emptyState.hidden = true;
+          errorState.hidden = true;
+          $("#panel-today").hidden = true;
+          $("#panel-week").hidden = true;
+          $("#panel-shopping").hidden = true;
+
+          if (state.loading) return;
+
+          if (state.error) {
+            errorState.hidden = false;
+            return;
+          }
+
+          if (!hasActivePlan) {
+            emptyState.hidden = false;
+            return;
+          }
+
+          const initialTab = new URLSearchParams(window.location.search).get("tab");
+          if (initialTab && tabs[initialTab]) state.activeTab = initialTab;
+          setTab(state.activeTab, false);
+        }
+
+        function openMealDetails(mealId) {
+          const meal = state.meals.find((item) => item.id === mealId);
+          if (!meal) return;
+          $("#meal-detail-title").textContent = `${meal.label} · جزئیات وعده`;
+          $("#meal-detail-copy").textContent = meal.title;
+          $("#meal-detail-note").textContent = meal.details;
+          $("#meal-detail-list").innerHTML = meal.ingredients
+            .map(
+              ([name, amount, calories]) => `
+                <div class="meal-detail-row">
+                  <div>
+                    <strong>${name}</strong>
+                    <span>${amount}</span>
+                  </div>
+                  <bdi dir="ltr">${calories}</bdi>
+                </div>
+              `
+            )
+            .join("");
+          openDialog($("#meal-detail-sheet"));
+        }
+
+        function openSubstitutes(mealId) {
+          const meal = state.meals.find((item) => item.id === mealId);
+          if (!meal) return;
+          state.currentMealId = mealId;
+          $("#meal-substitute-title").textContent = `جایگزین‌های ${meal.label}`;
+          $("#meal-substitute-copy").textContent = `برای ${meal.title} یکی از گزینه‌های هم‌ارزش را انتخاب کنید.`;
+          $("#meal-substitute-list").innerHTML = meal.alternatives
+            .map(
+              (alternative, index) => `
+                <button class="meal-substitute-option" type="button" data-choose-substitute="${meal.id}" data-substitute-index="${index}">
+                  <div>
+                    <strong>${alternative.title}</strong>
+                    <span>${alternative.amount}</span>
+                  </div>
+                  <span>${formatNumber(alternative.calories)} kcal</span>
+                </button>
+              `
+            )
+            .join("");
+          openDialog($("#meal-substitute-sheet"));
+        }
+
+        function markMealCompleted(mealId, customTitle) {
+          const meal = state.meals.find((item) => item.id === mealId);
+          if (!meal) return;
+          if (customTitle) {
+            const chosen = meal.alternatives.find((item) => item.title === customTitle);
+            if (chosen) {
+              meal.title = chosen.title;
+              meal.amount = chosen.amount;
+              meal.calories = chosen.calories;
+              meal.details = "این وعده با گزینه جایگزین انتخاب‌شده ثبت شد.";
+              meal.ingredients = [[chosen.title, chosen.amount, `${chosen.calories} kcal`]];
+            }
+          }
+          meal.state = "completed";
+          meal.loggedCalories = meal.calories;
+          meal.note = "به خورده‌شده‌های امروز اضافه شد";
+          renderTodayMeals();
+          updateTodaySummary();
+          showToast(`«${meal.label}» به خورده‌شده‌های امروز اضافه شد.`);
+        }
+
+        function toggleMealMobile(mealId) {
+          const card = todayList.querySelector(`[data-meal-id="${mealId}"] .meal-card__collapsible`);
+          if (!card) return;
+          card.hidden = !card.hidden;
+        }
+
+        function renderEverything() {
+          renderTodayMeals();
+          renderWeek();
+          renderShopping();
+          updateTodaySummary();
+          renderStates();
+        }
+
+        $("#tab-today")?.addEventListener("click", () => setTab("today"));
+        $("#tab-week")?.addEventListener("click", () => setTab("week"));
+        $("#tab-shopping")?.addEventListener("click", () => setTab("shopping"));
+
+        $("#retry-plan-button")?.addEventListener("click", () => {
+          state.error = false;
+          state.loading = true;
+          renderStates();
+          window.setTimeout(() => {
+            state.loading = false;
+            renderStates();
+            setTab("today", false);
+          }, 260);
+        });
+
+        if (window.location.hash === "#today-meals") {
+          setTab("today", false);
+          window.setTimeout(() => {
+            document.getElementById("today-meals")?.scrollIntoView({ block: "start" });
+          }, 120);
+        }
+
+        todayList?.addEventListener("click", (event) => {
+          const logButton = event.target.closest("[data-log-meal]");
+          const detailButton = event.target.closest("[data-open-detail]");
+          const substituteButton = event.target.closest("[data-open-substitute]");
+          const adjustButton = event.target.closest("[data-adjust-meal]");
+          const mobileToggle = event.target.closest("[data-toggle-meal]");
+
+          if (logButton) {
+            markMealCompleted(logButton.dataset.logMeal);
+            return;
+          }
+
+          if (detailButton) {
+            openMealDetails(detailButton.dataset.openDetail);
+            return;
+          }
+
+          if (substituteButton) {
+            openSubstitutes(substituteButton.dataset.openSubstitute);
+            return;
+          }
+
+          if (adjustButton) {
+            showToast("امکان اصلاح مقدار واقعی برای این وعده باز شد.");
+            return;
+          }
+
+          if (mobileToggle) {
+            toggleMealMobile(mobileToggle.dataset.toggleMeal);
+          }
+        });
+
+        $("#meal-substitute-list")?.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-choose-substitute]");
+          if (!button) return;
+          const meal = state.meals.find((item) => item.id === button.dataset.chooseSubstitute);
+          const alternative = meal?.alternatives?.[Number(button.dataset.substituteIndex)];
+          if (!meal || !alternative) return;
+          closeDialog($("#meal-substitute-sheet"));
+          markMealCompleted(meal.id, alternative.title);
+        });
+
+        shoppingGroups?.addEventListener("change", (event) => {
+          const checkbox = event.target.closest("[data-shopping-check]");
+          if (!checkbox) return;
+          const item = state.shopping.find((entry) => entry.id === checkbox.dataset.shoppingCheck);
+          if (!item) return;
+          item.done = checkbox.checked;
+          renderShopping();
+        });
+
+        $("#check-all-shopping-button")?.addEventListener("click", () => {
+          state.shopping.forEach((item) => {
+            item.done = true;
+          });
+          renderShopping();
+          showToast("همه موارد به‌عنوان خریداری‌شده علامت خوردند.");
+        });
+
+        $("#clear-purchased-button")?.addEventListener("click", () => {
+          state.shopping = state.shopping.filter((item) => !item.done);
+          renderShopping();
+          showToast("موارد خریداری‌شده از لیست پاک شدند.");
+        });
+
+        $("#share-shopping-button")?.addEventListener("click", () => {
+          showToast("نسخه اشتراک‌گذاری لیست خرید آماده شد.");
+        });
+
+        $("#add-shopping-item-button")?.addEventListener("click", () => {
+          openDialog($("#shopping-add-sheet"));
+        });
+
+        $("#shopping-add-form")?.addEventListener("submit", (event) => {
+          event.preventDefault();
+          const form = event.currentTarget;
+          if (!form.reportValidity()) return;
+          const formData = new FormData(form);
+          state.shopping.push({
+            id: `shop-${Date.now()}`,
+            category: String(formData.get("category")),
+            name: String(formData.get("name")),
+            amount: String(formData.get("amount")),
+            done: false,
+          });
+          form.reset();
+          closeDialog($("#shopping-add-sheet"));
+          renderShopping();
+          showToast("مورد جدید به لیست خرید اضافه شد.");
+        });
+
+        $$("[data-close-dialog]").forEach((button) => {
+          button.addEventListener("click", () => closeDialog(button.closest("dialog")));
+        });
+
+        $$("dialog").forEach((dialog) => {
+          dialog.addEventListener("click", (event) => {
+            if (event.target === dialog) closeDialog(dialog);
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          const menu = event.target.closest("[data-meal-menu]");
+          $$("[data-meal-menu]").forEach((item) => {
+            const panel = $(".meal-menu__panel", item);
+            const toggle = $("[data-meal-menu-toggle]", item);
+            if (!panel || !toggle) return;
+            if (item === menu) {
+              const expanded = toggle.getAttribute("aria-expanded") === "true";
+              if (event.target.closest("[data-meal-menu-toggle]")) {
+                toggle.setAttribute("aria-expanded", String(!expanded));
+                panel.hidden = expanded;
+              }
+            } else {
+              toggle.setAttribute("aria-expanded", "false");
+              panel.hidden = true;
+            }
+          });
+
+          if (!menu) {
+            $$("[data-meal-menu]").forEach((item) => {
+              const panel = $(".meal-menu__panel", item);
+              const toggle = $("[data-meal-menu-toggle]", item);
+              if (panel && toggle) {
+                panel.hidden = true;
+                toggle.setAttribute("aria-expanded", "false");
+              }
+            });
+          }
+        });
+
+        $("#toast-undo")?.addEventListener("click", () => {
+          toast.hidden = true;
+        });
+
+        renderEverything();
+        window.setTimeout(() => {
+          state.loading = false;
+          renderStates();
+          setTab("today");
+        }, 280);
+      })();
+    </script>
+  </body>
+</html>

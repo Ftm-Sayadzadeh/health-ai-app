@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "plan-editor-botanical.html",
+  "entry": "plan-editor-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-30T20:26:31.078Z",
+  "updatedAt": "2026-07-30T20:26:31.078Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

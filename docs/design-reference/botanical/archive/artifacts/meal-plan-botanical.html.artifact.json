@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "meal-plan-botanical.html",
+  "entry": "meal-plan-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-12T11:47:22.159Z",
+  "updatedAt": "2026-07-12T11:47:22.159Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

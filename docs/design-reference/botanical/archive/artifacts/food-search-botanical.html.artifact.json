@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "food-search-botanical.html",
+  "entry": "food-search-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-20T15:56:12.789Z",
+  "updatedAt": "2026-07-20T15:56:12.789Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

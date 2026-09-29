@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#123f26" />
+    <title>کتابخانه کامپوننت MVP — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <style>
+      @font-face { font-family: Kalameh; src: url("assets/fonts/kalameh/Kalameh-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+      @font-face { font-family: Kalameh; src: url("assets/fonts/kalameh/Kalameh-SemiBold.ttf") format("truetype"); font-weight: 650; font-display: swap; }
+      @font-face { font-family: Kalameh; src: url("assets/fonts/kalameh/Kalameh-Bold.ttf") format("truetype"); font-weight: 780; font-display: swap; }
+      * { box-sizing: border-box; }
+      html { background: var(--av-color-canvas); color: var(--av-color-ink); }
+      body { margin: 0; font-family: var(--av-font-body); line-height: var(--av-leading-body); }
+      button, input, textarea, select { font: inherit; }
+      button { color: inherit; }
+      :where(a, button, input, textarea, select):focus-visible { outline: 3px solid var(--av-color-focus); outline-offset: 3px; }
+      .page { max-inline-size: 76rem; margin-inline: auto; padding: clamp(1rem, 3vw, 2rem); }
+      .intro { display: grid; gap: .55rem; margin-block-end: 1.25rem; }
+      .intro h1 { margin: 0; color: var(--av-color-ink-strong); font-size: clamp(1.65rem, 3vw, 2.45rem); line-height: 1.35; }
+      .intro p { max-inline-size: 48rem; margin: 0; color: var(--av-color-ink-muted); }
+      .section { display: grid; gap: 1rem; margin-block: 1rem; }
+      .section h2 { margin: 0; color: var(--av-color-ink-strong); font-size: var(--av-text-xl); }
+      .grid { display: grid; gap: 1rem; }
+      .card { border: 1px solid var(--av-color-border); border-radius: 1.25rem 1.25rem .6rem 1.25rem; background: var(--av-color-surface); padding: 1rem; }
+      .card h3 { margin: 0; color: var(--av-color-ink-strong); font-size: 1rem; }
+      .card p, .card small { color: var(--av-color-ink-muted); }
+      .swatch-row, .button-row, .chip-row { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; margin-block-start: .8rem; }
+      .button { min-block-size: 2.875rem; display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border: 1px solid transparent; border-radius: 1rem 1rem .45rem 1rem; padding: .72rem 1rem; font-weight: 650; cursor: pointer; }
+      .button--primary { background: var(--av-color-primary); color: white; }
+      .button--secondary { border-color: var(--av-color-border-strong); background: var(--av-color-surface); color: var(--av-color-ink-strong); }
+      .button--ghost { border-color: transparent; background: transparent; color: var(--av-color-primary); }
+      .button--danger { background: var(--av-color-danger); color: white; }
+      .button:disabled { opacity: .5; cursor: not-allowed; }
+      .spinner { inline-size: 1rem; block-size: 1rem; border: 2px solid currentColor; border-inline-end-color: transparent; border-radius: 50%; animation: spin 900ms linear infinite; }
+      @keyframes spin { to { rotate: 360deg; } }
+      .icon-button { min-inline-size: 2.75rem; min-block-size: 2.75rem; display: inline-grid; place-items: center; border: 1px solid var(--av-color-border); border-radius: 50%; background: var(--av-color-surface); cursor: pointer; }
+      .field { display: grid; gap: .45rem; }
+      .field label, .field legend { color: var(--av-color-ink-strong); font-size: .9rem; font-weight: 650; }
+      .field input, .field textarea, .field select { inline-size: 100%; min-block-size: 3rem; border: 1px solid var(--av-color-border-strong); border-radius: 1rem; background: var(--av-color-surface); padding: .72rem .85rem; color: var(--av-color-ink); }
+      .field textarea { min-block-size: 6rem; resize: vertical; }
+      .field input[aria-invalid="true"], .field textarea[aria-invalid="true"] { border-color: var(--av-color-danger); background: var(--av-color-danger-soft); }
+      .field small { color: var(--av-color-ink-muted); }
+      .field .error { color: var(--av-color-danger); }
+      .form-grid { display: grid; gap: .85rem; }
+      .phone-control { direction: ltr; display: grid; grid-template-columns: auto 1fr; overflow: hidden; border: 1px solid var(--av-color-border-strong); border-radius: 1rem; background: var(--av-color-surface); }
+      .phone-control span { padding: .75rem; border-inline-end: 1px solid var(--av-color-border); color: var(--av-color-ink-strong); font-variant-numeric: tabular-nums; }
+      .phone-control input { border: 0; outline: 0; direction: ltr; min-block-size: 3rem; padding-inline: .75rem; font-variant-numeric: tabular-nums; }
+      .otp { direction: ltr; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .45rem; }
+      .otp input { min-inline-size: 0; aspect-ratio: 1 / 1.08; border: 1px solid var(--av-color-border-strong); border-radius: 1rem 1rem .45rem 1rem; background: var(--av-color-surface); text-align: center; font-size: 1.25rem; font-weight: 650; }
+      .choice-card { min-block-size: 3.35rem; display: flex; align-items: center; gap: .65rem; border: 1px solid var(--av-color-border); border-radius: 1rem 1rem .45rem 1rem; background: var(--av-color-surface); padding: .75rem .85rem; cursor: pointer; }
+      .choice-card:has(input:checked) { border-color: color-mix(in oklch, var(--av-color-primary) 42%, var(--av-color-border)); background: var(--av-color-primary-soft); }
+      .choice-card input { accent-color: var(--av-color-primary); }
+      .segmented { display: inline-grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .25rem; border: 1px solid var(--av-color-border); border-radius: 1rem; background: var(--av-color-surface-subtle); padding: .25rem; }
+      .segmented button { min-block-size: 2.65rem; border: 0; border-radius: .75rem; background: transparent; cursor: pointer; }
+      .segmented button[aria-pressed="true"] { background: var(--av-color-surface); color: var(--av-color-primary); font-weight: 650; box-shadow: 0 1px 0 var(--av-color-border); }
+      .alert { display: grid; gap: .35rem; border: 1px solid color-mix(in oklch, var(--av-color-danger) 28%, var(--av-color-border)); border-radius: 1rem 1rem .45rem 1rem; background: var(--av-color-danger-soft); padding: .85rem; color: var(--av-color-ink-strong); }
+      .action-card, .list-item, .meal-group, .plan-card, .upload, .attachment { border: 1px solid var(--av-color-border); border-radius: 1.15rem 1.15rem .55rem 1.15rem; background: var(--av-color-surface); padding: .9rem; }
+      .action-card { display: grid; gap: .45rem; min-block-size: 5.5rem; }
+      .list-item { display: grid; grid-template-columns: auto 1fr auto; gap: .65rem; align-items: center; }
+      .glyph { inline-size: 2.3rem; block-size: 2.3rem; display: grid; place-items: center; border-radius: .9rem .9rem .35rem .9rem; background: var(--av-color-primary-soft); color: var(--av-color-primary); font-weight: 780; }
+      .status { display: inline-flex; align-items: center; gap: .35rem; min-block-size: 2rem; border: 1px solid var(--av-color-border); border-radius: 999px; background: var(--av-color-surface-subtle); padding-inline: .7rem; font-size: var(--av-text-xs); font-weight: 650; }
+      .status[data-tone="success"] { background: var(--av-color-success-soft); border-color: color-mix(in oklch, var(--av-color-success) 30%, var(--av-color-border)); }
+      .status[data-tone="plan"] { background: var(--av-color-plan-soft); border-color: color-mix(in oklch, var(--av-color-plan) 30%, var(--av-color-border)); color: var(--av-color-plan-hover); }
+      .track-item { display: grid; grid-template-columns: auto 1fr auto; gap: .75rem; align-items: start; border: 1px solid var(--av-color-border); border-radius: 1rem 1rem .45rem 1rem; padding: .85rem; }
+      .track-shape { inline-size: .75rem; block-size: 2rem; border: 2px solid var(--av-color-plan); border-radius: 999px; }
+      .track-item[data-kind="actual"] { background: var(--av-color-primary-soft); border-color: color-mix(in oklch, var(--av-color-primary) 24%, var(--av-color-border)); }
+      .track-item[data-kind="actual"] .track-shape { border-color: var(--av-color-primary); background: var(--av-color-primary); }
+      .track-item strong, .plan-card strong { color: var(--av-color-ink-strong); }
+      .track-item small, .plan-card small { display: block; color: var(--av-color-ink-muted); }
+      .meal-group header { display: flex; justify-content: space-between; gap: 1rem; align-items: center; margin-block-end: .7rem; }
+      .plan-card { display: grid; gap: .75rem; border-color: color-mix(in oklch, var(--av-color-plan) 24%, var(--av-color-border)); }
+      .state { border: 1px solid var(--av-color-border); border-radius: 1.15rem 1.15rem .55rem 1.15rem; padding: 1rem; background: var(--av-color-surface); }
+      .state[data-state="empty"] { border-style: dashed; }
+      .state[data-state="error"] { background: var(--av-color-danger-soft); border-color: color-mix(in oklch, var(--av-color-danger) 26%, var(--av-color-border)); }
+      .skeleton { display: grid; gap: .65rem; }
+      .skeleton span { block-size: .85rem; border-radius: 999px; background: linear-gradient(90deg, var(--av-color-surface-subtle), var(--av-color-border), var(--av-color-surface-subtle)); background-size: 200% 100%; animation: shimmer 1.5s linear infinite; }
+      .skeleton span:nth-child(2) { inline-size: 78%; }
+      .skeleton span:nth-child(3) { inline-size: 54%; }
+      @keyframes shimmer { to { background-position: -200% 0; } }
+      .toast { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .65rem; border-radius: 1.2rem 1.2rem .45rem 1.2rem; background: var(--av-color-ink-strong); padding: .75rem .85rem; color: white; }
+      .toast button { border: 0; background: transparent; color: var(--av-color-pulse); font-weight: 650; cursor: pointer; }
+      .dialog-card, .sheet-card { border: 1px solid var(--av-color-border); background: var(--av-color-surface); box-shadow: var(--av-shadow-2); padding: 1rem; }
+      .dialog-card { border-radius: 1.6rem 1.6rem .7rem 1.6rem; }
+      .sheet-card { border-radius: 1.8rem 1.8rem 0 0; }
+      .upload { display: grid; gap: .75rem; border-style: dashed; }
+      .progress { overflow: hidden; block-size: .55rem; border-radius: 999px; background: var(--av-color-surface-subtle); }
+      .progress span { display: block; inline-size: 62%; block-size: 100%; border-radius: inherit; background: var(--av-color-primary); }
+      .stepper { display: grid; gap: .65rem; }
+      .stepper__meta { display: flex; justify-content: space-between; gap: 1rem; color: var(--av-color-ink-muted); font-size: var(--av-text-sm); }
+      .stepper__bar { overflow: hidden; block-size: .55rem; border-radius: 999px; background: var(--av-color-surface-subtle); }
+      .stepper__bar span { display: block; inline-size: 45%; block-size: 100%; background: var(--av-color-primary); border-radius: inherit; }
+      @media (min-width: 44rem) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .span-2 { grid-column: 1 / -1; } }
+      @media (min-width: 64rem) { .grid--three { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; } }
+    </style>
+  </head>
+  <body>
+    <main class="page" data-od-id="component-library-page">
+      <section class="intro" data-od-id="component-library-intro">
+        <h1>کتابخانه کامپوننت MVP</h1>
+        <p>این کاتالوگ پایه‌های بصری و تعاملی تولیدی را برای صفحات بعدی ثابت می‌کند؛ هر نمونه فارسی، RTL، Botanical و قابل استفاده در موبایل است.</p>
+      </section>
+
+      <section class="section" data-od-id="buttons-section">
+        <h2>دکمه‌ها</h2>
+        <div class="grid grid--three">
+          <article class="card"><h3>اولیه</h3><div class="button-row"><button class="button button--primary">ثبت خوراک</button></div></article>
+          <article class="card"><h3>ثانویه و ghost</h3><div class="button-row"><button class="button button--secondary">مشاهده برنامه</button><button class="button button--ghost">ویرایش</button></div></article>
+          <article class="card"><h3>خطر، غیرفعال و در حال انجام</h3><div class="button-row"><button class="button button--danger">حذف</button><button class="button" disabled>غیرفعال</button><button class="button button--primary" aria-busy="true"><span class="spinner" aria-hidden="true"></span>در حال ذخیره</button><button class="icon-button" aria-label="بستن">×</button></div></article>
+        </div>
+      </section>
+
+      <section class="section" data-od-id="forms-section">
+        <h2>فرم‌ها</h2>
+        <div class="grid">
+          <article class="card">
+            <h3>فیلدها</h3>
+            <div class="form-grid">
+              <div class="field"><label for="text">نام خوراک</label><input id="text" value="نان سنگک" /></div>
+              <div class="field"><label for="number">کالری</label><input id="number" type="number" value="240" dir="ltr" /></div>
+              <div class="field span-2" data-od-id="helper-text-example"><label for="textarea">یادداشت</label><textarea id="textarea">مقدار تقریبی وارد شده است.</textarea><small>متن راهنما (helper text): مقادیر بعد از خطا حفظ می‌شوند.</small></div>
+              <div class="field"><label for="select">وعده</label><select id="select"><option>صبحانه</option><option>ناهار</option><option>شام</option></select></div>
+              <div class="field"><label for="date">تاریخ</label><input id="date" type="date" dir="ltr" value="2026-07-12" /></div>
+            </div>
+          </article>
+          <article class="card">
+            <h3>اعتبارسنجی و ورودی‌های خاص</h3>
+            <div class="form-grid">
+              <div class="field span-2"><label for="bad">مقدار</label><input id="bad" aria-invalid="true" value="" /><small class="error">مقدار را وارد کنید.</small></div>
+              <div class="field span-2"><label>شماره همراه</label><div class="phone-control"><span>+98</span><input value="09123456789" inputmode="tel" /></div></div>
+              <div class="field span-2"><label>کد تایید</label><div class="otp"><input value="4" /><input value="8" /><input value="2" /><input value="9" /><input value="1" /><input value="3" /></div></div>
+              <div class="alert span-2" role="alert"><strong>خطای فرم</strong><span>۲ مورد نیاز به بررسی دارد. مقدار و کالری را تکمیل کنید.</span></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" data-od-id="selection-section">
+        <h2>انتخاب‌ها</h2>
+        <div class="grid grid--three">
+          <article class="card"><h3>چک‌باکس</h3><label class="choice-card"><input type="checkbox" checked />صبحانه سبک</label><label class="choice-card"><input type="checkbox" />بدون لبنیات</label></article>
+          <article class="card"><h3>رادیو و کارت انتخاب</h3><label class="choice-card"><input type="radio" name="goal" checked />حفظ وزن</label><label class="choice-card"><input type="radio" name="goal" />افزایش انرژی</label></article>
+          <article class="card"><h3>کنترل قطعه‌ای</h3><div class="segmented" role="group" aria-label="نوع ورود غذا"><button aria-pressed="true">اخیر</button><button aria-pressed="false">ذخیره‌شده</button><button aria-pressed="false">دستی</button></div></article>
+        </div>
+      </section>
+
+      <section class="section" data-od-id="cards-section">
+        <h2>کارت‌ها و لیست‌ها</h2>
+        <div class="grid grid--three">
+          <article class="card"><h3>کارت</h3><p>برای محتوای پایدار با border و سطح نرم، نه سایه سنگین.</p></article>
+          <article class="action-card"><strong>ثبت غذای امروز</strong><span>وعده، مقدار و کالری</span><button class="button button--primary">شروع</button></article>
+          <article class="list-item"><span class="glyph">س</span><div><strong>سالاد شیرازی</strong><small>ناهار · ۱ کاسه</small></div><button class="button button--ghost">ویرایش</button></article>
+        </div>
+      </section>
+
+      <section class="section" data-od-id="nutrition-components-section">
+        <h2>خوراک، وعده و برنامه</h2>
+        <div class="grid">
+          <article class="meal-group">
+            <header><div><h3>صبحانه</h3><small>۲ مورد ثبت‌شده</small></div><button class="button button--secondary">افزودن</button></header>
+            <div class="track-item" data-kind="actual"><span class="track-shape" aria-hidden="true"></span><div><strong>ثبت‌شده امروز</strong><small>نان سنگک · ۲۴۰ کیلوکالری</small></div><span class="status" data-tone="success">واقعی</span></div>
+          </article>
+          <article class="meal-group">
+            <header><div><h3>برنامه غذایی</h3><small>قصد پیشنهادی برای امروز</small></div><button class="button button--secondary">پیش‌پر کردن فرم</button></header>
+            <div class="track-item" data-kind="plan"><span class="track-shape" aria-hidden="true"></span><div><strong>برنامه غذایی</strong><small>پنیر و گردو · قبل از ثبت باید تایید شود</small></div><span class="status" data-tone="plan">برنامه</span></div>
+          </article>
+          <article class="plan-card span-2">
+            <span class="status" data-tone="plan">پیش‌نویس برنامه غذایی</span>
+            <strong>برنامه متعادل چهار هفته‌ای</strong>
+            <small>آیتم‌های برنامه با Indigo و شکل outlined نمایش داده می‌شوند و هیچ‌کدام مصرف‌شده فرض نمی‌شوند.</small>
+            <div class="button-row"><button class="button button--secondary">مشاهده</button><button class="button button--primary">فعال‌سازی</button></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" data-od-id="states-components-section">
+        <h2>حالت‌ها و بازخورد</h2>
+        <div class="grid grid--three">
+          <article class="state" data-state="empty"><h3>حالت خالی</h3><p>هنوز خوراکی برای امروز ثبت نشده است.</p><button class="button button--primary">ثبت خوراک</button></article>
+          <article class="state"><h3>اسکلت بارگذاری</h3><div class="skeleton" aria-busy="true" aria-label="در حال بارگذاری"><span></span><span></span><span></span></div></article>
+          <article class="state" data-state="error"><h3>خطا</h3><p>بارگذاری کامل نشد؛ داده‌های واردشده محفوظ است.</p><button class="button button--secondary">تلاش دوباره</button></article>
+          <article class="state"><h3>آفلاین</h3><p>تغییرها محلی نگه داشته می‌شوند و پس از اتصال همگام می‌شوند.</p></article>
+          <article class="toast"><span aria-hidden="true">✓</span><span>خوراک به ثبت امروز اضافه شد.</span><button>بستن</button></article>
+          <article class="toast"><span aria-hidden="true">↶</span><span>خوراک حذف شد.</span><button>برگردان</button></article>
+        </div>
+      </section>
+
+      <section class="section" data-od-id="overlays-upload-section">
+        <h2>لایه‌ها، فایل و پرسش‌نامه</h2>
+        <div class="grid">
+          <article class="sheet-card"><h3>Bottom sheet</h3><p>روی موبایل تمام عرض امن؛ شامل یک selector وعده، یک tab selector و یک submit area.</p><div class="button-row"><button class="button button--primary">افزودن به ثبت امروز</button></div></article>
+          <article class="dialog-card"><h3>Dialog / Modal</h3><p>برای تایید تخریبی یا جزئیات فایل. فوکوس باید درون dialog بماند و به trigger برگردد.</p><div class="button-row"><button class="button button--danger">حذف</button><button class="button button--secondary">انصراف</button></div></article>
+          <article class="upload"><h3>File upload</h3><p>PDF یا تصویر برنامه را انتخاب کنید. نام فایل: <bdi dir="auto">plan-1405-04.pdf</bdi></p><button class="button button--secondary">انتخاب فایل</button></article>
+          <article class="attachment"><h3>Upload progress</h3><p><bdi dir="auto">nutrition-plan.pdf</bdi></p><div class="progress" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100"><span></span></div></article>
+          <article class="attachment"><h3>Attachment card</h3><p>آخرین بارگذاری: <bdi dir="auto">plan-1405-04.pdf</bdi></p><div class="button-row"><button class="button button--secondary">مشاهده</button><button class="button button--ghost">جایگزینی</button></div></article>
+          <article class="card"><h3>Questionnaire stepper</h3><div class="stepper"><div class="stepper__meta"><span>مرحله ۵ از ۱۱</span><span>ذخیره‌شده</span></div><div class="stepper__bar"><span></span></div><p>پرسش‌نامه باید امکان ذخیره و ادامه بعدی داشته باشد.</p></div></article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

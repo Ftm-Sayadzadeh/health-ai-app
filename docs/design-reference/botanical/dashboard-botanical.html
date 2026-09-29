@@ -1,0 +1,1592 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0d685d" />
+    <title>امروز - آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="src/coach-flow.css" />
+    <link rel="stylesheet" href="src/community-flow.css" />
+    <script src="app.js" defer></script>
+    <script src="src/coach-flow.js" defer></script>
+    <script src="src/community-flow.js" defer></script>
+    <style>
+      .home-dashboard {
+        width: min(1240px, 100%);
+        margin-inline: auto;
+        padding: 8px 0 calc(136px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .home-dashboard,
+      .home-dashboard * {
+        box-sizing: border-box;
+      }
+
+      .home-stack {
+        display: grid;
+        gap: 20px;
+      }
+
+      .home-welcome {
+        display: grid;
+        gap: 10px;
+        padding: 10px 2px 0;
+      }
+
+      .home-welcome__eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(236, 246, 241, 0.94);
+        border: 1px solid rgba(19, 111, 95, 0.1);
+        color: #3c6c62;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .home-welcome h1 {
+        margin: 0;
+        color: #163831;
+        font-size: clamp(26px, 4vw, 34px);
+        line-height: 1.3;
+      }
+
+      .home-welcome__date {
+        margin: 0;
+        color: #244940;
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .home-welcome__lead {
+        margin: 0;
+        max-width: 56ch;
+        color: #66847b;
+        font-size: 14px;
+        line-height: 1.85;
+      }
+
+      .home-summary-stack {
+        display: grid;
+        gap: 20px;
+      }
+
+      .home-section {
+        background: #ffffff;
+        border: 1px solid rgba(20, 96, 82, 0.08);
+        border-radius: 26px;
+        padding: 22px;
+        box-shadow: 0 12px 28px rgba(19, 60, 50, 0.05);
+      }
+
+      .home-section--glance {
+        background:
+          radial-gradient(circle at top right, rgba(222, 239, 231, 0.8), transparent 38%),
+          linear-gradient(180deg, rgba(251, 253, 251, 0.98), rgba(245, 249, 247, 0.98));
+      }
+
+      .home-section__head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .home-section__head h2,
+      .home-section__head h3 {
+        margin: 0;
+        color: #183a32;
+        font-size: 20px;
+        line-height: 1.35;
+      }
+
+      .home-section__head p {
+        margin: 6px 0 0;
+        color: #6e8981;
+        font-size: 13px;
+        line-height: 1.8;
+      }
+
+      .home-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(240, 246, 243, 0.94);
+        color: #41685f;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .home-chip--message {
+        background: rgba(244, 239, 255, 0.95);
+        color: #6d58a6;
+      }
+
+      .home-glance-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .home-glance-card {
+        display: grid;
+        gap: 12px;
+        min-height: 160px;
+        padding: 18px;
+        border-radius: 22px;
+        border: 1px solid rgba(20, 96, 82, 0.08);
+        background: rgba(255, 255, 255, 0.92);
+        color: inherit;
+        text-decoration: none;
+        transition:
+          transform 180ms ease,
+          border-color 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      .home-glance-card:hover,
+      .home-glance-card:focus-visible,
+      .home-quick-card:hover,
+      .home-quick-card:focus-visible,
+      .home-inline-link:hover,
+      .home-inline-link:focus-visible,
+      .home-action-row a:hover,
+      .home-action-row a:focus-visible {
+        transform: translateY(-2px);
+      }
+
+      .home-glance-card:hover,
+      .home-glance-card:focus-visible {
+        border-color: rgba(19, 111, 95, 0.18);
+        box-shadow: 0 16px 26px rgba(19, 60, 50, 0.08);
+      }
+
+      .home-glance-card__top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .home-icon-badge {
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        flex: 0 0 42px;
+      }
+
+      .home-icon-badge img {
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+      }
+
+      .home-icon-badge--food {
+        background: #fff3ea;
+      }
+
+      .home-icon-badge--water {
+        background: #edf7fd;
+      }
+
+      .home-icon-badge--weight {
+        background: #eef5f1;
+      }
+
+      .home-icon-badge--workout {
+        background: #f2efff;
+      }
+
+      .home-glance-card__label {
+        color: #6a877d;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .home-glance-card__value {
+        margin: 0;
+        color: #173830;
+        font-size: 24px;
+        font-weight: 800;
+        line-height: 1.45;
+      }
+
+      .home-glance-card__meta {
+        margin: 0;
+        color: #6d8880;
+        font-size: 12px;
+        line-height: 1.8;
+      }
+
+      .home-progress-track {
+        position: relative;
+        overflow: hidden;
+        height: 8px;
+        border-radius: 999px;
+        background: #ecf4ef;
+      }
+
+      .home-progress-track > span {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: var(--progress, 0%);
+        border-radius: inherit;
+      }
+
+      .home-progress-track--food > span {
+        background: linear-gradient(90deg, #f1b27e, #e09352);
+      }
+
+      .home-progress-track--water > span {
+        background: linear-gradient(90deg, #89d3f5, #58a9d5);
+      }
+
+      .home-status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        padding: 7px 11px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .home-status-pill::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+
+      .home-status-pill--ready {
+        background: rgba(125, 96, 220, 0.11);
+        color: #6c55be;
+      }
+
+      .home-status-pill--done {
+        background: rgba(39, 139, 95, 0.12);
+        color: #247e5a;
+      }
+
+      .home-quick-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .home-quick-card {
+        display: grid;
+        gap: 10px;
+        padding: 16px;
+        border-radius: 20px;
+        border: 1px solid rgba(20, 96, 82, 0.08);
+        background: #ffffff;
+        color: inherit;
+        text-decoration: none;
+        transition:
+          transform 180ms ease,
+          border-color 180ms ease;
+      }
+
+      .home-quick-card strong {
+        color: #173830;
+        font-size: 15px;
+      }
+
+      .home-quick-card span {
+        color: #6e8981;
+        font-size: 12px;
+        line-height: 1.8;
+      }
+
+      .home-inline-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        color: #0d685d;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 180ms ease;
+      }
+
+      .home-main-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.65fr) minmax(290px, 0.9fr);
+        gap: 20px;
+        align-items: start;
+      }
+
+      .home-column {
+        display: grid;
+        gap: 20px;
+      }
+
+      .home-timeline {
+        display: grid;
+        gap: 16px;
+      }
+
+      .home-timeline-item {
+        position: relative;
+        display: grid;
+        grid-template-columns: 74px minmax(0, 1fr);
+        gap: 14px;
+        padding: 18px 0 0;
+      }
+
+      .home-timeline-item:first-child {
+        padding-top: 0;
+      }
+
+      .home-timeline-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: -16px;
+        right: 37px;
+        width: 1px;
+        background: rgba(19, 111, 95, 0.12);
+      }
+
+      .home-timeline-item:last-child::before {
+        display: none;
+      }
+
+      .home-timeline-time {
+        position: relative;
+        padding-top: 2px;
+        color: #466c63;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .home-timeline-time::after {
+        content: "";
+        position: absolute;
+        top: 8px;
+        right: 33px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #0d685d;
+        box-shadow: 0 0 0 5px rgba(214, 233, 226, 0.85);
+      }
+
+      .home-timeline-item--done .home-timeline-time::after {
+        background: #84b29a;
+      }
+
+      .home-timeline-card {
+        display: grid;
+        gap: 12px;
+        padding: 18px;
+        border-radius: 20px;
+        background: #f9fbfa;
+        border: 1px solid rgba(20, 96, 82, 0.08);
+      }
+
+      .home-timeline-item--done .home-timeline-card {
+        background: #f5faf7;
+        opacity: 0.8;
+      }
+
+      .home-timeline-card h3,
+      .home-mini-card h3 {
+        margin: 0;
+        color: #183830;
+        font-size: 17px;
+        line-height: 1.5;
+      }
+
+      .home-timeline-kicker,
+      .home-mini-card__eyebrow {
+        color: #6b877f;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .home-timeline-copy,
+      .home-mini-card__copy,
+      .home-list-line small,
+      .home-empty-copy,
+      .home-muted {
+        color: #6f8a82;
+        font-size: 13px;
+        line-height: 1.9;
+      }
+
+      .home-action-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .home-button,
+      .home-button-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 42px;
+        padding: 0 16px;
+        border-radius: 14px;
+        border: 1px solid transparent;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 800;
+        text-decoration: none;
+        cursor: pointer;
+        transition:
+          transform 180ms ease,
+          background-color 180ms ease,
+          border-color 180ms ease;
+      }
+
+      .home-button:hover,
+      .home-button-link:hover,
+      .home-button:focus-visible,
+      .home-button-link:focus-visible {
+        transform: translateY(-1px);
+      }
+
+      .home-button--primary,
+      .home-button-link--primary {
+        background: #0d685d;
+        color: #ffffff;
+      }
+
+      .home-button--secondary,
+      .home-button-link--secondary {
+        background: #f1f6f4;
+        border-color: rgba(19, 111, 95, 0.1);
+        color: #1f554b;
+      }
+
+      .home-button--ghost {
+        background: transparent;
+        border-color: rgba(19, 111, 95, 0.12);
+        color: #235d51;
+      }
+
+      .home-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .home-list-line {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 13px 14px;
+        border-radius: 16px;
+        background: #f9fbfa;
+        border: 1px solid rgba(20, 96, 82, 0.07);
+      }
+
+      .home-list-line strong {
+        color: #1b3a33;
+        font-size: 14px;
+      }
+
+      .home-list-status {
+        color: #244c42;
+        font-size: 12px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .home-list-status--done {
+        color: #2b7d5d;
+      }
+
+      .home-list-status--ready {
+        color: #b57633;
+      }
+
+      .home-list-status--planned {
+        color: #7a6d9b;
+      }
+
+      .home-mini-card {
+        display: grid;
+        gap: 14px;
+        padding: 18px;
+        border-radius: 20px;
+        border: 1px solid rgba(20, 96, 82, 0.08);
+        background: #f9fbfa;
+      }
+
+      .home-water-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .home-water-metric {
+        padding: 12px;
+        border-radius: 16px;
+        background: #ffffff;
+        border: 1px solid rgba(89, 168, 214, 0.12);
+      }
+
+      .home-water-metric span,
+      .home-insights li span {
+        display: block;
+        color: #749099;
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+
+      .home-water-metric strong {
+        color: #19424f;
+        font-size: 15px;
+      }
+
+      .home-ring-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .home-water-ring {
+        --ring-size: 112px;
+        --ring-progress: 62.5;
+        width: var(--ring-size);
+        height: var(--ring-size);
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at center, #ffffff 58%, transparent 59%),
+          conic-gradient(#71bfe4 calc(var(--ring-progress) * 1%), #eaf5fb 0);
+      }
+
+      .home-water-ring__inner {
+        display: grid;
+        gap: 2px;
+        text-align: center;
+      }
+
+      .home-water-ring__inner strong {
+        color: #184252;
+        font-size: 20px;
+        line-height: 1.2;
+      }
+
+      .home-water-ring__inner span {
+        color: #71909a;
+        font-size: 12px;
+      }
+
+      .home-water-quick {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .home-water-quick button,
+      .home-water-quick a {
+        min-width: 88px;
+      }
+
+      .home-water-custom,
+      .home-water-confirm {
+        display: grid;
+        gap: 10px;
+        padding: 14px;
+        border-radius: 16px;
+        background: #ffffff;
+        border: 1px solid rgba(89, 168, 214, 0.14);
+      }
+
+      .home-water-custom[hidden],
+      .home-water-confirm[hidden],
+      .home-section[hidden] {
+        display: none !important;
+      }
+
+      .home-field-row {
+        display: flex;
+        gap: 10px;
+      }
+
+      .home-field-row input {
+        width: 100%;
+        min-width: 0;
+        height: 44px;
+        padding: 0 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(20, 96, 82, 0.12);
+        outline: none;
+        font: inherit;
+        color: #173830;
+        background: #ffffff;
+      }
+
+      .home-field-row input:focus {
+        border-color: rgba(19, 111, 95, 0.3);
+      }
+
+      .home-workout-stats {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .home-stat-tile {
+        padding: 12px;
+        border-radius: 16px;
+        background: #ffffff;
+        border: 1px solid rgba(108, 85, 190, 0.12);
+      }
+
+      .home-stat-tile span {
+        display: block;
+        color: #7b75a0;
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+
+      .home-stat-tile strong {
+        color: #312f4f;
+        font-size: 15px;
+      }
+
+      .home-message-card,
+      .home-profile-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 20px;
+        border-radius: 22px;
+        border: 1px solid rgba(20, 96, 82, 0.08);
+        background: #ffffff;
+      }
+
+      .home-message-card {
+        background: linear-gradient(180deg, #faf8ff, #ffffff);
+      }
+
+      .home-profile-card {
+        background: linear-gradient(180deg, #fbfcfb, #f7fbf9);
+      }
+
+      .home-message-card__text,
+      .home-profile-card__text {
+        display: grid;
+        gap: 6px;
+      }
+
+      .home-message-card__text strong,
+      .home-profile-card__text strong {
+        color: #173830;
+        font-size: 16px;
+      }
+
+      .home-insights {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .home-insights li {
+        display: grid;
+        gap: 4px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: #f9fbfa;
+        border: 1px solid rgba(20, 96, 82, 0.07);
+      }
+
+      .home-insights li strong {
+        color: #1b3a33;
+        font-size: 14px;
+      }
+
+      .home-empty {
+        padding: 18px;
+        border-radius: 18px;
+        background: #f8fbfa;
+        border: 1px dashed rgba(20, 96, 82, 0.14);
+      }
+
+      .toast {
+        position: fixed;
+        left: 20px;
+        right: 20px;
+        bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 18px;
+        border-radius: 18px;
+        background: rgba(19, 54, 47, 0.95);
+        color: #ffffff;
+        box-shadow: 0 18px 30px rgba(15, 37, 32, 0.18);
+      }
+
+      .toast[hidden] {
+        display: none !important;
+      }
+
+      .toast__content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .toast__dot {
+        width: 10px;
+        height: 10px;
+        flex: 0 0 10px;
+        border-radius: 50%;
+        background: #82d3a8;
+      }
+
+      .toast button {
+        background: transparent;
+        border: 0;
+        color: #d6efe7;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      @media (min-width: 961px) {
+        .home-summary-stack {
+          grid-template-areas:
+            "glance"
+            "quick";
+        }
+
+        .home-section--glance {
+          grid-area: glance;
+        }
+
+        .home-section--quick {
+          grid-area: quick;
+        }
+      }
+
+      @media (max-width: 1180px) {
+        .home-glance-grid,
+        .home-quick-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .home-main-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .home-column--secondary {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          align-items: start;
+        }
+      }
+
+      @media (max-width: 960px) {
+        .home-dashboard {
+          padding-bottom: calc(126px + env(safe-area-inset-bottom, 0px));
+        }
+
+        .home-section {
+          padding: 18px;
+          border-radius: 22px;
+        }
+
+        .home-glance-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .home-quick-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .home-column--secondary {
+          grid-template-columns: 1fr;
+        }
+
+        .home-message-card,
+        .home-profile-card,
+        .home-ring-wrap {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .home-dashboard {
+          width: 100%;
+        }
+
+        .home-welcome {
+          padding-top: 4px;
+        }
+
+        .home-section__head {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .home-glance-grid,
+        .home-quick-grid,
+        .home-water-metrics,
+        .home-workout-stats {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .home-timeline-item {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
+        .home-timeline-item::before {
+          right: 4px;
+          top: 24px;
+          bottom: -12px;
+        }
+
+        .home-timeline-time {
+          padding-right: 24px;
+        }
+
+        .home-timeline-time::after {
+          right: 0;
+        }
+
+        .home-action-row,
+        .home-field-row,
+        .home-water-quick {
+          flex-direction: column;
+        }
+
+        .home-button,
+        .home-button-link,
+        .home-action-row a,
+        .home-action-row button,
+        .home-water-quick button,
+        .home-water-quick a {
+          width: 100%;
+        }
+
+        .home-water-ring {
+          --ring-size: 100px;
+        }
+      }
+
+      @media (max-width: 440px) {
+        .home-glance-grid,
+        .home-quick-grid,
+        .home-water-metrics,
+        .home-workout-stats {
+          grid-template-columns: 1fr;
+        }
+
+        .home-glance-card {
+          min-height: auto;
+        }
+      }
+    </style>
+  </head>
+  <body class="app-body" data-page="dashboard" data-theme="botanical">
+    <a class="skip-link" href="#dashboard-main">پرش به محتوای امروز</a>
+    <div class="app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی محصول">
+        <a class="brand" href="dashboard-botanical.html">
+          <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect
+              class="brand-mark__plan"
+              x="7"
+              y="9"
+              width="29"
+              height="11"
+              rx="5.5"
+            ></rect>
+            <rect
+              class="brand-mark__actual"
+              x="12"
+              y="27"
+              width="29"
+              height="11"
+              rx="5.5"
+            ></rect>
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4"></circle>
+          </svg>
+          <span>آووکادو</span>
+        </a>
+        <nav aria-label="بخش‌های اصلی">
+          <a href="dashboard-botanical.html" aria-current="page"
+            ><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a
+          >
+          <a href="quick-log-botanical.html"
+            ><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a
+          >
+          <a href="plans-botanical.html"
+            ><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a
+          >
+          <a href="reports-botanical.html"
+            ><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a
+          >
+          <a href="settings-botanical.html"
+            ><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a
+          >
+        </nav>
+        <div class="side-nav__foot">شروع روز از همین صفحه انجام می‌شود و جزئیات کامل در صفحات تخصصی باقی می‌مانند.</div>
+      </aside>
+
+      <main class="app-main" id="dashboard-main" data-od-id="dashboard-page">
+        <header class="app-topbar">
+          <div class="app-topbar__title">
+            <span>صبح بخیر، سارا</span>
+            <strong id="home-topbar-date">یکشنبه ۲۸ تیر</strong>
+          </div>
+          <div class="app-topbar__actions">
+            <a class="header-action-link header-action-link--message" href="messages-botanical.html" aria-label="پیام‌ها">
+              <img class="header-action-icon" src="assets/icons/icon-message.png" alt="" aria-hidden="true" />
+              <span class="header-action-badge" aria-hidden="true"></span>
+            </a>
+            <a class="header-action-link header-action-link--notification" href="notifications-botanical.html" aria-label="اعلان‌ها">
+              <img class="header-action-icon" src="assets/icons/icon-bell.png" alt="" aria-hidden="true" />
+              <span class="header-action-badge" aria-hidden="true"></span>
+            </a>
+            <a class="avatar-link" href="settings-botanical.html" aria-label="بخش من، پروفایل سارا">س</a>
+          </div>
+        </header>
+
+        <div class="app-container page-content">
+          <div class="home-dashboard home-stack">
+            <section class="home-welcome" data-od-id="home-welcome">
+              <span class="home-welcome__eyebrow">خانه روزانه آووکادو</span>
+              <h1>صبح بخیر، سارا</h1>
+              <p class="home-welcome__date" id="home-date-label">یکشنبه ۲۸ تیر</p>
+              <p class="home-welcome__lead">بیایید ببینیم امروز چه چیزهایی در برنامه داری.</p>
+            </section>
+
+            <div class="home-summary-stack">
+              <section class="home-section home-section--quick" data-od-id="home-quick-log">
+                <div class="home-section__head">
+                  <div>
+                    <h2>چی رو می‌خوای ثبت کنی؟</h2>
+                    <p>برای ثبت سریع امروز، فقط کوتاه‌ترین مسیرها را نگه داشتیم.</p>
+                  </div>
+                </div>
+                <div class="home-quick-grid">
+                  <a class="home-quick-card" href="food-log-botanical.html">
+                    <span class="home-icon-badge home-icon-badge--food"><img src="assets/icons/icons8-healthy-food-calories-calculator-64.png" alt="" aria-hidden="true" /></span>
+                    <strong>غذا</strong>
+                    <span>ثبت وعده و خوراک مصرف‌شده</span>
+                  </a>
+                  <a class="home-quick-card" href="water-botanical.html">
+                    <span class="home-icon-badge home-icon-badge--water"><img src="assets/icons/icons8-water-bottle-64.png" alt="" aria-hidden="true" /></span>
+                    <strong>آب</strong>
+                    <span>افزودن سریع لیوان یا مقدار دلخواه</span>
+                  </a>
+                  <a class="home-quick-card" href="body-botanical.html">
+                    <span class="home-icon-badge home-icon-badge--weight"><img src="assets/icons/icons8-scale-64.png" alt="" aria-hidden="true" /></span>
+                    <strong>وزن</strong>
+                    <span>ثبت وزن و اندازه‌های امروز</span>
+                  </a>
+                  <a class="home-quick-card" href="workout-botanical.html">
+                    <span class="home-icon-badge home-icon-badge--workout"><img src="assets/icons/icons8-dumbbell-64.png" alt="" aria-hidden="true" /></span>
+                    <strong>تمرین</strong>
+                    <span>شروع یا ادامه جلسه روز</span>
+                  </a>
+                </div>
+                <a class="home-inline-link" href="quick-log-botanical.html">مشاهده همه روش‌های ثبت</a>
+              </section>
+
+              <section class="home-section home-section--glance" data-od-id="home-glance">
+                <div class="home-section__head">
+                  <div>
+                    <h2>امروز در یک نگاه</h2>
+                    <p>خلاصه‌ای سریع از چیزهایی که ثبت شده، باقی مانده و آماده انجام است.</p>
+                  </div>
+                  <span class="home-chip">روز جاری</span>
+                </div>
+                <div class="home-glance-grid">
+                  <a class="home-glance-card" href="food-log-botanical.html">
+                    <div class="home-glance-card__top">
+                      <span class="home-icon-badge home-icon-badge--food"><img src="assets/icons/icons8-healthy-food-calories-calculator-64.png" alt="" aria-hidden="true" /></span>
+                      <span class="home-glance-card__label">غذا</span>
+                    </div>
+                    <p class="home-glance-card__value" id="glance-food-value">۷۳۰ از ۱۸۰۰ kcal</p>
+                    <div class="home-progress-track home-progress-track--food" aria-hidden="true">
+                      <span id="glance-food-progress" style="--progress: 41%"></span>
+                    </div>
+                    <p class="home-glance-card__meta">تا اینجا دو وعده ثبت شده و ناهار مورد بعدی است.</p>
+                  </a>
+
+                  <a class="home-glance-card" href="water-botanical.html">
+                    <div class="home-glance-card__top">
+                      <span class="home-icon-badge home-icon-badge--water"><img src="assets/icons/icons8-water-bottle-64.png" alt="" aria-hidden="true" /></span>
+                      <span class="home-glance-card__label">آب</span>
+                    </div>
+                    <p class="home-glance-card__value" id="glance-water-value">۱۲۵۰ از ۲۰۰۰ ml</p>
+                    <div class="home-progress-track home-progress-track--water" aria-hidden="true">
+                      <span id="glance-water-progress" style="--progress: 62.5%"></span>
+                    </div>
+                    <p class="home-glance-card__meta" id="glance-water-meta">۷۵۰ میلی‌لیتر دیگر تا هدف امروز باقی مانده است.</p>
+                  </a>
+
+                  <a class="home-glance-card" href="workout-botanical.html">
+                    <div class="home-glance-card__top">
+                      <span class="home-icon-badge home-icon-badge--workout"><img src="assets/icons/icons8-dumbbell-64.png" alt="" aria-hidden="true" /></span>
+                      <span class="home-status-pill home-status-pill--ready" id="glance-workout-status">آماده شروع</span>
+                    </div>
+                    <p class="home-glance-card__value">قدرت پایه</p>
+                    <p class="home-glance-card__meta">جلسه ۳ امروز آماده است و از همین‌جا می‌توانی تمرین را شروع کنی.</p>
+                  </a>
+
+                  <a class="home-glance-card" href="body-botanical.html">
+                    <div class="home-glance-card__top">
+                      <span class="home-icon-badge home-icon-badge--weight"><img src="assets/icons/icons8-scale-64.png" alt="" aria-hidden="true" /></span>
+                      <span class="home-glance-card__label">وزن</span>
+                    </div>
+                    <p class="home-glance-card__value">آخرین ثبت: ۶۸٫۴ کیلوگرم</p>
+                    <p class="home-glance-card__meta">آخرین به‌روزرسانی سه‌شنبه ۱۸ تیر انجام شده و فعلاً نیاز فوری به ثبت تازه نیست.</p>
+                  </a>
+                </div>
+              </section>
+            </div>
+
+            <div class="home-main-grid">
+              <div class="home-column">
+                <section class="home-section" data-od-id="home-next-step">
+                  <div class="home-section__head">
+                    <div>
+                      <h2>قدم بعدی امروز</h2>
+                      <p>فقط سه موردی که بیشترین احتمال انجام در ادامه روز را دارند.</p>
+                    </div>
+                  </div>
+
+                  <div class="home-timeline" id="next-steps-list">
+                    <article class="home-timeline-item">
+                      <div class="home-timeline-time">۱۳:۳۰</div>
+                      <div class="home-timeline-card">
+                        <div>
+                          <div class="home-timeline-kicker">ناهار</div>
+                          <h3>مرغ و برنج با سالاد</h3>
+                        </div>
+                        <div class="home-timeline-copy">۲ کفگیر برنج + یک تکه مرغ + سالاد</div>
+                        <div class="home-action-row">
+                          <a class="home-button-link home-button-link--primary" href="meal-plan-botanical.html?tab=today#today-meals">افزودن پس از مصرف</a>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article class="home-timeline-item">
+                      <div class="home-timeline-time">۱۶:۰۰</div>
+                      <div class="home-timeline-card">
+                        <div>
+                          <div class="home-timeline-kicker">یادآوری آب</div>
+                          <h3>هنوز ۷۵۰ میلی‌لیتر تا هدف امروز باقی مانده.</h3>
+                        </div>
+                        <div class="home-action-row">
+                          <button class="home-button home-button--secondary" type="button" data-water-amount="250">+۲۵۰ ml</button>
+                          <button class="home-button home-button--secondary" type="button" data-water-amount="350">+۳۵۰ ml</button>
+                          <a class="home-button-link home-button-link--ghost" href="water-botanical.html">جزئیات آب</a>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article class="home-timeline-item">
+                      <div class="home-timeline-time">۱۸:۳۰</div>
+                      <div class="home-timeline-card">
+                        <div>
+                          <div class="home-timeline-kicker">تمرین امروز</div>
+                          <h3>قدرت پایه · جلسه ۳</h3>
+                        </div>
+                        <div class="home-timeline-copy">۳۵ دقیقه · ۴ حرکت · حدود ۱۸۰ کالری</div>
+                        <div class="home-action-row">
+                          <a class="home-button-link home-button-link--primary" href="workout-botanical.html#start-workout">شروع تمرین</a>
+                        </div>
+                      </div>
+                    </article>
+                  </div>
+
+                  <div class="home-empty" id="next-steps-empty" hidden>
+                    <strong>کارهای اصلی امروزت انجام شده‌اند.</strong>
+                    <p class="home-empty-copy">برای مرور جزئیات یا ثبت تازه می‌توانی از کارت‌های بالا استفاده کنی.</p>
+                  </div>
+                </section>
+
+                <section class="home-section" data-od-id="home-today-meals">
+                  <div class="home-section__head">
+                    <div>
+                      <h2>وعده‌های امروز</h2>
+                      <p>وضعیت کوتاه هر وعده و جزئیات فقط برای وعده بعدی.</p>
+                    </div>
+                  </div>
+
+                  <div class="home-list">
+                    <div class="home-list-line">
+                      <div>
+                        <strong>صبحانه</strong>
+                        <small>ثبت‌شده</small>
+                      </div>
+                      <span class="home-list-status home-list-status--done">ثبت‌شده</span>
+                    </div>
+                    <div class="home-list-line">
+                      <div>
+                        <strong>میان‌وعده صبح</strong>
+                        <small>ثبت‌شده</small>
+                      </div>
+                      <span class="home-list-status home-list-status--done">ثبت‌شده</span>
+                    </div>
+                    <div class="home-list-line">
+                      <div>
+                        <strong>ناهار</strong>
+                        <small>آماده ثبت</small>
+                      </div>
+                      <span class="home-list-status home-list-status--ready">آماده ثبت</span>
+                    </div>
+                    <div class="home-list-line">
+                      <div>
+                        <strong>میان‌وعده عصر</strong>
+                        <small>ساعت ۱۶</small>
+                      </div>
+                      <span class="home-list-status home-list-status--planned">ساعت ۱۶</span>
+                    </div>
+                    <div class="home-list-line">
+                      <div>
+                        <strong>شام</strong>
+                        <small>برنامه‌ریزی‌شده</small>
+                      </div>
+                      <span class="home-list-status home-list-status--planned">برنامه‌ریزی‌شده</span>
+                    </div>
+                  </div>
+
+                  <div class="home-mini-card">
+                    <div class="home-mini-card__eyebrow">ناهار · ساعت ۱۳:۳۰</div>
+                    <h3>مرغ و برنج با سالاد</h3>
+                    <div class="home-mini-card__copy">۲ کفگیر برنج + یک تکه مرغ · حدود ۵۲۰ kcal</div>
+                    <div class="home-action-row">
+                      <a class="home-button-link home-button-link--primary" href="meal-plan-botanical.html?tab=today#today-meals">افزودن به خورده‌شده‌های امروز</a>
+                      <a class="home-button-link home-button-link--secondary" href="meal-plan-botanical.html?tab=today">مشاهده برنامه غذایی</a>
+                      <a class="home-inline-link" href="food-log-botanical.html">مشاهده ثبت‌های امروز</a>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <aside class="home-column home-column--secondary" aria-label="کارت‌های جانبی امروز">
+                <section class="home-section" data-od-id="home-water-card">
+                  <div class="home-section__head">
+                    <div>
+                      <h3>آب امروز</h3>
+                      <p>ثبت سریع آب فقط بعد از تأیید نهایی ذخیره می‌شود.</p>
+                    </div>
+                  </div>
+
+                  <div class="home-ring-wrap">
+                    <div class="home-water-ring" id="water-ring" style="--ring-progress: 62.5">
+                      <div class="home-water-ring__inner">
+                        <strong id="water-ring-percent">۶۳٪</strong>
+                        <span>تا هدف امروز</span>
+                      </div>
+                    </div>
+
+                    <div class="home-water-metrics">
+                      <div class="home-water-metric">
+                        <span>مصرف‌شده</span>
+                        <strong id="water-consumed">۱۲۵۰ ml</strong>
+                      </div>
+                      <div class="home-water-metric">
+                        <span>هدف</span>
+                        <strong id="water-goal">۲۰۰۰ ml</strong>
+                      </div>
+                      <div class="home-water-metric">
+                        <span>باقی‌مانده</span>
+                        <strong id="water-remaining">۷۵۰ ml</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p class="home-muted" id="water-friendly-copy">سه لیوان دیگه تا هدف امروز مونده.</p>
+
+                  <div class="home-water-quick">
+                    <button class="home-button home-button--secondary" type="button" data-water-amount="250">+۲۵۰ ml</button>
+                    <button class="home-button home-button--secondary" type="button" data-water-amount="350">+۳۵۰ ml</button>
+                    <button class="home-button home-button--ghost" type="button" id="water-custom-trigger">مقدار دلخواه</button>
+                  </div>
+
+                  <div class="home-water-custom" id="water-custom-panel" hidden>
+                    <div class="home-muted">مقدار دلخواه را وارد کن تا قبل از ذخیره، تأیید نهایی بگیری.</div>
+                    <div class="home-field-row">
+                      <input id="water-custom-input" type="number" inputmode="numeric" min="1" step="50" placeholder="مثلاً ۳۰۰" />
+                      <button class="home-button home-button--secondary" type="button" id="water-custom-review">بررسی مقدار</button>
+                    </div>
+                  </div>
+
+                  <div class="home-water-confirm" id="water-confirm-panel" hidden>
+                    <strong id="water-confirm-copy">افزودن ۲۵۰ ml به ثبت امروز؟</strong>
+                    <div class="home-action-row">
+                      <button class="home-button home-button--primary" type="button" id="water-confirm-button">تأیید و ثبت</button>
+                      <button class="home-button home-button--ghost" type="button" id="water-cancel-button">انصراف</button>
+                    </div>
+                  </div>
+
+                  <a class="home-inline-link" href="water-botanical.html">مشاهده جزئیات آب</a>
+                </section>
+
+                <section class="home-section" data-od-id="home-workout-card">
+                  <div class="home-section__head">
+                    <div>
+                      <h3>تمرین امروز</h3>
+                      <p>فقط اطلاعات لازم برای شروع یا ادامه جلسه امروز.</p>
+                    </div>
+                  </div>
+
+                  <div class="home-mini-card">
+                    <div class="home-mini-card__eyebrow">قدرت پایه · جلسه ۳</div>
+                    <h3>آماده شروع</h3>
+                    <div class="home-workout-stats">
+                      <div class="home-stat-tile">
+                        <span>حرکت‌ها</span>
+                        <strong>۴ حرکت</strong>
+                      </div>
+                      <div class="home-stat-tile">
+                        <span>زمان</span>
+                        <strong>۳۵ دقیقه</strong>
+                      </div>
+                      <div class="home-stat-tile">
+                        <span>سطح</span>
+                        <strong>متوسط</strong>
+                      </div>
+                      <div class="home-stat-tile">
+                        <span>کالری تقریبی</span>
+                        <strong>۱۸۰ kcal</strong>
+                      </div>
+                    </div>
+                    <span class="home-status-pill home-status-pill--ready">آماده شروع</span>
+                    <div class="home-action-row">
+                      <a class="home-button-link home-button-link--primary" href="workout-botanical.html#start-workout">شروع تمرین</a>
+                      <a class="home-button-link home-button-link--secondary" href="plans-botanical.html">مشاهده برنامه تمرینی</a>
+                    </div>
+                  </div>
+                </section>
+              </aside>
+            </div>
+
+            <section class="home-section" id="important-card" data-od-id="home-important-update">
+              <div class="home-section__head">
+                <div>
+                  <h2>پیام یا اعلان مهم</h2>
+                  <p>فقط یک مورد جدید و مهم برای ادامه امروز.</p>
+                </div>
+              </div>
+              <div class="home-message-card">
+                <div class="home-message-card__text">
+                  <span class="home-chip home-chip--message" id="important-type">پیام جدید</span>
+                  <strong id="important-title">نازنین، متخصص تغذیه، به گفت‌وگوی شما پاسخ داده است.</strong>
+                  <span class="home-mini-card__copy" id="important-copy">پاسخ جدید برای پرسش مربوط به میان‌وعده عصر آماده است.</span>
+                </div>
+                <a class="home-button-link home-button-link--primary" id="important-link" href="messages-botanical.html">مشاهده پیام</a>
+              </div>
+            </section>
+
+            <section class="home-section" data-od-id="home-week-insights">
+              <div class="home-section__head">
+                <div>
+                  <h2>این هفته</h2>
+                  <p>سه نکته کوتاه و غیرقضاوتی برای مرور روند هفته.</p>
+                </div>
+              </div>
+              <ul class="home-insights">
+                <li>
+                  <span>آب</span>
+                  <strong>هدف آب در ۵ روز از ۷ روز تکمیل شده است.</strong>
+                </li>
+                <li>
+                  <span>تمرین</span>
+                  <strong>۳ جلسه از ۴ جلسه تمرینی انجام شده است.</strong>
+                </li>
+                <li>
+                  <span>وعده‌ها</span>
+                  <strong>ثبت وعده‌ها نسبت به هفته قبل منظم‌تر بوده است.</strong>
+                </li>
+              </ul>
+              <a class="home-button-link home-button-link--secondary" href="reports-botanical.html">مشاهده روند کامل</a>
+            </section>
+
+            <section class="home-section" id="profile-incomplete-card" data-od-id="home-profile-prompt">
+              <div class="home-profile-card">
+                <div class="home-profile-card__text">
+                  <strong>پروفایلت هنوز کامل نشده</strong>
+                  <span class="home-mini-card__copy">برای دقیق‌ترشدن برنامه‌ها، دو بخش دیگر را تکمیل کن.</span>
+                </div>
+                <a class="home-button-link home-button-link--secondary" href="settings-botanical.html?tab=personal">ادامه تکمیل</a>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل">
+      <a href="dashboard-botanical.html" aria-current="page"
+        ><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a
+      >
+      <a href="quick-log-botanical.html" class="quick-log-trigger bottom-nav__primary"
+        ><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a
+      >
+      <a href="plans-botanical.html"
+        ><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a
+      >
+      <a href="reports-botanical.html"
+        ><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a
+      >
+      <a href="settings-botanical.html"
+        ><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a
+      >
+    </nav>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden>
+      <div class="toast__content">
+        <span class="toast__dot" aria-hidden="true"></span>
+        <span id="toast-message">تغییرات ثبت شد.</span>
+      </div>
+      <button type="button" id="toast-close">بستن</button>
+    </div>
+
+    <script>
+      (function () {
+        const state = {
+          unreadMessages: 1,
+          unreadNotifications: 2,
+          food: { consumed: 730, goal: 1800 },
+          water: { consumed: 1250, goal: 2000 },
+          workout: { status: "ready" },
+          important: {
+            type: "message",
+            title: "نازنین، متخصص تغذیه، به گفت‌وگوی شما پاسخ داده است.",
+            copy: "پاسخ جدید برای پرسش مربوط به میان‌وعده عصر آماده است.",
+            cta: "مشاهده پیام",
+            href: "messages-botanical.html",
+          },
+          profileIncompleteCount: 2,
+          nextStepsRemaining: 3,
+        };
+
+        let pendingWaterAmount = null;
+        let toastTimer = null;
+
+        const $ = (selector, scope = document) => scope.querySelector(selector);
+        const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
+
+        function toPersianDigits(value) {
+          return String(value).replace(/\d/g, (digit) => "۰۱۲۳۴۵۶۷۸۹"[Number(digit)]);
+        }
+
+        function formatNumber(number) {
+          return new Intl.NumberFormat("fa-IR").format(number);
+        }
+
+        function waterPercent() {
+          return Math.max(0, Math.min(100, (state.water.consumed / state.water.goal) * 100));
+        }
+
+        function renderCurrentDate() {
+          const formatter = new Intl.DateTimeFormat("fa-IR", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+          });
+          const todayLabel = formatter.format(new Date());
+          const topbarDate = $("#home-topbar-date");
+          const pageDate = $("#home-date-label");
+          if (topbarDate) topbarDate.textContent = todayLabel;
+          if (pageDate) pageDate.textContent = todayLabel;
+        }
+
+        function remainingWater() {
+          return Math.max(0, state.water.goal - state.water.consumed);
+        }
+
+        function waterFriendlyCopy() {
+          const remain = remainingWater();
+          if (remain <= 0) return "هدف آب امروز کامل شده. اگر خواستی می‌توانی ثبت‌های بیشتر هم اضافه کنی.";
+          const glasses = Math.max(1, Math.ceil(remain / 250));
+          return `${toPersianDigits(glasses)} لیوان دیگه تا هدف امروز مونده.`;
+        }
+
+        function showToast(message) {
+          const toast = $("#toast");
+          const toastMessage = $("#toast-message");
+          if (!toast || !toastMessage) return;
+          toastMessage.textContent = message;
+          toast.hidden = false;
+          window.clearTimeout(toastTimer);
+          toastTimer = window.setTimeout(() => {
+            toast.hidden = true;
+          }, 2800);
+        }
+
+        function renderHeaderBadges() {
+          const messageBadge = $(".header-action-link--message .header-action-badge");
+          const notificationBadge = $(".header-action-link--notification .header-action-badge");
+          if (messageBadge) messageBadge.hidden = state.unreadMessages <= 0;
+          if (notificationBadge) notificationBadge.hidden = state.unreadNotifications <= 0;
+        }
+
+        function renderWaterSection() {
+          const percent = waterPercent();
+          const remain = remainingWater();
+          const percentText = `${toPersianDigits(Math.round(percent))}٪`;
+          $("#water-consumed").textContent = `${formatNumber(state.water.consumed)} ml`;
+          $("#water-goal").textContent = `${formatNumber(state.water.goal)} ml`;
+          $("#water-remaining").textContent = `${formatNumber(remain)} ml`;
+          $("#water-ring-percent").textContent = percentText;
+          $("#water-ring").style.setProperty("--ring-progress", String(percent));
+          $("#water-friendly-copy").textContent = waterFriendlyCopy();
+          $("#glance-water-value").textContent = `${formatNumber(state.water.consumed)} از ${formatNumber(state.water.goal)} ml`;
+          $("#glance-water-progress").style.setProperty("--progress", `${percent}%`);
+          $("#glance-water-meta").textContent =
+            remain > 0
+              ? `${formatNumber(remain)} میلی‌لیتر دیگر تا هدف امروز باقی مانده است.`
+              : "هدف آب امروز کامل شده و ثبت‌های بیشتر هم می‌توانند اضافه شوند.";
+        }
+
+        function renderFoodSection() {
+          const percent = Math.max(0, Math.min(100, (state.food.consumed / state.food.goal) * 100));
+          $("#glance-food-value").textContent = `${formatNumber(state.food.consumed)} از ${formatNumber(state.food.goal)} kcal`;
+          $("#glance-food-progress").style.setProperty("--progress", `${percent}%`);
+        }
+
+        function renderConditionals() {
+          const importantCard = $("#important-card");
+          const profileCard = $("#profile-incomplete-card");
+          const nextStepsList = $("#next-steps-list");
+          const nextStepsEmpty = $("#next-steps-empty");
+
+          if (importantCard) {
+            importantCard.hidden = !state.important;
+            if (state.important) {
+              $("#important-type").textContent = state.important.type === "message" ? "پیام جدید" : "اعلان مهم";
+              $("#important-title").textContent = state.important.title;
+              $("#important-copy").textContent = state.important.copy;
+              const importantLink = $("#important-link");
+              importantLink.textContent = state.important.cta;
+              importantLink.href = state.important.href;
+            }
+          }
+
+          if (profileCard) {
+            profileCard.hidden = state.profileIncompleteCount <= 0;
+          }
+
+          if (nextStepsList && nextStepsEmpty) {
+            const hasNextSteps = state.nextStepsRemaining > 0;
+            nextStepsList.hidden = !hasNextSteps;
+            nextStepsEmpty.hidden = hasNextSteps;
+          }
+        }
+
+        function setPendingWater(amount) {
+          if (!amount || amount <= 0) return;
+          pendingWaterAmount = amount;
+          $("#water-confirm-copy").textContent = `افزودن ${formatNumber(amount)} ml به ثبت امروز؟`;
+          $("#water-confirm-panel").hidden = false;
+        }
+
+        function clearPendingWater() {
+          pendingWaterAmount = null;
+          $("#water-confirm-panel").hidden = true;
+        }
+
+        function wireWaterActions() {
+          $$("[data-water-amount]").forEach((button) => {
+            button.addEventListener("click", () => {
+              const amount = Number(button.getAttribute("data-water-amount"));
+              setPendingWater(amount);
+            });
+          });
+
+          $("#water-custom-trigger")?.addEventListener("click", () => {
+            const panel = $("#water-custom-panel");
+            panel.hidden = !panel.hidden;
+            if (!panel.hidden) $("#water-custom-input").focus();
+          });
+
+          $("#water-custom-review")?.addEventListener("click", () => {
+            const input = $("#water-custom-input");
+            const amount = Number(input.value);
+            if (!amount || amount <= 0) {
+              showToast("لطفاً یک مقدار معتبر برای آب وارد کن.");
+              input.focus();
+              return;
+            }
+            setPendingWater(amount);
+          });
+
+          $("#water-confirm-button")?.addEventListener("click", () => {
+            if (!pendingWaterAmount) return;
+            state.water.consumed += pendingWaterAmount;
+            renderWaterSection();
+            clearPendingWater();
+            $("#water-custom-input").value = "";
+            $("#water-custom-panel").hidden = true;
+            showToast(`ثبت آب با ${formatNumber(pendingWaterAmount)} ml به‌روزرسانی شد.`);
+            pendingWaterAmount = null;
+          });
+
+          $("#water-cancel-button")?.addEventListener("click", () => {
+            clearPendingWater();
+          });
+        }
+
+        function wireToast() {
+          $("#toast-close")?.addEventListener("click", () => {
+            $("#toast").hidden = true;
+            window.clearTimeout(toastTimer);
+          });
+        }
+
+        function init() {
+          renderCurrentDate();
+          renderHeaderBadges();
+          renderFoodSection();
+          renderWaterSection();
+          renderConditionals();
+          wireWaterActions();
+          wireToast();
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", init);
+        } else {
+          init();
+        }
+      })();
+    </script>
+  </body>
+</html>

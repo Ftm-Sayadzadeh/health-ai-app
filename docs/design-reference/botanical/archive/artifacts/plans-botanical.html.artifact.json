@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "plans-botanical.html",
+  "entry": "plans-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-10T17:58:33.083Z",
+  "updatedAt": "2026-07-10T17:58:33.083Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="original">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0d685d" />
+    <title>کد تأیید — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body data-page="otp" data-theme="original">
+    <a class="skip-link" href="#otp-main">پرش به ورود کد</a>
+    <main class="auth-page" id="otp-main">
+      <aside class="auth-art" aria-label="راهنمای کد تأیید">
+        <a class="brand" href="index.html"
+          ><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect
+              class="brand-mark__plan"
+              x="7"
+              y="9"
+              width="29"
+              height="11"
+              rx="5.5"
+            />
+            <rect
+              class="brand-mark__actual"
+              x="12"
+              y="27"
+              width="29"
+              height="11"
+              rx="5.5"
+            />
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4" /></svg
+          ><span>آووکادو</span></a
+        >
+        <div class="auth-art__content">
+          <h2>یک قدم تا امروز.</h2>
+          <p>
+            کد شش‌رقمی فقط برای تأیید شماره همراه شماست و به معنی پذیرش هیچ
+            پیشنهاد سلامت یا برنامه‌ای نیست.
+          </p>
+        </div>
+      </aside>
+      <section class="auth-content" data-od-id="otp-page">
+        <header class="auth-top">
+          <a class="brand" href="index.html"
+            ><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+              <rect
+                class="brand-mark__plan"
+                x="7"
+                y="9"
+                width="29"
+                height="11"
+                rx="5.5"
+              />
+              <rect
+                class="brand-mark__actual"
+                x="12"
+                y="27"
+                width="29"
+                height="11"
+                rx="5.5"
+              />
+              <circle class="brand-mark__pulse" cx="39" cy="13" r="4" /></svg
+            ><span>آووکادو</span></a
+          ><a class="auth-top__back" href="auth.html"
+            ><svg class="icon rtl-flip" aria-hidden="true">
+              <use href="assets/icons.svg#icon-arrow" /></svg
+            >تغییر شماره</a
+          >
+        </header>
+        <div class="auth-card">
+          <p class="eyebrow">تأیید شماره همراه</p>
+          <h1>کد شش‌رقمی را وارد کنید</h1>
+          <p>
+            کد برای
+            <span class="otp-number"
+              ><bdi id="otp-phone" dir="ltr">0912 345 6789</bdi
+              ><svg class="icon icon--sm" aria-hidden="true">
+                <use href="assets/icons.svg#icon-edit" /></svg
+            ></span>
+            ارسال شد.
+          </p>
+          <form class="form-stack" id="otp-form" novalidate>
+            <fieldset class="fieldset-reset">
+              <legend class="sr-only">کد تأیید شش‌رقمی</legend>
+              <div class="otp-group" id="otp-group" dir="ltr">
+                <input
+                  type="text"
+                  inputmode="numeric"
+                  autocomplete="one-time-code"
+                  maxlength="1"
+                  aria-label="رقم اول"
+                /><input
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="رقم دوم"
+                /><input
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="رقم سوم"
+                /><input
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="رقم چهارم"
+                /><input
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="رقم پنجم"
+                /><input
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="رقم ششم"
+                />
+              </div>
+            </fieldset>
+            <small class="field__error" id="otp-error" role="alert" hidden
+              >کد واردشده درست نیست. برای این نمونه از ۱۲۳۴۵۶ استفاده
+              کنید.</small
+            >
+            <div
+              class="form-alert form-alert--error"
+              id="otp-expired"
+              role="alert"
+              hidden
+            >
+              <svg class="icon" aria-hidden="true">
+                <use href="assets/icons.svg#icon-clock" /></svg
+              ><span>زمان این کد تمام شده است. کد تازه‌ای دریافت کنید.</span>
+            </div>
+            <div class="otp-meta">
+              <span id="otp-timer" aria-live="polite"
+                >ارسال دوباره تا <bdi dir="ltr">02:00</bdi></span
+              ><button
+                class="link-button"
+                id="resend-code"
+                type="button"
+                disabled
+              >
+                ارسال دوباره کد
+              </button>
+            </div>
+            <button
+              class="button button--primary button--lg button--full"
+              id="otp-submit"
+              type="submit"
+            >
+              <span class="button__loader" aria-hidden="true" hidden></span
+              ><span data-button-label>تأیید و ادامه</span>
+            </button>
+            <a class="button button--quiet button--full" href="auth.html"
+              >تغییر شماره همراه</a
+            >
+          </form>
+          <div class="form-alert form-alert--info form-alert--spaced">
+            <svg class="icon" aria-hidden="true">
+              <use href="assets/icons.svg#icon-info" /></svg
+            ><span>کد آزمایشی این نمونه: <bdi dir="ltr">123456</bdi></span>
+          </div>
+        </div>
+        <footer class="auth-footer">کد را با هیچ‌کس به اشتراک نگذارید.</footer>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "messages-botanical.html",
+  "entry": "messages-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-12T11:49:28.543Z",
+  "updatedAt": "2026-07-12T11:49:28.543Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

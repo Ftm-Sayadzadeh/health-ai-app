@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "auth-session-expired.html",
+  "entry": "auth-session-expired.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-12T13:03:45.541Z",
+  "updatedAt": "2026-07-12T13:03:45.541Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

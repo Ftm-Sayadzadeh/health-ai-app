@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "notifications-botanical.html",
+  "entry": "notifications-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-12T11:49:28.545Z",
+  "updatedAt": "2026-07-12T11:49:28.545Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

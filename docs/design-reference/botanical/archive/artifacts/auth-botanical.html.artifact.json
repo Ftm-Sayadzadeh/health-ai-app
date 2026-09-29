@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "auth-botanical.html",
+  "entry": "auth-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-10T17:58:33.077Z",
+  "updatedAt": "2026-07-10T17:58:33.077Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

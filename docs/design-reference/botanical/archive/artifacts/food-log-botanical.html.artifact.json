@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "food-log-botanical.html",
+  "entry": "food-log-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-12T11:45:14.577Z",
+  "updatedAt": "2026-07-12T11:45:14.577Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}
