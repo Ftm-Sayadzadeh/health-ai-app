@@ -57,24 +57,22 @@ export function usePlansAccess(onReady?: () => Promise<void>) {
 
 export function PlansPageShell({ children }: { children: ReactNode }) {
   return (
-    <main className="min-h-screen px-4 py-4 text-[#25321F] sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl">
-        <header className="sticky top-4 z-30 mb-4 rounded-full border border-[#EFEAD9]/80 bg-white/90 px-4 py-2.5 shadow-[0_14px_34px_rgba(85,117,54,0.1)] backdrop-blur-md sm:px-6 sm:py-3">
-          <div className="flex items-center justify-between gap-3">
-            <Link href="/dashboard" className="flex min-w-0 items-center gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-[0.85rem] bg-[#D4F24E]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/brand-assets/avocado-smiling.png" alt="" className="h-20 w-20 max-w-none translate-y-1 object-contain" />
-              </span>
-              <span className="min-w-0">
-                <span className="block truncate text-base font-extrabold">برنامه‌های من</span>
-                <span className="block truncate text-[0.66rem] text-[#8A9A78]">یادداشت‌های تغذیه و تمرین</span>
-              </span>
-            </Link>
-            <Link href="/dashboard" className="shrink-0 rounded-full border border-[#E9E5DC] bg-white px-4 py-2 text-xs font-extrabold text-[#557536] hover:bg-[#F4FBE3]">
-              داشبورد
-            </Link>
-          </div>
+    <main className="min-h-screen px-4 py-4 text-[var(--text-strong)] sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl">
+        <header className="app-header mb-4">
+          <Link href="/dashboard" className="flex min-w-0 items-center gap-2.5">
+            <span className="app-logo h-9 w-9 shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/brand-assets/avocado-smiling.png" alt="" className="h-16 w-16 max-w-none translate-y-0.5 object-contain" />
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate text-[0.95rem] font-bold">برنامه‌های من</span>
+              <span className="block truncate text-[0.66rem] text-[var(--text-subtle)]">یادداشت‌های تغذیه و تمرین</span>
+            </span>
+          </Link>
+          <Link href="/dashboard" className="btn btn-secondary btn-sm shrink-0">
+            داشبورد
+          </Link>
         </header>
         {children}
       </div>
@@ -84,8 +82,8 @@ export function PlansPageShell({ children }: { children: ReactNode }) {
 
 export function PlansLoading() {
   return (
-    <div className="rounded-[2rem] border border-[#EFEAD9] bg-white p-10 text-center shadow-[0_20px_50px_rgba(85,117,54,0.08)]">
-      <p role="status" className="text-sm font-extrabold text-[#557536]">یه لحظه، برنامه‌ها رو آماده می‌کنیم...</p>
+    <div className="card p-8 text-center">
+      <p role="status" className="text-sm font-bold text-[var(--brand-green)]">یه لحظه، برنامه‌ها رو آماده می‌کنیم...</p>
     </div>
   );
 }

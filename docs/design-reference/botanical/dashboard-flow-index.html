@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0d685d" />
+    <title>فهرست جریان داشبورد MVP — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        background: var(--av-color-bg);
+      }
+      .flow-shell {
+        min-block-size: 100dvh;
+        padding: max(1rem, env(safe-area-inset-top)) 1rem
+          max(2rem, env(safe-area-inset-bottom));
+      }
+      .flow-page {
+        inline-size: min(100%, 68rem);
+        margin-inline: auto;
+        display: grid;
+        gap: 1rem;
+      }
+      .flow-hero,
+      .flow-card {
+        border: 1px solid var(--av-color-border);
+        border-radius: 1.25rem 1.25rem 0.65rem 1.25rem;
+        background: var(--av-color-surface);
+        padding: clamp(1rem, 4vw, 1.8rem);
+      }
+      .flow-hero {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .flow-hero h1,
+      .flow-card h2,
+      .flow-card h3,
+      .flow-card p {
+        margin: 0;
+      }
+      .flow-hero h1 {
+        color: var(--av-color-ink-strong);
+        font-size: clamp(1.65rem, 5vw, 2.45rem);
+        line-height: 1.2;
+      }
+      .flow-hero p,
+      .flow-card p {
+        color: var(--av-color-ink-muted);
+        line-height: 1.8;
+      }
+      .flow-grid {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .flow-card {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .flow-card h3 {
+        color: var(--av-color-ink-strong);
+        font-size: 1.05rem;
+      }
+      .flow-card[data-kind="primary"] {
+        border-color: color-mix(in oklch, var(--av-color-primary) 28%, var(--av-color-border));
+        background: var(--av-color-primary-soft);
+      }
+      .flow-card[data-kind="plan"] {
+        border-color: color-mix(in oklch, var(--av-color-plan) 28%, var(--av-color-border));
+        background: var(--av-color-plan-soft);
+      }
+      .flow-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      @media (min-width: 48rem) {
+        .flow-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (min-width: 64rem) {
+        .flow-shell {
+          padding-inline: 2rem;
+        }
+        .flow-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body class="app-body" data-page="dashboard-flow-index" data-theme="botanical">
+    <main class="flow-shell" data-od-id="dashboard-flow-index-page">
+      <div class="flow-page">
+        <header class="flow-hero" data-od-id="dashboard-flow-index-hero">
+          <span class="status-chip">Current MVP</span>
+          <h1>فهرست جریان داشبورد Botanical</h1>
+          <p>
+            این صفحه فقط برای مرور طراحی است و خودش یک مسیر محصولی نیست. داشبورد اصلی
+            در فایل تاییدشده حفظ شده و حالت‌های پشتیبان جدا شده‌اند.
+          </p>
+        </header>
+
+        <section class="flow-grid" aria-label="فایل‌های جریان داشبورد">
+          <article class="flow-card" data-kind="primary" data-od-id="flow-dashboard">
+            <h3>امروز</h3>
+            <p>داشبورد اصلی Current MVP با اقدام روشن ثبت خوراک، خلاصه ثبت واقعی و پیش‌نمایش برنامه‌ها.</p>
+            <a class="button button--primary button--sm" href="dashboard-botanical.html">باز کردن داشبورد</a>
+          </article>
+          <article class="flow-card" data-kind="primary" data-od-id="flow-food-log">
+            <h3>تغذیه امروز</h3>
+            <p>مسیر کامل‌تر ثبت و مرور خوراک‌های واقعی امروز و روزهای قبلی.</p>
+            <a class="button button--secondary button--sm" href="food-log-botanical.html">باز کردن تغذیه امروز</a>
+          </article>
+          <article class="flow-card" data-kind="plan" data-od-id="flow-plans">
+            <h3>برنامه‌ها</h3>
+            <p>مرور برنامه غذایی و تمرینی با معنای برنامه‌ریزی‌شده، نه ثبت انجام‌شده.</p>
+            <a class="button button--secondary button--sm" href="plans-botanical.html">باز کردن برنامه‌ها</a>
+          </article>
+          <article class="flow-card" data-od-id="flow-profile">
+            <h3>من و پروفایل</h3>
+            <p>وضعیت تکمیل اطلاعات سلامت؛ این وضعیت امتیاز سلامت یا سنجش عملکرد نیست.</p>
+            <a class="button button--secondary button--sm" href="settings-botanical.html">باز کردن صفحه من</a>
+          </article>
+          <article class="flow-card" data-od-id="flow-intake">
+            <h3>ادامه پرسش‌نامه</h3>
+            <p>مسیر ادامه برای پرسش‌نامه تغذیه یا برنامه تمرینی، با حفظ پاسخ‌های قبلی.</p>
+            <a class="button button--secondary button--sm" href="onboarding-botanical.html">باز کردن پرسش‌نامه</a>
+          </article>
+          <article class="flow-card" data-od-id="flow-states">
+            <h3>حالت‌های داشبورد</h3>
+            <p>کاتالوگ فشرده برای حالت‌های ناقص، خالی، خطا، آفلاین و پایان نشست.</p>
+            <a class="button button--secondary button--sm" href="dashboard-states.html">باز کردن حالت‌ها</a>
+          </article>
+        </section>
+
+        <section class="flow-card" data-od-id="flow-contract">
+          <h2>قرارداد نمایشی این جریان</h2>
+          <p>
+            ثبت واقعی با جید و عبارت «ثبت واقعی» نمایش داده می‌شود. برنامه غذایی و تمرینی
+            با ایندیگو و عبارت «برنامه» نمایش داده می‌شود و هرگز به‌عنوان فعالیت انجام‌شده
+            نشان داده نمی‌شود.
+          </p>
+          <div class="flow-actions">
+            <span class="semantic-label semantic-label--actual"><i class="track-marker track-marker--actual" aria-hidden="true"></i>ثبت واقعی</span>
+            <span class="semantic-label"><i class="track-marker" aria-hidden="true"></i>برنامه</span>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

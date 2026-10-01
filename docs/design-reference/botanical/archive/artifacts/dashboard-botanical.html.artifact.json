@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "dashboard-botanical.html",
+  "entry": "dashboard-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-10T17:58:33.080Z",
+  "updatedAt": "2026-07-10T17:58:33.080Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

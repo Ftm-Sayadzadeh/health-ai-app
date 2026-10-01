@@ -1,0 +1,813 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0d685d" />
+    <title>برنامه‌ها — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+      <link rel="stylesheet" href="src/coach-flow.css" />
+      <link rel="stylesheet" href="src/plan-flow.css" />
+      <script src="src/date-utils.js" defer></script>
+      <script src="app.js" defer></script>
+    <script src="src/coach-flow.js" defer></script>
+    <script src="src/plan-flow.js" defer></script>
+    <style>
+      .plans-hub {
+        display: grid;
+        gap: 1.2rem;
+      }
+
+      .plans-header-card,
+      .plan-hub-card,
+      .plans-archive,
+      .plans-future-card {
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 7%, var(--av-color-border));
+        border-radius: 1.4rem 1.4rem .65rem 1.4rem;
+        background: var(--av-color-surface);
+      }
+
+      .plans-header-card {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.15rem 1.15rem 1rem;
+      }
+
+      .plans-header-card h1,
+      .plan-hub-card h2,
+      .plans-archive h2,
+      .plans-future-card h2,
+      .plan-picker__header h2 {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+      }
+
+      .plans-header-card p,
+      .plan-hub-card p,
+      .plans-archive p,
+      .plans-future-card p,
+      .plan-picker__header p {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+      }
+
+      .plans-header-card h1 {
+        font-size: clamp(1.55rem, 1.34rem + .7vw, 2.1rem);
+      }
+
+      .plans-header-copy {
+        display: grid;
+        gap: .45rem;
+        max-inline-size: 38rem;
+      }
+
+      .plans-info-inline {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        padding: .55rem .8rem;
+        border-radius: .95rem .95rem .4rem .95rem;
+        background: color-mix(in oklch, var(--av-color-primary-soft) 44%, white);
+        color: var(--av-color-ink-muted);
+        font-size: .8rem;
+      }
+
+      .plans-grid {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .plan-hub-card {
+        display: grid;
+        gap: 1rem;
+        padding: 1.1rem;
+      }
+
+      .plan-hub-card--food {
+        border-color: color-mix(in oklch, var(--av-color-primary) 18%, var(--av-color-border));
+      }
+
+      .plan-hub-card--workout {
+        border-color: color-mix(in oklch, var(--av-color-plan) 18%, var(--av-color-border));
+      }
+
+      .plan-hub-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: .75rem;
+        flex-wrap: wrap;
+      }
+
+      .plan-hub-label {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        color: var(--av-color-ink-muted);
+        font-size: .78rem;
+        font-weight: 700;
+      }
+
+      .plan-hub-label i {
+        inline-size: .75rem;
+        block-size: .75rem;
+        border-radius: 50%;
+        background: var(--av-color-primary);
+      }
+
+      .plan-hub-card--workout .plan-hub-label i {
+        background: var(--av-color-plan);
+      }
+
+      .plan-hub-status {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        min-block-size: 2rem;
+        padding-inline: .75rem;
+        border-radius: 999px;
+        background: var(--av-color-surface-subtle);
+        color: var(--av-color-ink-muted);
+        font-size: .74rem;
+        font-weight: 700;
+      }
+
+      .plan-hub-title {
+        display: grid;
+        gap: .35rem;
+      }
+
+      .plan-hub-title h2 {
+        font-size: 1.3rem;
+      }
+
+      .plan-hub-title p {
+        font-size: .9rem;
+      }
+
+      .plan-hub-primary {
+        display: grid;
+        gap: .7rem;
+        padding: .95rem 1rem;
+        border-radius: 1.1rem 1.1rem .5rem 1.1rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 72%, white);
+      }
+
+      .plan-hub-primary__value {
+        color: var(--av-color-ink-strong);
+        font-size: 1.85rem;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .plan-hub-primary__meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem .9rem;
+        color: var(--av-color-ink-muted);
+        font-size: .8rem;
+      }
+
+      .plan-progress {
+        display: grid;
+        gap: .45rem;
+      }
+
+      .plan-progress__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        color: var(--av-color-ink-muted);
+        font-size: .78rem;
+      }
+
+      .plan-progress__bar {
+        overflow: hidden;
+        block-size: .72rem;
+        border-radius: 999px;
+        background: color-mix(in oklch, var(--av-color-border) 80%, white);
+      }
+
+      .plan-progress__fill {
+        display: block;
+        inline-size: var(--progress, 0%);
+        block-size: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--av-color-primary) 0%, color-mix(in oklch, var(--av-color-primary) 74%, var(--av-color-pulse)) 100%);
+      }
+
+      .plan-hub-card--workout .plan-progress__fill {
+        background: linear-gradient(90deg, var(--av-color-plan) 0%, color-mix(in oklch, var(--av-color-plan) 72%, white) 100%);
+      }
+
+      .plan-hub-facts {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .75rem;
+      }
+
+      .plan-fact {
+        display: grid;
+        gap: .18rem;
+        padding: .82rem .9rem;
+        border-radius: 1rem 1rem .42rem 1rem;
+        background: color-mix(in oklch, var(--av-color-surface) 92%, white);
+      }
+
+      .plan-fact span {
+        color: var(--av-color-ink-muted);
+        font-size: .72rem;
+      }
+
+      .plan-fact strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+        font-weight: 760;
+      }
+
+      .plan-hub-source {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        padding-top: .15rem;
+        color: var(--av-color-ink-muted);
+        font-size: .82rem;
+      }
+
+      .plan-hub-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .7rem;
+      }
+
+      .button--hub-outline {
+        border: 1px solid color-mix(in oklch, var(--av-color-plan) 20%, var(--av-color-border));
+        background: transparent;
+        color: var(--av-color-ink-strong);
+      }
+
+      .button--hub-outline:hover:not(:disabled) {
+        border-color: var(--av-color-plan);
+        color: var(--av-color-plan);
+      }
+
+      .plan-mobile-details {
+        display: none;
+      }
+
+      .plan-mobile-details > summary {
+        display: none;
+      }
+
+      .plans-archive,
+      .plans-future-card {
+        padding: 1rem 1.05rem;
+      }
+
+      .plans-archive {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .plans-archive__count {
+        color: var(--av-color-ink-strong);
+        font-size: 1.65rem;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .plans-archive__meta {
+        display: grid;
+        gap: .35rem;
+      }
+
+      .plans-future-card {
+        display: grid;
+        gap: .55rem;
+      }
+
+      .plans-future-card h2 {
+        font-size: 1rem;
+      }
+
+      .plans-future-card p {
+        font-size: .82rem;
+        line-height: 1.7;
+      }
+
+      .plan-picker {
+        inline-size: min(30rem, calc(100vw - 1.5rem));
+        border: 0;
+        border-radius: 1.4rem 1.4rem .6rem 1.4rem;
+        background: var(--av-color-surface);
+        padding: 0;
+      }
+
+      .plan-picker__body {
+        display: grid;
+        gap: 1rem;
+        padding: 1rem;
+      }
+
+      .plan-picker__header {
+        display: grid;
+        gap: .35rem;
+      }
+
+      .plan-picker__options {
+        display: grid;
+        gap: .8rem;
+      }
+
+      .plan-upload-option {
+        display: grid;
+        gap: .65rem;
+        padding: .95rem;
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 8%, var(--av-color-border));
+        border-radius: 1.1rem 1.1rem .45rem 1.1rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 74%, white);
+      }
+
+      .plan-upload-option--workout {
+        border-color: color-mix(in oklch, var(--av-color-plan) 16%, var(--av-color-border));
+      }
+
+      .plan-upload-option strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+      }
+
+      .plan-upload-option p,
+      .plan-upload-option small {
+        color: var(--av-color-ink-muted);
+      }
+
+      .plan-upload-option input[type="file"] {
+        display: none;
+      }
+
+      .plan-upload-option__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .65rem;
+      }
+
+      @media (min-width: 64rem) {
+        .plans-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 63.99rem) {
+        .plans-header-card,
+        .plans-archive {
+          grid-template-columns: 1fr;
+          display: grid;
+        }
+
+        .plan-hub-actions .button {
+          inline-size: 100%;
+          justify-content: center;
+        }
+
+        .plan-mobile-details {
+          display: block;
+        }
+
+        .plan-mobile-details > summary {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: .75rem;
+          cursor: pointer;
+          list-style: none;
+          color: var(--av-color-ink-strong);
+          font-size: .88rem;
+          font-weight: 700;
+        }
+
+        .plan-mobile-details > summary::-webkit-details-marker {
+          display: none;
+        }
+
+        .plan-mobile-details > summary::after {
+          content: "⌄";
+          color: var(--av-color-plan);
+        }
+
+        .plan-mobile-details[open] > summary::after {
+          transform: rotate(180deg);
+        }
+
+        .plan-mobile-details__content {
+          display: grid;
+          gap: .8rem;
+          padding-top: .75rem;
+        }
+
+        .plan-hub-card > .plan-hub-facts,
+        .plan-hub-card > .plan-hub-source {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="app-body" data-page="plans" data-theme="botanical">
+    <a class="skip-link" href="#plans-main">پرش به برنامه‌ها</a>
+    <div class="app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی محصول">
+        <a class="brand" href="dashboard-botanical.html"
+          ><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect
+              class="brand-mark__plan"
+              x="7"
+              y="9"
+              width="29"
+              height="11"
+              rx="5.5"
+            />
+            <rect
+              class="brand-mark__actual"
+              x="12"
+              y="27"
+              width="29"
+              height="11"
+              rx="5.5"
+            />
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4" /></svg
+          ><span>آووکادو</span></a
+        >
+        <nav aria-label="بخش‌های اصلی">
+          <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+          <a href="quick-log-botanical.html"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+          <a href="plans-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+          <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+          <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+        </nav>
+        <div class="side-nav__foot">مسیرهای اصلی همیشه از همین پنج بخش در دسترس هستند.</div>
+      </aside>
+      <main class="app-main" id="plans-main" data-od-id="plans-page">
+        <header class="app-topbar">
+          <div class="app-topbar__title">
+            <span>قصدها و مسیر پیش‌رو</span><strong>برنامه‌ها</strong>
+          </div>
+          <div class="app-topbar__actions">
+            <a class="header-action-link" href="messages-botanical.html" aria-label="پیام‌ها">
+              <img class="header-action-icon" src="assets/icons/icon-message.png" alt="" aria-hidden="true" />
+            </a>
+            <a class="header-action-link header-action-link--notification" href="notifications-botanical.html" aria-label="اعلان‌ها">
+              <img class="header-action-icon" src="assets/icons/icon-bell.png" alt="" aria-hidden="true" />
+              <span class="header-action-badge" aria-hidden="true"></span>
+            </a>
+            <a class="avatar-link" href="settings-botanical.html" aria-label="پروفایل سارا">س</a>
+          </div>
+        </header>
+        <div class="app-container page-content plans-hub">
+          <section class="plans-header-card" data-od-id="plans-header">
+            <div class="plans-header-copy">
+              <div>
+                <h1>برنامه‌های من</h1>
+                <p>از همین‌جا سریع ببینید چه برنامه‌هایی فعال‌اند و قدم بعدی امروز چیست.</p>
+              </div>
+              <div class="plans-info-inline">
+                <svg class="icon icon--sm" aria-hidden="true">
+                  <use href="assets/icons.svg#icon-info" />
+                </svg>
+                <span>ثبت از روی برنامه فقط پس از تأیید شما انجام می‌شود.</span>
+              </div>
+            </div>
+            <button class="button button--primary" type="button" data-open-plan-picker>
+              <svg class="icon" aria-hidden="true">
+                <use href="assets/icons.svg#icon-plus" />
+              </svg>
+              + افزودن برنامه
+            </button>
+          </section>
+
+          <section class="plans-grid" aria-label="برنامه‌های فعال" data-od-id="plans-active-grid">
+            <article class="plan-hub-card plan-hub-card--food" data-od-id="food-plan-card">
+              <div class="plan-hub-head">
+                <span class="plan-hub-label"><i aria-hidden="true"></i>برنامه غذایی</span>
+                <span class="plan-hub-status">فعال</span>
+              </div>
+              <div class="plan-hub-title">
+                <h2>برنامه متعادل چهار هفته‌ای</h2>
+                <p>هفته فعلی: ۲ · امروز روز ۹ از ۲۸ برنامه است.</p>
+              </div>
+              <div class="plan-hub-primary">
+                <div class="plan-hub-primary__value">۴ وعده امروز</div>
+                <div class="plan-hub-primary__meta">
+                  <span>منبع: متخصص تغذیه</span>
+                  <span>شروع: ۹ تیر</span>
+                </div>
+              </div>
+              <div class="plan-progress" style="--progress: 32%;">
+                <div class="plan-progress__head">
+                  <span>پیشرفت برنامه</span>
+                  <strong>روز ۹ از ۲۸</strong>
+                </div>
+                <div class="plan-progress__bar">
+                  <span class="plan-progress__fill"></span>
+                </div>
+              </div>
+              <div class="plan-hub-facts">
+                <div class="plan-fact">
+                  <span>هفته فعلی</span>
+                  <strong>هفته ۲</strong>
+                </div>
+                <div class="plan-fact">
+                  <span>منبع برنامه</span>
+                  <strong>بارگذاری‌شده</strong>
+                </div>
+              </div>
+              <div class="plan-hub-source">
+                <span>برنامه امروز آماده بررسی است.</span>
+                <strong>وعده‌های پیشنهادی: ۴</strong>
+              </div>
+              <details class="plan-mobile-details">
+                <summary>جزئیات بیشتر</summary>
+                <div class="plan-mobile-details__content">
+                  <div class="plan-hub-facts">
+                    <div class="plan-fact">
+                      <span>هفته فعلی</span>
+                      <strong>هفته ۲</strong>
+                    </div>
+                    <div class="plan-fact">
+                      <span>منبع برنامه</span>
+                      <strong>بارگذاری‌شده</strong>
+                    </div>
+                  </div>
+                  <div class="plan-hub-source">
+                    <span>برنامه امروز آماده بررسی است.</span>
+                    <strong>وعده‌های پیشنهادی: ۴</strong>
+                  </div>
+                </div>
+              </details>
+              <div class="plan-hub-actions">
+                <a class="button button--primary" href="meal-plan-botanical.html?tab=today">مشاهده برنامه</a>
+                <a class="button button--hub-outline" href="meal-plan-botanical.html?tab=today#today-meals">افزودن وعده‌های امروز</a>
+              </div>
+            </article>
+
+            <article class="plan-hub-card plan-hub-card--workout" data-od-id="workout-plan-card">
+              <div class="plan-hub-head">
+                <span class="plan-hub-label"><i aria-hidden="true"></i>برنامه تمرینی</span>
+                <span class="plan-hub-status">آماده برای امروز</span>
+              </div>
+              <div class="plan-hub-title">
+                <h2>قدرت پایه · جلسه ۳</h2>
+                <p>جلسه امروز از برنامه ۱۲ جلسه‌ای شما آماده شروع است.</p>
+              </div>
+              <div class="plan-hub-primary">
+                <div class="plan-hub-primary__value">۴ حرکت · ۳۵ دقیقه</div>
+                <div class="plan-hub-primary__meta">
+                  <span>حدود ۱۸۰ کالری</span>
+                  <span>سطح: مقدماتی</span>
+                </div>
+              </div>
+              <div class="plan-progress" style="--progress: 41%;">
+                <div class="plan-progress__head">
+                  <span>پیشرفت هفتگی</span>
+                  <strong>۲ از ۵ جلسه این هفته</strong>
+                </div>
+                <div class="plan-progress__bar">
+                  <span class="plan-progress__fill"></span>
+                </div>
+              </div>
+              <div class="plan-hub-facts">
+                <div class="plan-fact">
+                  <span>تعداد حرکت‌ها</span>
+                  <strong>۴ حرکت</strong>
+                </div>
+                <div class="plan-fact">
+                  <span>کالری تخمینی</span>
+                  <strong>حدود ۱۸۰</strong>
+                </div>
+              </div>
+              <div class="plan-hub-source">
+                <span>اکنون بهترین زمان برای انجام جلسه امروز است.</span>
+                <strong>جلسه ۳ از ۱۲</strong>
+              </div>
+              <details class="plan-mobile-details">
+                <summary>جزئیات بیشتر</summary>
+                <div class="plan-mobile-details__content">
+                  <div class="plan-hub-facts">
+                    <div class="plan-fact">
+                      <span>تعداد حرکت‌ها</span>
+                      <strong>۴ حرکت</strong>
+                    </div>
+                    <div class="plan-fact">
+                      <span>کالری تخمینی</span>
+                      <strong>حدود ۱۸۰</strong>
+                    </div>
+                  </div>
+                  <div class="plan-hub-source">
+                    <span>اکنون بهترین زمان برای انجام جلسه امروز است.</span>
+                    <strong>جلسه ۳ از ۱۲</strong>
+                  </div>
+                </div>
+              </details>
+              <div class="plan-hub-actions">
+                <a class="button button--primary" href="workout-session-botanical.html?day=fri&entry=plans">شروع تمرین امروز</a>
+                <a class="button button--hub-outline" href="workout-weekly-botanical.html">مشاهده کل برنامه</a>
+              </div>
+            </article>
+          </section>
+
+          <section class="plans-archive" id="plans-archive" data-od-id="plans-archive">
+            <div class="plans-archive__meta">
+              <h2>برنامه‌های قبلی</h2>
+              <p>برنامه‌های پایان‌یافته را برای مرور دوباره یا بازگشت نگه داشته‌ایم.</p>
+            </div>
+            <div class="plans-archive__meta" style="justify-items: end;">
+              <strong class="plans-archive__count">۳</strong>
+              <a class="button button--quiet" href="#plans-archive">مشاهده آرشیو</a>
+            </div>
+          </section>
+
+          <section class="plans-future-card" data-od-id="plans-future">
+            <h2>پیشنهادهای هوشمند آینده</h2>
+            <p>پیشنهادهای بعدی فقط پس از بررسی شما فعال می‌شوند و جای برنامه فعلی را خودکار نمی‌گیرند.</p>
+          </section>
+        </div>
+      </main>
+    </div>
+    <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل">
+      <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+      <a href="quick-log-botanical.html" class="quick-log-trigger bottom-nav__primary"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+      <a href="plans-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+      <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+      <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+    </nav>
+    <dialog class="sheet" id="food-dialog" aria-labelledby="food-dialog-title">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__header">
+        <div>
+          <h2 id="food-dialog-title">ثبت بر اساس برنامه</h2>
+          <p>مقدار را مطابق چیزی که واقعاً خوردید تنظیم کنید.</p>
+        </div>
+        <button
+          class="icon-button"
+          type="button"
+          data-close-dialog
+          aria-label="بستن"
+        >
+          <svg class="icon" aria-hidden="true">
+            <use href="assets/icons.svg#icon-close" />
+          </svg>
+        </button>
+      </div>
+      <div class="prefill-notice" id="prefill-notice">
+        <svg class="icon icon--sm" aria-hidden="true">
+          <use href="assets/icons.svg#icon-info" /></svg
+        ><span id="prefill-text">این مورد هنوز مصرف‌شده محسوب نمی‌شود.</span>
+      </div>
+      <form class="form-stack" id="food-form">
+        <label class="field"
+          ><span class="field__label">نام خوراک</span
+          ><input id="food-name" name="name" type="text" required /></label
+        ><label class="field"
+          ><span class="field__label">مقدار واقعی</span
+          ><input id="food-amount" name="amount" type="text" required /></label
+        ><label class="field"
+          ><span class="field__label">کالری دستی · اختیاری</span
+          ><input
+            id="food-calories"
+            name="calories"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9۰-۹]*"
+            dir="ltr" /></label
+        ><label class="field"
+          ><span class="field__label">وعده</span
+          ><select id="food-meal" name="meal">
+            <option value="breakfast">صبحانه</option>
+            <option value="lunch">ناهار</option>
+            <option value="dinner">شام</option>
+            <option value="snack">میان‌وعده</option>
+            <option value="other">سایر</option>
+          </select></label
+        >
+        <div class="sheet-actions">
+          <button
+            class="button button--secondary"
+            type="button"
+            data-close-dialog
+          >
+            انصراف</button
+          ><button class="button button--primary" type="submit">
+            ثبت به‌عنوان خورده‌شده
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog class="plan-picker" id="plan-picker-dialog" aria-labelledby="plan-picker-title">
+      <div class="plan-picker__body">
+        <div class="plan-picker__header">
+          <h2 id="plan-picker-title">افزودن برنامه</h2>
+          <p>نوع برنامه را انتخاب کنید تا فایل آن را بارگذاری یا جایگزین کنید.</p>
+        </div>
+        <div class="plan-picker__options">
+          <section class="plan-upload-option" data-od-id="upload-food-plan">
+            <div>
+              <strong>افزودن برنامه غذایی</strong>
+              <p>فایل برنامه غذایی جدید را برای بررسی و جایگزینی انتخاب کنید.</p>
+            </div>
+            <small id="food-plan-file-label">آخرین فایل: meal-plan-week2.pdf</small>
+            <div class="plan-upload-option__actions">
+              <label class="button button--primary" for="food-plan-file">انتخاب فایل</label>
+              <button class="button button--quiet" type="button" data-close-dialog>بستن</button>
+            </div>
+            <input id="food-plan-file" type="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" />
+          </section>
+          <section class="plan-upload-option plan-upload-option--workout" data-od-id="upload-workout-plan">
+            <div>
+              <strong>افزودن برنامه تمرینی</strong>
+              <p>برنامه تمرینی جدید را بارگذاری کنید تا در همین مرکز مدیریت شود.</p>
+            </div>
+            <small id="workout-plan-file-label">آخرین فایل: workout-block-a.pdf</small>
+            <div class="plan-upload-option__actions">
+              <label class="button button--primary" for="workout-plan-file">انتخاب فایل</label>
+              <button class="button button--quiet" type="button" data-close-dialog>بستن</button>
+            </div>
+            <input id="workout-plan-file" type="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" />
+          </section>
+        </div>
+      </div>
+    </dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <span class="toast__check"
+        ><svg class="icon icon--sm" aria-hidden="true">
+          <use href="assets/icons.svg#icon-check" /></svg></span
+      ><span id="toast-message">به ثبت امروز اضافه شد.</span
+      ><button type="button" id="toast-undo">واگردانی</button>
+    </div>
+    <script>
+      (() => {
+        const picker = document.getElementById("plan-picker-dialog");
+        const openPicker = document.querySelector("[data-open-plan-picker]");
+        const toast = document.getElementById("toast");
+        const toastMessage = document.getElementById("toast-message");
+        const undo = document.getElementById("toast-undo");
+        let pickerToastTimer = null;
+
+        function showPickerToast(message) {
+          if (!toast || !toastMessage) return;
+          window.clearTimeout(pickerToastTimer);
+          toastMessage.textContent = message;
+          toast.hidden = false;
+          if (undo) undo.hidden = true;
+          pickerToastTimer = window.setTimeout(() => {
+            toast.hidden = true;
+            if (undo) undo.hidden = false;
+          }, 3600);
+        }
+
+        openPicker?.addEventListener("click", () => {
+          if (!picker) return;
+          if (typeof picker.showModal === "function") picker.showModal();
+          else picker.setAttribute("open", "");
+        });
+
+        document.querySelectorAll("[data-open-food]").forEach((trigger) => {
+          trigger.addEventListener("click", () => {
+            if (undo) undo.hidden = false;
+            window.clearTimeout(pickerToastTimer);
+          });
+        });
+
+        [
+          {
+            input: document.getElementById("food-plan-file"),
+            label: document.getElementById("food-plan-file-label"),
+            text: "برنامه غذایی جدید برای بررسی آماده شد.",
+          },
+          {
+            input: document.getElementById("workout-plan-file"),
+            label: document.getElementById("workout-plan-file-label"),
+            text: "برنامه تمرینی جدید برای بررسی آماده شد.",
+          },
+        ].forEach(({ input, label, text }) => {
+          input?.addEventListener("change", () => {
+            const file = input.files && input.files[0];
+            if (!file) return;
+            if (label) label.textContent = `آخرین فایل: ${file.name}`;
+            if (picker?.open && typeof picker.close === "function") picker.close();
+            showPickerToast(text);
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

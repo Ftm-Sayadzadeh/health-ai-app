@@ -95,8 +95,14 @@ export default function PlanDetailPage() {
   return (
     <PlansPageShell>
       <div>
-        <div className="mb-3 flex items-center justify-between gap-3 rounded-[1.2rem] border border-[#EFEAD9] bg-white px-4 py-2.5 shadow-[0_8px_22px_rgba(85,117,54,0.05)]"><div className="min-w-0"><p className="text-[0.68rem] font-extrabold text-[#86B93B]">جزئیات برنامه</p><h1 className="mt-0.5 truncate text-lg font-extrabold sm:text-xl">{plan?.title ?? "برنامه"}</h1></div><Link href="/plans" className="shrink-0 rounded-full border border-[#E9E5DC] bg-[#FFFDF8] px-4 py-2 text-xs font-extrabold text-[#557536]">بازگشت</Link></div>
-        {access.error ? <p role="alert" className="rounded-2xl border border-[#F5D5C9] bg-[#FFF6E8] p-4 text-sm text-[#7A3A27]">{access.error}</p> : null}
+        <div className="card mb-3 flex items-center justify-between gap-3 px-4 py-3">
+          <div className="min-w-0">
+            <p className="text-[0.68rem] font-bold text-[var(--brand-green)]">جزئیات برنامه</p>
+            <h1 className="mt-0.5 truncate text-lg font-bold sm:text-xl">{plan?.title ?? "برنامه"}</h1>
+          </div>
+          <Link href="/plans" className="btn btn-secondary btn-sm shrink-0">بازگشت</Link>
+        </div>
+        {access.error ? <p role="alert" className="notice notice-error">{access.error}</p> : null}
         {plan && value ? (
           <PlanForm
             planType={plan.plan_type}
@@ -110,20 +116,31 @@ export default function PlanDetailPage() {
             onSubmit={() => persist(plan.status === "archived" ? "archived" : "active")}
             onDownload={plan.attachment ? downloadAttachment : undefined}
             statusPanel={
-              <section className="rounded-[1.4rem] border border-[#E9E5DC] bg-white p-4 shadow-[0_10px_24px_rgba(85,117,54,0.04)]">
+              <section className="card p-4">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <div className="flex items-center gap-2"><h2 className="text-sm font-extrabold">وضعیت برنامه</h2><span className={`rounded-full px-2.5 py-1 text-[0.65rem] font-extrabold ${plan.status === "archived" ? "bg-[#F4F1E9] text-[#77736B]" : "bg-[#EAF7C7] text-[#557536]"}`}>{plan.status === "archived" ? "بایگانی" : "فعال"}</span></div>
-                    <p className="mt-1 text-xs leading-6 text-[#6B7A5A]">بایگانی برنامه رو حذف نمی‌کنه؛ فقط از فهرست فعال کنار می‌ذاره.</p>
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-sm font-bold">وضعیت برنامه</h2>
+                      <span className={`chip ${plan.status === "archived" ? "chip-neutral" : "chip-green"}`}>{plan.status === "archived" ? "بایگانی" : "فعال"}</span>
+                    </div>
+                    <p className="mt-1 text-xs leading-6 text-[var(--text-muted)]">بایگانی برنامه رو حذف نمی‌کنه؛ فقط از فهرست فعال کنار می‌ذاره.</p>
                   </div>
-                  {!confirmingLifecycle ? <button type="button" onClick={() => setConfirmingLifecycle(true)} className="shrink-0 rounded-full border border-[#E9E5DC] bg-[#FFFDF8] px-4 py-2 text-xs font-extrabold text-[#6B7A5A]">{plan.status === "archived" ? "فعال‌کردن دوباره" : "بایگانی برنامه"}</button> : null}
+                  {!confirmingLifecycle ? <button type="button" onClick={() => setConfirmingLifecycle(true)} className="btn btn-secondary btn-sm shrink-0">{plan.status === "archived" ? "فعال‌کردن دوباره" : "بایگانی برنامه"}</button> : null}
                 </div>
-                {confirmingLifecycle ? <div className="mt-3 flex flex-col gap-3 rounded-xl bg-[#FFF6E8] p-3 sm:flex-row sm:items-center sm:justify-between"><p className="text-xs font-bold">{plan.status === "archived" ? "این برنامه دوباره فعال بشه؟" : "این برنامه بایگانی بشه؟"}</p><div className="flex gap-2"><button type="button" disabled={isSaving} onClick={() => persist(plan.status === "archived" ? "active" : "archived")} className="rounded-full bg-[#D4F24E] px-4 py-2 text-xs font-extrabold">تایید</button><button type="button" onClick={() => setConfirmingLifecycle(false)} className="rounded-full border border-[#E9E5DC] bg-white px-4 py-2 text-xs font-bold">انصراف</button></div></div> : null}
+                {confirmingLifecycle ? (
+                  <div className="mt-3 flex flex-col gap-3 rounded-lg bg-[var(--danger-soft)] p-3 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-xs font-bold">{plan.status === "archived" ? "این برنامه دوباره فعال بشه؟" : "این برنامه بایگانی بشه؟"}</p>
+                    <div className="flex gap-2">
+                      <button type="button" disabled={isSaving} onClick={() => persist(plan.status === "archived" ? "active" : "archived")} className="btn btn-primary btn-sm">تایید</button>
+                      <button type="button" onClick={() => setConfirmingLifecycle(false)} className="btn btn-secondary btn-sm">انصراف</button>
+                    </div>
+                  </div>
+                ) : null}
               </section>
             }
           />
         ) : null}
-        {structureError ? <p role="alert" className="mt-4 rounded-2xl border border-[#F5D5C9] bg-[#FFF6E8] p-4 text-sm text-[#7A3A27]">{structureError}</p> : null}
+        {structureError ? <p role="alert" className="notice notice-error mt-4">{structureError}</p> : null}
         {plan?.plan_type === "nutrition" && nutritionStructure ? <NutritionStructureSection structure={nutritionStructure} onChange={setNutritionStructure} /> : null}
       </div>
     </PlansPageShell>

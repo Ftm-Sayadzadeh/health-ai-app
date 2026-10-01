@@ -1,0 +1,2636 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#123f26" />
+    <title>ثبت غذا — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="src/food-flow.css" />
+    <script src="app.js" defer></script>
+    <script src="src/food-flow.js" defer></script>
+    <style>
+      body[data-page="food-log"] {
+        overflow-x: hidden;
+      }
+
+      .nutrition-page {
+        width: min(100%, 72rem);
+        display: grid;
+        gap: var(--av-space-6);
+        padding-bottom: calc(var(--av-bottom-nav-height) + env(safe-area-inset-bottom) + var(--av-space-8));
+      }
+
+      .nutrition-page .page-heading {
+        display: block;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .nutrition-page > .dashboard-section,
+      .nutrition-page > .content-grid {
+        margin-block: 0;
+      }
+
+      .nutrition-page .dashboard-section,
+      .nutrition-page .content-grid,
+      .nutrition-page .food-row,
+      .nutrition-page .planned-food-card,
+      .nutrition-page .nutrition-empty {
+        min-width: 0;
+      }
+
+      .nutrition-page .dashboard-section {
+        display: grid;
+        gap: var(--av-space-4);
+      }
+
+      .nutrition-page .content-grid--two {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--av-space-6);
+        align-items: start;
+      }
+
+      .nutrition-aside-stack {
+        display: grid;
+        gap: var(--av-space-4);
+      }
+
+      .nutrition-date-nav {
+        display: flex;
+        gap: var(--av-space-2);
+        align-items: center;
+        justify-content: center;
+        direction: ltr;
+        padding-block: var(--av-space-1);
+        overflow: hidden;
+      }
+
+      .nutrition-page [data-od-id="nutrition-date-navigation"] {
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .nutrition-page [data-od-id="nutrition-daily-total"] {
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .nutrition-page [data-od-id="nutrition-meal-groups"] {
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .nutrition-page [data-od-id="nutrition-planned-prefill"] {
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .nutrition-date-nav__current {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        min-height: 48px;
+        border: var(--av-border-width) solid var(--av-color-border);
+        border-radius: var(--av-radius-lg);
+        background: var(--av-color-surface);
+        padding: var(--av-space-3) var(--av-space-5);
+        text-align: center;
+      }
+
+      .nutrition-date-nav__days {
+        display: flex;
+        align-items: center;
+        gap: var(--av-space-1);
+        direction: ltr;
+      }
+
+      .nutrition-date-nav__day,
+      .nutrition-date-nav__arrow {
+        display: inline-grid;
+        place-items: center;
+        flex: 0 0 44px;
+        width: 44px;
+        height: 44px;
+        border: 0;
+        border-radius: var(--av-radius-md);
+        background: transparent;
+        color: var(--av-color-ink-muted);
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .nutrition-date-nav__day {
+        grid-template-rows: 1fr auto;
+        gap: 0;
+        align-content: center;
+        justify-items: center;
+        padding-block: 2px;
+        position: relative;
+      }
+
+      .nutrition-date-nav__day-label {
+        line-height: 1;
+        display: block;
+        align-self: center;
+      }
+
+      .nutrition-date-nav__streak {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
+        display: none;
+        position: absolute;
+        inset-inline-start: 50%;
+        bottom: -10px;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+
+      .nutrition-date-nav__day[data-streak="true"] .nutrition-date-nav__streak {
+        display: block;
+      }
+
+      .nutrition-date-nav__arrow-image {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
+        display: block;
+      }
+
+      .nutrition-date-nav__day:hover,
+      .nutrition-date-nav__arrow:hover {
+        background: var(--av-color-surface-muted);
+        color: var(--av-color-ink-strong);
+      }
+
+      .nutrition-date-nav__day:focus-visible,
+      .nutrition-date-nav__arrow:focus-visible {
+        outline: 3px solid var(--av-color-focus);
+        outline-offset: 2px;
+      }
+
+      .nutrition-date-nav__current strong,
+      .nutrition-total strong {
+        color: var(--av-color-ink-strong);
+      }
+
+      .nutrition-total {
+        display: grid;
+        gap: var(--av-space-3);
+      }
+
+      .nutrition-total__main {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: var(--av-space-4);
+        align-items: center;
+        padding: var(--av-space-5);
+        border: var(--av-border-width) solid var(--av-color-border);
+        border-radius: var(--av-radius-xl);
+        background: var(--av-color-surface);
+        box-shadow: var(--av-shadow-sm);
+      }
+
+      .nutrition-total__content {
+        display: grid;
+        gap: var(--av-space-3);
+      }
+
+      .nutrition-total__heading {
+        display: none;
+      }
+
+      .nutrition-total__calories {
+        display: grid;
+        gap: 4px;
+      }
+
+      .nutrition-total__consumed {
+        margin: 0;
+        font-size: clamp(2.3rem, 5vw, 2.9rem);
+        line-height: .95;
+        color: var(--av-color-ink-strong);
+      }
+
+      .nutrition-total__consumed strong {
+        font-weight: 800;
+      }
+
+      .nutrition-total__subline,
+      .nutrition-total__remaining {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+        font-size: var(--av-text-sm);
+      }
+
+      .nutrition-total__remaining strong {
+        color: var(--av-color-jade-700);
+      }
+
+      .nutrition-total__actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--av-space-3);
+        margin-top: var(--av-space-3);
+      }
+
+      .nutrition-total__edit-link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.75rem;
+        color: var(--av-color-primary);
+        font-size: var(--av-text-sm);
+        font-weight: var(--av-font-weight-semibold);
+        text-decoration: none;
+      }
+
+      .nutrition-total__edit-link:hover {
+        color: var(--av-color-primary-hover);
+      }
+
+      .nutrition-total__source {
+        color: var(--av-color-ink-muted);
+        font-size: var(--av-text-xs);
+      }
+
+      .nutrition-total__ring-wrap {
+        display: grid;
+        place-items: center;
+        align-self: start;
+      }
+
+      .nutrition-total__ring {
+        --progress: .405turn;
+        width: 132px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        border: 10px solid var(--av-color-border);
+        background: var(--av-color-surface);
+        display: grid;
+        place-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nutrition-total__ring::before {
+        content: "";
+        position: absolute;
+        inset: -10px;
+        border-radius: 50%;
+        background: conic-gradient(var(--av-color-jade-500) 0turn var(--progress), transparent var(--progress) 1turn);
+        -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 10px));
+        mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 10px));
+      }
+
+      .nutrition-total__ring::after {
+        content: "";
+        position: absolute;
+        inset: 10px;
+        border-radius: 50%;
+        background: var(--av-color-surface);
+        z-index: 0;
+      }
+
+      .nutrition-total__ring-inner {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        justify-items: center;
+        align-content: center;
+        gap: 6px;
+      }
+
+      .nutrition-total__ring-icon {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+        display: block;
+      }
+
+      .nutrition-total__ring-value {
+        font-size: var(--av-text-sm);
+        font-weight: 800;
+        color: var(--av-color-ink-strong);
+        line-height: 1;
+      }
+
+      .nutrition-total__stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--av-space-3);
+        padding-top: var(--av-space-4);
+        border-top: var(--av-border-width) solid var(--av-color-border-subtle);
+      }
+
+      .nutrition-total__stat {
+        display: grid;
+        gap: 4px;
+        text-align: center;
+      }
+
+      .nutrition-total__stat-label {
+        color: var(--av-color-ink-muted);
+        font-size: var(--av-text-xs);
+      }
+
+      .nutrition-total__stat-value {
+        color: var(--av-color-ink-strong);
+        font-size: var(--av-text-sm);
+        font-weight: 700;
+      }
+
+      .nutrition-total__macros {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--av-space-3);
+      }
+
+      .nutrition-macro {
+        display: grid;
+        gap: var(--av-space-3);
+        padding: var(--av-space-4);
+        border: var(--av-border-width) solid var(--av-color-border);
+        border-radius: var(--av-radius-lg);
+        background: var(--av-color-surface);
+        justify-items: center;
+        text-align: center;
+      }
+
+      .nutrition-macro__title,
+      .nutrition-macro__value {
+        margin: 0;
+      }
+
+      .nutrition-macro__title {
+        color: var(--av-color-ink-strong);
+        font-size: var(--av-text-sm);
+        font-weight: 700;
+      }
+
+      .nutrition-macro__top {
+        display: grid;
+        gap: 6px;
+        justify-items: center;
+      }
+
+      .nutrition-macro__value,
+      .nutrition-macro__remaining {
+        color: var(--av-color-ink-muted);
+        font-size: var(--av-text-sm);
+      }
+
+      .nutrition-macro__icon-ring {
+        --macro-progress: .5turn;
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        border: 8px solid var(--av-color-border);
+        display: grid;
+        place-items: center;
+        position: relative;
+        background: var(--av-color-surface);
+        overflow: hidden;
+      }
+
+      .nutrition-macro__icon-ring::before {
+        content: "";
+        position: absolute;
+        inset: -8px;
+        border-radius: 50%;
+        background: conic-gradient(var(--av-color-jade-500) 0turn var(--macro-progress), transparent var(--macro-progress) 1turn);
+      }
+
+      .nutrition-macro__icon-ring::after {
+        content: "";
+        position: absolute;
+        inset: 8px;
+        border-radius: 50%;
+        background: var(--av-color-surface);
+        z-index: 1;
+      }
+
+      .nutrition-macro__icon {
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+        display: block;
+        position: relative;
+        z-index: 2;
+      }
+
+      .nutrition-macro__bar {
+        height: 6px;
+        border-radius: 999px;
+        background: var(--av-color-surface-muted);
+        overflow: hidden;
+        width: 100%;
+      }
+
+      .nutrition-macro__bar span {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--av-color-jade-500);
+      }
+
+      .nutrition-macro__remaining {
+        font-size: var(--av-text-xs);
+      }
+
+      .meal-group {
+        display: grid;
+        gap: 0;
+        padding: var(--av-space-3);
+        border: var(--av-border-width) solid var(--av-color-border);
+        border-radius: var(--av-radius-lg);
+        background: var(--av-color-surface);
+      }
+
+      .meal-group + .meal-group {
+        margin-top: calc(var(--av-space-2) / 5);
+      }
+
+      .meal-group__head {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--av-space-2);
+        align-items: center;
+      }
+
+      .meal-group__toggle {
+        flex: 1 1 auto;
+        min-width: 0;
+        min-height: 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--av-space-3);
+        padding: 0;
+        border: 0;
+        border-radius: var(--av-radius-md);
+        background: transparent;
+        color: inherit;
+        text-align: start;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .meal-group__title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .meal-group__copy {
+        min-width: 0;
+        display: grid;
+        gap: 4px;
+      }
+
+      .meal-group__name {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+        font-weight: var(--av-font-weight-semibold);
+        line-height: 1;
+      }
+
+      .meal-group__icon {
+        width: 72px;
+        height: 72px;
+        object-fit: contain;
+        display: block;
+        flex: 0 0 auto;
+      }
+
+      .meal-group__target {
+        color: var(--av-color-ink-muted);
+      }
+
+      .meal-group__chevron {
+        flex: 0 0 auto;
+        color: var(--av-color-ink-muted);
+        transition: transform var(--av-transition-fast);
+      }
+
+      .meal-group.is-open .meal-group__chevron {
+        transform: rotate(-90deg);
+      }
+
+      .meal-add-button {
+        flex: 0 0 auto;
+        inline-size: 3rem;
+        block-size: 3rem;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: var(--av-radius-pill);
+        background: transparent;
+        color: var(--av-color-primary);
+        cursor: pointer;
+      }
+
+      .meal-add-button__circle {
+        inline-size: 2rem;
+        block-size: 2rem;
+        display: grid;
+        place-items: center;
+        border-radius: var(--av-radius-pill);
+        background: color-mix(in oklch, var(--av-color-primary) 72%, white);
+      }
+
+      .meal-add-button__icon {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
+        display: block;
+      }
+
+      .meal-group__body {
+        display: grid;
+        gap: var(--av-space-2);
+        padding-top: var(--av-space-3);
+      }
+
+      .meal-group__full-add {
+        width: 100%;
+        min-height: 44px;
+        border: 0;
+        border-radius: var(--av-radius-lg);
+        background: color-mix(in oklch, var(--av-color-primary) 72%, white);
+        color: var(--av-color-white, #fff);
+        font: inherit;
+        font-weight: var(--av-font-weight-semibold);
+        cursor: pointer;
+        margin-top: var(--av-space-2);
+      }
+
+      .meal-group__full-add--secondary {
+        background: color-mix(in oklch, var(--av-color-surface) 88%, var(--av-color-primary-soft));
+        color: var(--av-color-primary-strong);
+        border: var(--av-border-width) solid color-mix(in oklch, var(--av-color-primary) 18%, var(--av-color-border));
+      }
+
+      .custom-meal-builder {
+        position: fixed;
+        inset: 0;
+        z-index: 70;
+        display: grid;
+        place-items: center;
+      }
+
+      .custom-meal-builder[hidden] {
+        display: none;
+      }
+
+      .custom-meal-builder__backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(36, 48, 34, 0.22);
+        backdrop-filter: blur(8px);
+      }
+
+      .custom-meal-builder__surface {
+        position: relative;
+        width: min(980px, calc(100vw - 32px));
+        max-height: min(88vh, 920px);
+        display: flex;
+        flex-direction: column;
+        background: rgba(255, 255, 255, 0.98);
+        border: var(--av-border-width) solid color-mix(in oklch, var(--av-color-border) 82%, white);
+        border-radius: 30px;
+        box-shadow: 0 26px 70px rgba(56, 74, 48, 0.16);
+        overflow: hidden;
+      }
+
+      .custom-meal-builder__head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: var(--av-space-3);
+        padding: 24px 24px 16px;
+        border-bottom: var(--av-border-width) solid color-mix(in oklch, var(--av-color-border) 82%, white);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 247, 242, 0.92) 100%);
+      }
+
+      .custom-meal-builder__head h2,
+      .custom-meal-builder__head p {
+        margin: 0;
+      }
+
+      .custom-meal-builder__head h2 {
+        font-size: 1.25rem;
+      }
+
+      .custom-meal-builder__head p {
+        margin-top: 8px;
+        color: var(--av-color-text-muted);
+        font-size: 0.9rem;
+      }
+
+      .custom-meal-builder__body {
+        flex: 1;
+        min-height: 0;
+        overflow: auto;
+        padding: 20px 24px 24px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .custom-meal-builder__section {
+        background: rgba(255, 255, 255, 0.92);
+        border: var(--av-border-width) solid color-mix(in oklch, var(--av-color-border) 72%, white);
+        border-radius: 24px;
+        box-shadow: 0 12px 28px rgba(58, 74, 45, 0.05);
+        padding: 18px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .custom-meal-builder__section h3,
+      .custom-meal-builder__section p {
+        margin: 0;
+      }
+
+      .custom-meal-builder__section h3 {
+        font-size: 1rem;
+      }
+
+      .custom-meal-builder__section p {
+        color: var(--av-color-text-muted);
+        font-size: 0.88rem;
+      }
+
+      .custom-meal-builder__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.6fr) minmax(220px, 0.9fr);
+        gap: 14px;
+      }
+
+      .custom-meal-builder__picker-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .custom-meal-builder__picker-actions .button {
+        min-height: 44px;
+      }
+
+      .custom-meal-builder__error {
+        color: #8a3e34;
+        background: rgba(226, 164, 146, 0.18);
+        border: 1px solid rgba(187, 102, 84, 0.18);
+        border-radius: 16px;
+        padding: 12px 14px;
+        font-size: 0.88rem;
+      }
+
+      .custom-meal-builder__list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .custom-meal-builder__empty {
+        text-align: center;
+        padding: 28px 20px;
+        border: 1px dashed color-mix(in oklch, var(--av-color-border) 72%, white);
+        border-radius: 20px;
+        background: rgba(247, 243, 235, 0.55);
+      }
+
+      .custom-meal-builder__empty strong,
+      .custom-meal-builder__empty p {
+        display: block;
+      }
+
+      .custom-meal-builder__empty strong {
+        margin-bottom: 8px;
+      }
+
+      .custom-meal-builder__item {
+        display: grid;
+        gap: 12px;
+        padding: 14px 16px;
+        border: var(--av-border-width) solid color-mix(in oklch, var(--av-color-border) 74%, white);
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.96);
+      }
+
+      .custom-meal-builder__item-head,
+      .custom-meal-builder__item-actions,
+      .custom-meal-builder__item-summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .custom-meal-builder__item-title {
+        display: grid;
+        gap: 5px;
+      }
+
+      .custom-meal-builder__item-title strong {
+        font-size: 0.98rem;
+      }
+
+      .custom-meal-builder__item-meta,
+      .custom-meal-builder__item-summary {
+        color: var(--av-color-text-muted);
+        font-size: 0.84rem;
+      }
+
+      .custom-meal-builder__item-fields {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .custom-meal-builder__mini-actions {
+        display: inline-flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .custom-meal-builder__totals {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .custom-meal-builder__metric {
+        padding: 12px 14px;
+        border-radius: 18px;
+        background: rgba(247, 243, 235, 0.74);
+        border: var(--av-border-width) solid color-mix(in oklch, var(--av-color-border) 72%, white);
+      }
+
+      .custom-meal-builder__metric span,
+      .custom-meal-builder__metric strong {
+        display: block;
+      }
+
+      .custom-meal-builder__metric span {
+        color: var(--av-color-text-muted);
+        font-size: 0.79rem;
+        margin-bottom: 6px;
+      }
+
+      .custom-meal-builder__metric strong {
+        font-size: 1rem;
+      }
+
+      .custom-meal-builder__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 24px calc(16px + env(safe-area-inset-bottom));
+        border-top: var(--av-border-width) solid color-mix(in oklch, var(--av-color-border) 82%, white);
+        background: rgba(255, 255, 255, 0.96);
+        position: sticky;
+        bottom: 0;
+      }
+
+      .custom-meal-builder__footer-note {
+        color: var(--av-color-text-muted);
+        font-size: 0.84rem;
+      }
+
+      .custom-meal-builder__footer-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      body.has-custom-meal-builder {
+        overflow: hidden;
+      }
+
+      @media (max-width: 900px) {
+        .custom-meal-builder {
+          align-items: end;
+        }
+
+        .custom-meal-builder__surface {
+          width: 100%;
+          max-height: min(100vh, 100svh);
+          min-height: min(92vh, 92svh);
+          border-radius: 28px 28px 0 0;
+        }
+
+        .custom-meal-builder__grid,
+        .custom-meal-builder__item-fields,
+        .custom-meal-builder__totals {
+          grid-template-columns: 1fr;
+        }
+
+        .custom-meal-builder__body {
+          padding: 18px 16px 22px;
+        }
+
+        .custom-meal-builder__head,
+        .custom-meal-builder__footer {
+          padding-right: 16px;
+          padding-left: 16px;
+        }
+
+        .custom-meal-builder__footer {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .custom-meal-builder__footer-actions {
+          width: 100%;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .custom-meal-builder__footer-actions .button {
+          width: 100%;
+          min-height: 48px;
+        }
+      }
+
+      .food-row,
+      .planned-food-card {
+        border-radius: var(--av-radius-lg);
+        display: grid;
+        gap: var(--av-space-3);
+      }
+
+      .food-row {
+        border: var(--av-border-width) solid var(--av-color-border);
+        border-inline-start: var(--av-border-width-strong) solid var(--av-color-actual);
+        background: color-mix(in oklch, var(--av-color-surface) 88%, var(--av-color-actual-soft));
+        gap: var(--av-space-2);
+        padding: var(--av-space-3);
+      }
+
+      .planned-food-card {
+        border: var(--av-border-width-strong) dashed color-mix(in oklch, var(--av-color-plan) 70%, var(--av-color-border));
+        background: var(--av-color-plan-soft);
+        padding: var(--av-space-4);
+      }
+
+      .nutrition-plan-board {
+        display: grid;
+        gap: var(--av-space-4);
+        padding: var(--av-space-4);
+        border: var(--av-border-width) solid var(--av-color-border);
+        border-radius: var(--av-radius-xl);
+        background: var(--av-color-surface);
+      }
+
+      .nutrition-plan-board__intro {
+        display: grid;
+        gap: 6px;
+      }
+
+      .nutrition-plan-board__head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: var(--av-space-3);
+      }
+
+      .nutrition-plan-board__toggle {
+        flex: 0 0 auto;
+        min-height: 40px;
+      }
+
+      .nutrition-plan-board__content {
+        display: grid;
+        gap: var(--av-space-4);
+      }
+
+      .nutrition-plan-board__content[hidden] {
+        display: none;
+      }
+
+      .nutrition-plan-board__intro h2,
+      .nutrition-plan-group__title,
+      .nutrition-plan-item__name {
+        margin: 0;
+      }
+
+      .nutrition-plan-board__intro p,
+      .nutrition-plan-item__detail,
+      .nutrition-plan-item__ingredients {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+      }
+
+      .nutrition-plan-group {
+        display: grid;
+        gap: var(--av-space-3);
+      }
+
+      .nutrition-plan-group__title {
+        color: var(--av-color-ink-strong);
+        font-size: var(--av-text-sm);
+        font-weight: var(--av-font-weight-semibold);
+      }
+
+      .nutrition-plan-item {
+        display: grid;
+        gap: var(--av-space-3);
+        padding: var(--av-space-4);
+        border: var(--av-border-width) solid color-mix(in oklch, var(--av-color-plan) 20%, var(--av-color-border));
+        border-radius: var(--av-radius-lg);
+        background: color-mix(in oklch, var(--av-color-surface) 88%, var(--av-color-plan-soft));
+      }
+
+      .nutrition-plan-item__top {
+        display: grid;
+        gap: var(--av-space-2);
+      }
+
+      .nutrition-plan-item__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--av-space-3);
+      }
+
+      .nutrition-plan-item__name {
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+        font-weight: var(--av-font-weight-semibold);
+      }
+
+      .nutrition-plan-item__calories {
+        flex: 0 0 auto;
+        padding: 6px 10px;
+        border-radius: var(--av-radius-pill);
+        background: var(--av-color-plan-soft);
+        color: var(--av-color-plan);
+        font-size: var(--av-text-xs);
+        font-weight: var(--av-font-weight-semibold);
+      }
+
+      .nutrition-plan-item__detail {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--av-space-1);
+        align-items: center;
+      }
+
+      .nutrition-plan-item__dot {
+        color: var(--av-color-ink-muted);
+      }
+
+      .nutrition-plan-item .button {
+        width: 100%;
+      }
+
+      .planned-food-card + .planned-food-card,
+      .planned-food-card + .nutrition-empty,
+      .nutrition-empty + .nutrition-methods {
+        margin-top: var(--av-space-4);
+      }
+
+      .food-row__head,
+      .planned-food-card__head {
+        display: flex;
+        gap: var(--av-space-3);
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .food-row__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--av-space-1);
+        align-items: center;
+      }
+
+      .food-row__summary {
+        display: grid;
+        gap: var(--av-space-1);
+        min-width: 0;
+      }
+
+      .food-row__summary strong {
+        color: var(--av-color-ink-strong);
+        font-weight: var(--av-font-weight-semibold);
+      }
+
+      .food-row__meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--av-space-1);
+        align-items: center;
+        color: var(--av-color-ink-muted);
+      }
+
+      .food-row__dot {
+        color: var(--av-color-ink-muted);
+      }
+
+      .food-row__note {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .food-row__actions .button[data-edit-food] {
+        min-height: 2rem;
+        padding-inline: var(--av-space-2);
+        border-color: transparent;
+        background: transparent;
+        color: var(--av-color-primary);
+      }
+
+      .food-row__delete {
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
+        border-color: transparent;
+        background: transparent;
+        color: var(--av-color-ink-muted);
+      }
+
+      .food-row__edit {
+        display: none;
+        gap: var(--av-space-3);
+        padding-top: var(--av-space-3);
+        border-top: var(--av-border-width) solid color-mix(in oklch, var(--av-color-actual) 32%, var(--av-color-border));
+      }
+
+      .food-row.is-editing .food-row__edit {
+        display: grid;
+      }
+
+      .food-row .field,
+      .nutrition-sheet .field {
+        min-width: 0;
+      }
+
+      .food-row input,
+      .food-row select,
+      .nutrition-sheet input,
+      .nutrition-sheet select,
+      .nutrition-sheet textarea {
+        min-height: var(--av-control-min);
+      }
+
+      .nutrition-empty {
+        border: var(--av-border-width) dashed var(--av-color-border-strong);
+        border-radius: var(--av-radius-lg);
+        padding: var(--av-space-3) var(--av-space-4);
+        color: var(--av-color-ink-muted);
+        background: var(--av-color-surface-raised);
+      }
+
+      .nutrition-empty-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--av-space-3);
+        border: 0;
+        border-radius: var(--av-radius-md);
+        background: transparent;
+        padding-inline: var(--av-space-2);
+        padding-block: var(--av-space-1) 0;
+      }
+
+      .nutrition-empty-row > span {
+        display: block;
+        padding-inline-start: var(--av-space-1);
+        line-height: var(--av-leading-body);
+      }
+
+      .nutrition-empty-row .nutrition-empty-add {
+        flex: 0 0 auto;
+        border-color: color-mix(in oklch, var(--av-color-primary) 42%, var(--av-color-border));
+        background: var(--av-color-primary-soft);
+        color: var(--av-color-primary);
+        font-weight: var(--av-font-weight-semibold);
+      }
+
+      .nutrition-saved-card {
+        display: grid;
+        gap: var(--av-space-3);
+        padding: var(--av-space-4);
+        border-radius: var(--av-radius-lg);
+        background: var(--av-color-surface-raised);
+      }
+
+      .nutrition-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--av-space-2);
+        padding: var(--av-space-1);
+        border: var(--av-border-width) solid var(--av-color-border);
+        border-radius: var(--av-radius-pill);
+        background: var(--av-color-surface-subtle);
+      }
+
+      .nutrition-tabs button {
+        min-height: var(--av-control-min);
+        border: 0;
+        border-radius: var(--av-radius-pill);
+        background: transparent;
+        color: var(--av-color-ink-muted);
+        font: inherit;
+        font-weight: var(--av-font-weight-semibold);
+        cursor: pointer;
+      }
+
+      .nutrition-tabs button[aria-selected="true"] {
+        background: var(--av-color-surface);
+        color: var(--av-color-ink-strong);
+        box-shadow: var(--av-shadow-1);
+      }
+
+      .nutrition-pick-list {
+        display: grid;
+        gap: var(--av-space-2);
+      }
+
+      .nutrition-ai-card {
+        display: grid;
+        gap: var(--av-space-3);
+        padding: var(--av-space-4);
+        border: var(--av-border-width) solid var(--av-color-border);
+        border-radius: var(--av-radius-lg);
+        background: var(--av-color-surface-raised);
+      }
+
+      .nutrition-ai-card__header {
+        display: grid;
+        gap: 4px;
+      }
+
+      .nutrition-ai-card__header strong {
+        color: var(--av-color-ink-strong);
+      }
+
+      .nutrition-ai-card__header p,
+      .nutrition-ai-result,
+      .nutrition-ai-error {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+        font-size: var(--av-text-sm);
+        line-height: var(--av-leading-body);
+        text-align: justify;
+      }
+
+      .nutrition-ai-card,
+      .nutrition-ai-card .field,
+      .nutrition-ai-card textarea {
+        text-align: right;
+      }
+
+      .nutrition-ai-actions {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .nutrition-ai-result {
+        color: var(--av-color-primary);
+        font-weight: var(--av-font-weight-semibold);
+      }
+
+      .nutrition-ai-error {
+        color: var(--av-color-danger);
+      }
+
+      .nutrition-close-icon {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
+        display: block;
+      }
+
+      .nutrition-pick {
+        width: 100%;
+        min-height: 44px;
+        display: flex;
+        justify-content: space-between;
+        gap: var(--av-space-3);
+        align-items: center;
+        text-align: start;
+        border: var(--av-border-width) solid var(--av-color-border);
+        border-radius: var(--av-radius-md);
+        background: var(--av-color-surface);
+        padding: var(--av-space-3);
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .nutrition-submit-area {
+        display: flex;
+        gap: var(--av-space-2);
+        justify-content: flex-end;
+        border-top: var(--av-border-width) solid var(--av-color-border);
+        padding-top: var(--av-space-4);
+      }
+
+      .nutrition-preview-actions {
+        display: flex;
+        justify-content: flex-end;
+        border-top: var(--av-border-width) solid var(--av-color-border);
+        padding-top: var(--av-space-4);
+      }
+
+      .field-error {
+        color: var(--av-color-danger);
+        font-size: var(--av-text-sm);
+      }
+
+      .nutrition-sheet [hidden] {
+        display: none !important;
+      }
+
+      .nutrition-methods {
+        display: grid;
+        gap: var(--av-space-3);
+        padding-top: var(--av-space-4);
+        border-top: var(--av-border-width) solid var(--av-color-border);
+      }
+
+      .nutrition-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--av-space-3);
+      }
+
+      .nutrition-preview-card {
+        min-height: 44px;
+        display: grid;
+        gap: var(--av-space-2);
+        justify-items: start;
+        text-align: start;
+        padding: var(--av-space-4);
+        border: var(--av-border-width) solid var(--av-color-border);
+        border-radius: var(--av-radius-lg);
+        background: var(--av-color-surface);
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .nutrition-preview-card strong {
+        color: var(--av-color-ink-strong);
+      }
+
+      .nutrition-preview-card small {
+        color: var(--av-color-ink-muted);
+        line-height: var(--av-leading-body);
+      }
+
+      .nutrition-sheet {
+        max-height: calc(100dvh - var(--av-space-4) - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+        overflow: auto;
+        padding-bottom: calc(var(--av-space-4) + env(safe-area-inset-bottom));
+      }
+
+      @media (max-width: 600px) {
+        body[data-page="food-log"] .side-nav {
+          display: none;
+        }
+
+        body[data-page="food-log"] .bottom-nav {
+          display: grid;
+        }
+
+        .nutrition-page {
+          width: 100%;
+          gap: var(--av-space-4);
+          padding-inline: var(--av-space-4);
+          padding-bottom: calc(var(--av-bottom-nav-height) + env(safe-area-inset-bottom) + var(--av-space-10));
+        }
+
+        .nutrition-page .page-heading {
+          grid-template-columns: minmax(0, 1fr);
+          align-items: stretch;
+          padding: 0;
+        }
+
+        .nutrition-page .dashboard-section {
+          gap: var(--av-space-4);
+        }
+
+        .nutrition-page .content-grid--two {
+          grid-template-columns: minmax(0, 1fr);
+          gap: var(--av-space-4);
+        }
+
+        .nutrition-total__main,
+        .nutrition-total__stats,
+        .nutrition-total__macros {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .nutrition-total__ring-wrap {
+          order: -1;
+        }
+
+        .nutrition-total__ring {
+          width: 118px;
+        }
+
+        .nutrition-date-nav {
+          justify-content: center;
+          overflow: visible;
+          gap: 6px;
+        }
+
+        .nutrition-date-nav__days[aria-label="روزهای بعد"] .nutrition-date-nav__day:first-child,
+        .nutrition-date-nav__days[aria-label="روزهای قبل"] .nutrition-date-nav__day:last-child {
+          display: none;
+        }
+
+        .nutrition-date-nav__days {
+          gap: 2px;
+        }
+
+        .nutrition-date-nav__current {
+          min-height: 42px;
+          padding: var(--av-space-2) var(--av-space-3);
+          border-radius: var(--av-radius-md);
+        }
+
+        .nutrition-date-nav__current strong {
+          font-size: var(--av-text-sm);
+        }
+
+        .nutrition-date-nav__day,
+        .nutrition-date-nav__arrow {
+          flex: 0 0 34px;
+          width: 34px;
+          height: 34px;
+          font-size: var(--av-text-sm);
+        }
+
+        .nutrition-date-nav__arrow-image {
+          width: 14px;
+          height: 14px;
+        }
+
+        .nutrition-date-nav__streak {
+          width: 14px;
+          height: 14px;
+          bottom: -8px;
+        }
+
+        .nutrition-tabs {
+          grid-template-columns: 1fr;
+          border-radius: var(--av-radius-lg);
+        }
+
+        .planned-food-card__head,
+        .nutrition-plan-item__header,
+        .nutrition-plan-board__head,
+        .nutrition-submit-area,
+        .nutrition-preview-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .nutrition-empty-row > span {
+          padding-inline-start: 0;
+        }
+
+        .nutrition-empty-row .nutrition-empty-add {
+          justify-content: center;
+        }
+
+        .nutrition-preview-grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .nutrition-ai-actions {
+          justify-content: stretch;
+        }
+      }
+
+      @media (min-width: 601px) and (max-width: 1023px) {
+        body[data-page="food-log"] .side-nav {
+          display: none;
+        }
+
+        body[data-page="food-log"] .bottom-nav {
+          display: grid;
+        }
+
+        .nutrition-page {
+          width: min(100%, 52rem);
+          gap: var(--av-space-5);
+          padding-inline: var(--av-space-5);
+          padding-bottom: calc(var(--av-bottom-nav-height) + env(safe-area-inset-bottom) + var(--av-space-8));
+        }
+
+        .nutrition-page .content-grid--two {
+          grid-template-columns: minmax(0, 1fr);
+          gap: var(--av-space-5);
+        }
+      }
+
+      @media (min-width: 1024px) and (max-width: 1279px) {
+        .nutrition-page {
+          width: min(100%, 58rem);
+          gap: var(--av-space-6);
+          padding-inline: var(--av-space-6);
+          padding-bottom: var(--av-space-8);
+        }
+
+        .nutrition-page .content-grid--two {
+          grid-template-columns: minmax(0, 1fr);
+          gap: var(--av-space-6);
+        }
+      }
+
+      @media (min-width: 1280px) {
+        .nutrition-page {
+          width: min(100%, 72rem);
+          padding-bottom: var(--av-space-8);
+        }
+
+        .nutrition-page .content-grid--two {
+          grid-template-columns: minmax(0, 1fr) minmax(18.75rem, 21.25rem);
+          gap: var(--av-space-6);
+        }
+      }
+    </style>
+  </head>
+  <body class="app-body" data-page="food-log" data-theme="botanical">
+    <a class="skip-link" href="#food-main">پرش به ثبت غذا</a>
+    <div class="app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی محصول">
+        <a class="brand" href="dashboard-botanical.html"><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true"><rect class="brand-mark__plan" x="7" y="9" width="29" height="11" rx="5.5" /><rect class="brand-mark__actual" x="12" y="27" width="29" height="11" rx="5.5" /><circle class="brand-mark__pulse" cx="39" cy="13" r="4" /></svg><span>آووکادو</span></a>
+        <nav aria-label="بخش‌های اصلی">
+          <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+          <a href="quick-log-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+          <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+          <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+          <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+        </nav>
+        <div class="side-nav__foot">مسیرهای اصلی همیشه از همین پنج بخش در دسترس هستند.</div>
+      </aside>
+      <main class="app-main" id="food-main" data-od-id="food-log-page">
+        <header class="app-topbar">
+          <div class="app-topbar__title"><span>ثبت روزانه</span><strong>چهارشنبه، ۱۹ تیر ۱۴۰۵</strong></div>
+          <div class="app-topbar__actions"><a class="header-action-link" href="messages-botanical.html" aria-label="پیام‌ها"><img class="header-action-icon" src="assets/icons/icon-message.png" alt="" aria-hidden="true" /></a><a class="header-action-link header-action-link--notification" href="notifications-botanical.html" aria-label="اعلان‌ها"><img class="header-action-icon" src="assets/icons/icon-bell.png" alt="" aria-hidden="true" /><span class="header-action-badge" aria-hidden="true"></span></a><a class="avatar-link" href="settings-botanical.html" aria-label="پروفایل سارا">س</a></div>
+        </header>
+        <div class="app-container page-content nutrition-page">
+          <div class="page-heading">
+            <div><h1>ثبت خوراک امروز</h1><p>فقط خوراک‌هایی را ثبت کنید که واقعاً مصرف شده‌اند؛ مقدار و کالری همیشه قابل ویرایش است.</p></div>
+          </div>
+
+          <section class="dashboard-section" aria-labelledby="nutrition-date-title" data-od-id="nutrition-date-navigation">
+            <h2 class="sr-only" id="nutrition-date-title">انتخاب تاریخ ثبت خوراک</h2>
+            <div class="nutrition-date-nav" aria-label="ناوبری روزهای ثبت خوراک">
+              <div class="nutrition-date-nav__days" aria-label="روزهای بعد">
+                <button class="nutrition-date-nav__day" type="button" data-day-relative="3" aria-label="انتخاب سه روز بعد"><span class="nutrition-date-nav__day-label">۲۲</span><img class="nutrition-date-nav__streak" src="icons8-fire-emoji-48.png" alt="" aria-hidden="true" /></button>
+                <button class="nutrition-date-nav__day" type="button" data-day-relative="2" aria-label="انتخاب دو روز بعد"><span class="nutrition-date-nav__day-label">۲۱</span><img class="nutrition-date-nav__streak" src="icons8-fire-emoji-48.png" alt="" aria-hidden="true" /></button>
+                <button class="nutrition-date-nav__day" type="button" data-day-relative="1" aria-label="انتخاب روز بعد"><span class="nutrition-date-nav__day-label">۲۰</span><img class="nutrition-date-nav__streak" src="icons8-fire-emoji-48.png" alt="" aria-hidden="true" /></button>
+                <button class="nutrition-date-nav__arrow" type="button" data-day-step="1" aria-label="رفتن به روز بعد"><img class="nutrition-date-nav__arrow-image" src="angle-left.png" alt="" aria-hidden="true" /></button>
+              </div>
+              <div class="nutrition-date-nav__current" aria-live="polite"><strong id="nutrition-date-label">چهارشنبه ۱۹ تیر</strong></div>
+              <div class="nutrition-date-nav__days" aria-label="روزهای قبل">
+                <button class="nutrition-date-nav__arrow" type="button" data-day-step="-1" aria-label="رفتن به روز قبل"><img class="nutrition-date-nav__arrow-image" src="angle-right.png" alt="" aria-hidden="true" /></button>
+                <button class="nutrition-date-nav__day" type="button" data-day-relative="-1" aria-label="انتخاب روز قبل"><span class="nutrition-date-nav__day-label">۱۸</span><img class="nutrition-date-nav__streak" src="icons8-fire-emoji-48.png" alt="" aria-hidden="true" /></button>
+                <button class="nutrition-date-nav__day" type="button" data-day-relative="-2" aria-label="انتخاب دو روز قبل"><span class="nutrition-date-nav__day-label">۱۷</span><img class="nutrition-date-nav__streak" src="icons8-fire-emoji-48.png" alt="" aria-hidden="true" /></button>
+                <button class="nutrition-date-nav__day" type="button" data-day-relative="-3" aria-label="انتخاب سه روز قبل"><span class="nutrition-date-nav__day-label">۱۶</span><img class="nutrition-date-nav__streak" src="icons8-fire-emoji-48.png" alt="" aria-hidden="true" /></button>
+              </div>
+            </div>
+          </section>
+
+          <section class="dashboard-section" aria-labelledby="nutrition-total-title" data-od-id="nutrition-daily-total">
+            <div class="nutrition-total">
+              <article class="nutrition-total__main">
+                <div class="nutrition-total__content">
+                  <div class="nutrition-total__calories">
+                    <p class="nutrition-total__consumed"><strong><bdi id="nutrition-total-calories" dir="ltr">۷۳۰</bdi></strong> کیلوکالری</p>
+                    <p class="nutrition-total__subline">از <bdi id="nutrition-total-goal" dir="ltr">۱۸۰۰</bdi> کیلوکالری هدف روزانه</p>
+                    <p class="nutrition-total__remaining"><strong><bdi id="nutrition-total-remaining" dir="ltr">۱۰۷۰</bdi> کیلوکالری باقی‌مانده</strong></p>
+                    <div class="nutrition-total__actions">
+                      <a class="nutrition-total__edit-link" id="nutrition-total-edit-link" href="nutrition-targets-botanical.html?entry=food-log-botanical.html">ویرایش هدف</a>
+                      <span class="nutrition-total__source" id="nutrition-total-source">تنظیم‌شده توسط من</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="nutrition-total__ring-wrap">
+                  <div class="nutrition-total__ring" id="nutrition-total-ring" aria-hidden="true">
+                    <div class="nutrition-total__ring-inner">
+                      <img class="nutrition-total__ring-icon" src="icons8-diet-64.png" alt="" />
+                      <span class="nutrition-total__ring-value" id="nutrition-total-percent">۴۱٪</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <div class="nutrition-total__macros">
+                <article class="nutrition-macro">
+                  <div class="nutrition-macro__top">
+                    <p class="nutrition-macro__value" id="nutrition-macro-protein-value">۷۸ از ۱۱۰ گرم</p>
+                    <p class="nutrition-macro__title">پروتئین</p>
+                  </div>
+                  <div class="nutrition-macro__icon-ring" id="nutrition-macro-protein-ring" style="--macro-progress: .71turn" aria-hidden="true">
+                    <img class="nutrition-macro__icon" src="icons8-poultry-leg-48.png" alt="" />
+                  </div>
+                  <div class="nutrition-macro__bar" aria-hidden="true"><span id="nutrition-macro-protein-bar" style="width: 71%"></span></div>
+                  <span class="nutrition-macro__remaining" id="nutrition-macro-protein-remaining">۳۲ گرم باقی‌مانده</span>
+                </article>
+                <article class="nutrition-macro">
+                  <div class="nutrition-macro__top">
+                    <p class="nutrition-macro__value" id="nutrition-macro-carbs-value">۹۵ از ۱۶۰ گرم</p>
+                    <p class="nutrition-macro__title">کربوهیدرات</p>
+                  </div>
+                  <div class="nutrition-macro__icon-ring" id="nutrition-macro-carbs-ring" style="--macro-progress: .59turn" aria-hidden="true">
+                    <img class="nutrition-macro__icon" src="icons8-bread-48.png" alt="" />
+                  </div>
+                  <div class="nutrition-macro__bar" aria-hidden="true"><span id="nutrition-macro-carbs-bar" style="width: 59%"></span></div>
+                  <span class="nutrition-macro__remaining" id="nutrition-macro-carbs-remaining">۶۵ گرم باقی‌مانده</span>
+                </article>
+                <article class="nutrition-macro">
+                  <div class="nutrition-macro__top">
+                    <p class="nutrition-macro__value" id="nutrition-macro-fat-value">۴۵ از ۷۰ گرم</p>
+                    <p class="nutrition-macro__title">چربی</p>
+                  </div>
+                  <div class="nutrition-macro__icon-ring" id="nutrition-macro-fat-ring" style="--macro-progress: .64turn" aria-hidden="true">
+                    <img class="nutrition-macro__icon" src="icons8-avocado-48.png" alt="" />
+                  </div>
+                  <div class="nutrition-macro__bar" aria-hidden="true"><span id="nutrition-macro-fat-bar" style="width: 64%"></span></div>
+                  <span class="nutrition-macro__remaining" id="nutrition-macro-fat-remaining">۲۵ گرم باقی‌مانده</span>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <div class="content-grid content-grid--two">
+            <section class="dashboard-section" id="add-food" aria-labelledby="nutrition-meals-title" data-od-id="nutrition-meal-groups">
+              <div class="section-bar"><div><h2 id="nutrition-meals-title">وعده‌های امروز</h2><p>صبحانه، ناهار، شام، میان‌وعده و سایر موارد.</p></div></div>
+
+              <div class="meal-group" data-meal-group="breakfast">
+                <div class="meal-group__head">
+                  <button class="meal-group__toggle" type="button" data-meal-toggle aria-expanded="false" aria-controls="meal-panel-breakfast">
+                    <span class="meal-group__title"><img class="meal-group__icon" src="icons8-kawaii-coffee-100.png" alt="" aria-hidden="true" /><span class="meal-group__copy"><span class="meal-group__name">صبحانه</span><span class="meal-group__target">کالری پیشنهادی این وعده: ۴۰۰ کالری</span></span></span>
+                    <svg class="icon meal-group__chevron" aria-hidden="true"><use href="assets/icons.svg#icon-arrow" /></svg>
+                  </button>
+                  <button class="meal-add-button" type="button" data-nutrition-open data-meal="breakfast" aria-label="افزودن به صبحانه"><span class="meal-add-button__circle"><img class="meal-add-button__icon" src="icons8-plus-30.png" alt="" aria-hidden="true" /></span></button>
+                </div>
+                <div class="meal-group__body" id="meal-panel-breakfast" data-meal-panel hidden>
+                  <article class="food-row" data-food-row data-meal="breakfast">
+                    <div class="food-row__head">
+                      <div class="food-row__summary">
+                        <span class="semantic-label semantic-label--actual"><i class="track-marker track-marker--actual" aria-hidden="true"></i>ثبت‌شده</span>
+                        <strong dir="auto">نان سنگک و پنیر</strong>
+                        <div class="food-row__meta"><span data-row-amount>۱ بشقاب</span><span class="food-row__dot" aria-hidden="true">·</span><bdi data-row-calorie dir="auto">۳۲۰ کیلوکالری</bdi></div>
+                        <p class="food-row__note" data-row-note>با گردو مصرف شد.</p>
+                      </div>
+                      <div class="food-row__actions"><button class="button button--quiet button--sm" type="button" data-edit-food aria-expanded="false">ویرایش</button><button class="icon-button food-row__delete" type="button" data-delete-food aria-label="حذف نان سنگک و پنیر"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-trash" /></svg></button></div>
+                    </div>
+                    <div class="food-row__edit">
+                      <div class="form-row">
+                        <label class="field"><span class="field__label">مقدار</span><input value="۱" data-quantity aria-label="مقدار نان سنگک و پنیر" /></label>
+                        <label class="field"><span class="field__label">واحد</span><select data-unit aria-label="واحد نان سنگک و پنیر"><option>وعده</option><option selected>بشقاب</option><option>گرم</option><option>عدد</option><option>کاسه</option><option>لیوان</option></select></label>
+                        <label class="field"><span class="field__label">کالری واردشده</span><input value="۳۲۰" inputmode="numeric" dir="ltr" data-calories aria-label="کالری نان سنگک و پنیر" /></label>
+                      </div>
+                      <label class="field"><span class="field__label">یادداشت اختیاری</span><textarea rows="2" data-note>با گردو مصرف شد.</textarea></label>
+                    </div>
+                  </article>
+                </div>
+              </div>
+
+              <div class="meal-group" data-meal-group="lunch">
+                <div class="meal-group__head">
+                  <button class="meal-group__toggle" type="button" data-meal-toggle aria-expanded="false" aria-controls="meal-panel-lunch">
+                    <span class="meal-group__title"><img class="meal-group__icon" src="icons8-thanksgiving-100.png" alt="" aria-hidden="true" /><span class="meal-group__copy"><span class="meal-group__name">ناهار</span><span class="meal-group__target">کالری پیشنهادی این وعده: ۴۰۰ کالری</span></span></span>
+                    <svg class="icon meal-group__chevron" aria-hidden="true"><use href="assets/icons.svg#icon-arrow" /></svg>
+                  </button>
+                  <button class="meal-add-button" type="button" data-nutrition-open data-meal="lunch" aria-label="افزودن به ناهار"><span class="meal-add-button__circle"><img class="meal-add-button__icon" src="icons8-plus-30.png" alt="" aria-hidden="true" /></span></button>
+                </div>
+                <div class="meal-group__body" id="meal-panel-lunch" data-meal-panel hidden>
+                  <article class="food-row" data-food-row data-meal="lunch">
+                    <div class="food-row__head">
+                      <div class="food-row__summary">
+                        <span class="semantic-label semantic-label--actual"><i class="track-marker track-marker--actual" aria-hidden="true"></i>ثبت‌شده</span>
+                        <strong dir="auto">خوراک لوبیا</strong>
+                        <div class="food-row__meta"><span data-row-amount>۱ کاسه</span><span class="food-row__dot" aria-hidden="true">·</span><bdi data-row-calorie dir="auto">۴۱۰ کیلوکالری</bdi></div>
+                        <p class="food-row__note" data-row-note hidden></p>
+                      </div>
+                      <div class="food-row__actions"><button class="button button--quiet button--sm" type="button" data-edit-food aria-expanded="false">ویرایش</button><button class="icon-button food-row__delete" type="button" data-delete-food aria-label="حذف خوراک لوبیا"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-trash" /></svg></button></div>
+                    </div>
+                    <div class="food-row__edit">
+                      <div class="form-row">
+                        <label class="field"><span class="field__label">مقدار</span><input value="۱" data-quantity aria-label="مقدار خوراک لوبیا" /></label>
+                        <label class="field"><span class="field__label">واحد</span><select data-unit aria-label="واحد خوراک لوبیا"><option selected>کاسه</option><option>بشقاب</option><option>گرم</option><option>عدد</option><option>لیوان</option></select></label>
+                        <label class="field"><span class="field__label">کالری واردشده</span><input value="۴۱۰" inputmode="numeric" dir="ltr" data-calories aria-label="کالری خوراک لوبیا" /></label>
+                      </div>
+                      <label class="field"><span class="field__label">یادداشت اختیاری</span><textarea rows="2" data-note></textarea></label>
+                    </div>
+                  </article>
+                </div>
+              </div>
+
+              <div class="meal-group" data-meal-group="dinner">
+                <div class="meal-group__head">
+                  <button class="meal-group__toggle" type="button" data-meal-toggle aria-expanded="false" aria-controls="meal-panel-dinner">
+                    <span class="meal-group__title"><img class="meal-group__icon" src="icons8-sandwich-100.png" alt="" aria-hidden="true" /><span class="meal-group__copy"><span class="meal-group__name">شام</span><span class="meal-group__target">کالری پیشنهادی این وعده: ۴۰۰ کالری</span></span></span>
+                    <svg class="icon meal-group__chevron" aria-hidden="true"><use href="assets/icons.svg#icon-arrow" /></svg>
+                  </button>
+                  <button class="meal-add-button" type="button" data-nutrition-open data-meal="dinner" aria-label="افزودن به شام"><span class="meal-add-button__circle"><img class="meal-add-button__icon" src="icons8-plus-30.png" alt="" aria-hidden="true" /></span></button>
+                </div>
+                <div class="meal-group__body" id="meal-panel-dinner" data-meal-panel hidden>
+                  <p class="nutrition-empty nutrition-empty-row" data-meal-empty="dinner"><span>هنوز چیزی ثبت نشده.</span></p>
+                </div>
+              </div>
+
+              <div class="meal-group" data-meal-group="snack">
+                <div class="meal-group__head">
+                  <button class="meal-group__toggle" type="button" data-meal-toggle aria-expanded="false" aria-controls="meal-panel-snack">
+                    <span class="meal-group__title"><img class="meal-group__icon" src="icons8-avocado-100.png" alt="" aria-hidden="true" /><span class="meal-group__copy"><span class="meal-group__name">میان‌وعده</span><span class="meal-group__target">کالری پیشنهادی این وعده: ۴۰۰ کالری</span></span></span>
+                    <svg class="icon meal-group__chevron" aria-hidden="true"><use href="assets/icons.svg#icon-arrow" /></svg>
+                  </button>
+                  <button class="meal-add-button" type="button" data-nutrition-open data-meal="snack" aria-label="افزودن به میان‌وعده"><span class="meal-add-button__circle"><img class="meal-add-button__icon" src="icons8-plus-30.png" alt="" aria-hidden="true" /></span></button>
+                </div>
+                <div class="meal-group__body" id="meal-panel-snack" data-meal-panel hidden>
+                  <p class="nutrition-empty nutrition-empty-row" data-meal-empty="snack"><span>هنوز چیزی ثبت نشده.</span></p>
+                </div>
+              </div>
+
+              <div class="meal-group" data-meal-group="other">
+                <div class="meal-group__head">
+                  <button class="meal-group__toggle" type="button" data-meal-toggle aria-expanded="false" aria-controls="meal-panel-other">
+                    <span class="meal-group__title"><img class="meal-group__icon" src="icons8-nut-100.png" alt="" aria-hidden="true" /><span class="meal-group__copy"><span class="meal-group__name">سایر</span><span class="meal-group__target">کالری پیشنهادی این وعده: ۴۰۰ کالری</span></span></span>
+                    <svg class="icon meal-group__chevron" aria-hidden="true"><use href="assets/icons.svg#icon-arrow" /></svg>
+                  </button>
+                  <button class="meal-add-button" type="button" data-nutrition-open data-meal="other" aria-label="افزودن به سایر"><span class="meal-add-button__circle"><img class="meal-add-button__icon" src="icons8-plus-30.png" alt="" aria-hidden="true" /></span></button>
+                </div>
+                <div class="meal-group__body" id="meal-panel-other" data-meal-panel hidden>
+                  <p class="nutrition-empty nutrition-empty-row" data-meal-empty="other"><span>هنوز چیزی ثبت نشده.</span></p>
+                </div>
+              </div>
+              <button class="meal-group__full-add meal-group__full-add--secondary" type="button" data-open-saved-foods-create>ساخت وعده سفارشی</button>
+            </section>
+
+            <aside class="dashboard-section nutrition-aside-stack" aria-labelledby="nutrition-plan-title" data-od-id="nutrition-planned-prefill">
+              <section class="nutrition-plan-board" aria-labelledby="nutrition-plan-title">
+                <div class="nutrition-plan-board__head">
+                  <div class="nutrition-plan-board__intro">
+                    <h2 id="nutrition-plan-title">برنامه غذایی امروز</h2>
+                    <p>اگر خواستی، از این پیشنهادها برای پیش‌ثبت سریع‌تر استفاده کن.</p>
+                  </div>
+                  <button class="button button--quiet button--sm nutrition-plan-board__toggle" type="button" data-plan-toggle aria-expanded="false" aria-controls="nutrition-plan-content">نمایش برنامه</button>
+                </div>
+
+                <div class="nutrition-plan-board__content" id="nutrition-plan-content" hidden>
+                <section class="nutrition-plan-group" aria-labelledby="nutrition-plan-main-title">
+                  <h3 class="nutrition-plan-group__title" id="nutrition-plan-main-title">وعده‌های اصلی</h3>
+
+                  <article class="nutrition-plan-item">
+                    <div class="nutrition-plan-item__top">
+                      <div class="nutrition-plan-item__header">
+                        <h4 class="nutrition-plan-item__name" dir="auto">املت سبزیجات</h4>
+                        <span class="nutrition-plan-item__calories"><bdi dir="ltr">۲۸۰</bdi> kcal</span>
+                      </div>
+                      <p class="nutrition-plan-item__detail"><span>صبحانه</span><span class="nutrition-plan-item__dot" aria-hidden="true">•</span><span>۱ بشقاب</span></p>
+                      <p class="nutrition-plan-item__ingredients">۲ عدد تخم‌مرغ + سبزیجات + ۱ برش نان</p>
+                    </div>
+                    <button class="button button--secondary" type="button" data-nutrition-open data-source="plan" data-meal="breakfast" data-name="املت سبزیجات" data-quantity="۱" data-unit="بشقاب" data-calories="۲۸۰" data-note="۲ عدد تخم‌مرغ + سبزیجات + ۱ برش نان">افزودن به موارد خورده‌شده</button>
+                  </article>
+
+                  <article class="nutrition-plan-item">
+                    <div class="nutrition-plan-item__top">
+                      <div class="nutrition-plan-item__header">
+                        <h4 class="nutrition-plan-item__name" dir="auto">مرغ و برنج با سالاد</h4>
+                        <span class="nutrition-plan-item__calories"><bdi dir="ltr">۵۲۰</bdi> kcal</span>
+                      </div>
+                      <p class="nutrition-plan-item__detail"><span>ناهار</span><span class="nutrition-plan-item__dot" aria-hidden="true">•</span><span>۱ بشقاب</span></p>
+                      <p class="nutrition-plan-item__ingredients">۸ قاشق برنج + ۱ تکه مرغ + سالاد</p>
+                    </div>
+                    <button class="button button--secondary" type="button" data-nutrition-open data-source="plan" data-meal="lunch" data-name="مرغ و برنج با سالاد" data-quantity="۱" data-unit="بشقاب" data-calories="۵۲۰" data-note="۸ قاشق برنج + ۱ تکه مرغ + سالاد">افزودن به موارد خورده‌شده</button>
+                  </article>
+
+                  <article class="nutrition-plan-item">
+                    <div class="nutrition-plan-item__top">
+                      <div class="nutrition-plan-item__header">
+                        <h4 class="nutrition-plan-item__name" dir="auto">ماست و خیار</h4>
+                        <span class="nutrition-plan-item__calories"><bdi dir="ltr">۱۸۰</bdi> kcal</span>
+                      </div>
+                      <p class="nutrition-plan-item__detail"><span>شام</span><span class="nutrition-plan-item__dot" aria-hidden="true">•</span><span>۱ کاسه</span></p>
+                      <p class="nutrition-plan-item__ingredients">۱ کاسه ماست و خیار + ۱ برش نان</p>
+                    </div>
+                    <button class="button button--secondary" type="button" data-nutrition-open data-source="plan" data-meal="dinner" data-name="ماست و خیار" data-quantity="۱" data-unit="کاسه" data-calories="۱۸۰" data-note="۱ کاسه ماست و خیار + ۱ برش نان">افزودن به موارد خورده‌شده</button>
+                  </article>
+                </section>
+
+                <section class="nutrition-plan-group" aria-labelledby="nutrition-plan-snacks-title">
+                  <h3 class="nutrition-plan-group__title" id="nutrition-plan-snacks-title">میان‌وعده‌ها</h3>
+
+                  <article class="nutrition-plan-item">
+                    <div class="nutrition-plan-item__top">
+                      <div class="nutrition-plan-item__header">
+                        <h4 class="nutrition-plan-item__name" dir="auto">سیب</h4>
+                        <span class="nutrition-plan-item__calories"><bdi dir="ltr">۸۰</bdi> kcal</span>
+                      </div>
+                      <p class="nutrition-plan-item__detail"><span>میان‌وعده</span><span class="nutrition-plan-item__dot" aria-hidden="true">•</span><span>۱ عدد</span></p>
+                    </div>
+                    <button class="button button--secondary" type="button" data-nutrition-open data-source="plan" data-meal="snack" data-name="سیب" data-quantity="۱" data-unit="عدد" data-calories="۸۰">افزودن به موارد خورده‌شده</button>
+                  </article>
+
+                  <article class="nutrition-plan-item">
+                    <div class="nutrition-plan-item__top">
+                      <div class="nutrition-plan-item__header">
+                        <h4 class="nutrition-plan-item__name" dir="auto">بادام</h4>
+                        <span class="nutrition-plan-item__calories"><bdi dir="ltr">۹۰</bdi> kcal</span>
+                      </div>
+                      <p class="nutrition-plan-item__detail"><span>میان‌وعده</span><span class="nutrition-plan-item__dot" aria-hidden="true">•</span><span>۱۰ عدد</span></p>
+                    </div>
+                    <button class="button button--secondary" type="button" data-nutrition-open data-source="plan" data-meal="snack" data-name="بادام" data-quantity="۱۰" data-unit="عدد" data-calories="۹۰">افزودن به موارد خورده‌شده</button>
+                  </article>
+
+                  <article class="nutrition-plan-item">
+                    <div class="nutrition-plan-item__top">
+                      <div class="nutrition-plan-item__header">
+                        <h4 class="nutrition-plan-item__name" dir="auto">چای + خرما</h4>
+                        <span class="nutrition-plan-item__calories"><bdi dir="ltr">۷۰</bdi> kcal</span>
+                      </div>
+                      <p class="nutrition-plan-item__detail"><span>میان‌وعده</span><span class="nutrition-plan-item__dot" aria-hidden="true">•</span><span>۲ عدد خرما</span></p>
+                    </div>
+                    <button class="button button--secondary" type="button" data-nutrition-open data-source="plan" data-meal="snack" data-name="چای + خرما" data-quantity="۲" data-unit="عدد" data-calories="۷۰" data-note="۲ عدد خرما همراه چای">افزودن به موارد خورده‌شده</button>
+                  </article>
+                </section>
+                </div>
+              </section>
+            </aside>
+          </div>
+
+          <section class="nutrition-saved-foods-entry" data-od-id="nutrition-saved-foods-entry">
+            <a class="button button--quiet button--sm" href="saved-foods-botanical.html" data-open-saved-foods>مدیریت خوراک‌های ذخیره‌شده</a>
+          </section>
+
+        </div>
+      </main>
+    </div>
+    <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل">
+      <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+      <a href="quick-log-botanical.html" class="quick-log-trigger bottom-nav__primary" aria-current="page"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+      <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+      <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+      <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+    </nav>
+    <section class="custom-meal-builder" id="custom-meal-builder" hidden>
+      <div class="custom-meal-builder__backdrop" data-custom-meal-close></div>
+      <div class="custom-meal-builder__surface app-modal-shell" role="dialog" aria-modal="true" aria-labelledby="custom-meal-builder-title">
+        <header class="custom-meal-builder__head app-modal-header">
+          <div>
+            <h2 id="custom-meal-builder-title">ساخت وعده سفارشی</h2>
+            <p>خوراک‌های این وعده را انتخاب کن و یک ترکیب آماده برای استفاده‌های بعدی بساز.</p>
+          </div>
+          <button class="button button--quiet button--sm" type="button" data-custom-meal-close>بستن</button>
+        </header>
+        <div class="custom-meal-builder__body app-modal-body">
+          <section class="custom-meal-builder__section app-modal-section">
+            <div class="custom-meal-builder__grid">
+              <label class="field">
+                <span class="field__label">نام وعده</span>
+                <input id="custom-meal-name" type="text" placeholder="مثلاً صبحانه همیشگی من" />
+              </label>
+              <label class="field">
+                <span class="field__label">نوع وعده</span>
+                <select id="custom-meal-type">
+                  <option value="breakfast">صبحانه</option>
+                  <option value="lunch">ناهار</option>
+                  <option value="dinner">شام</option>
+                  <option value="snack">میان‌وعده</option>
+                  <option value="other">سایر</option>
+                </select>
+              </label>
+            </div>
+          </section>
+          <section class="custom-meal-builder__section app-modal-section">
+            <div>
+              <h3>افزودن خوراک</h3>
+              <p>خوراک‌ها را از جست‌وجو، ذخیره‌شده‌ها یا ثبت با هوش مصنوعی وارد این وعده کن.</p>
+            </div>
+            <div class="custom-meal-builder__picker-actions">
+              <button class="button button--secondary" type="button" data-custom-meal-picker="search">جست‌وجو</button>
+              <button class="button button--secondary" type="button" data-custom-meal-picker="saved">ذخیره‌شده‌ها</button>
+              <button class="button button--secondary" type="button" data-custom-meal-picker="ai">ثبت با هوش مصنوعی</button>
+            </div>
+            <p class="custom-meal-builder__error" id="custom-meal-error" hidden></p>
+          </section>
+          <section class="custom-meal-builder__section app-modal-section">
+            <div>
+              <h3>خوراک‌های این وعده</h3>
+              <p>می‌توانی مقدار را تنظیم کنی، ترتیب را عوض کنی یا هر مورد را حذف کنی.</p>
+            </div>
+            <div class="custom-meal-builder__list" id="custom-meal-items"></div>
+          </section>
+          <section class="custom-meal-builder__section app-modal-section">
+            <div>
+              <h3>جمع کل وعده</h3>
+              <p>کالری و ماکروهای کل این وعده به‌صورت زنده به‌روزرسانی می‌شوند.</p>
+            </div>
+            <div class="custom-meal-builder__totals" id="custom-meal-totals"></div>
+          </section>
+          <section class="custom-meal-builder__section app-modal-section">
+            <label class="field">
+              <span class="field__label">یادداشت اختیاری</span>
+              <textarea id="custom-meal-note" rows="3" placeholder="مثلاً مناسب روزهای پرمشغله یا بعد از تمرین."></textarea>
+            </label>
+          </section>
+        </div>
+        <footer class="custom-meal-builder__footer app-modal-footer">
+          <p class="custom-meal-builder__footer-note">بعد از ذخیره، این وعده در تب «وعده‌های ترکیبی» صفحه خوراک‌های ذخیره‌شده دیده می‌شود.</p>
+          <div class="custom-meal-builder__footer-actions">
+            <button class="button button--secondary" type="button" data-custom-meal-cancel>انصراف</button>
+            <button class="button button--primary" type="button" data-custom-meal-save>ذخیره وعده</button>
+          </div>
+        </footer>
+      </div>
+    </section>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden><span class="toast__check"><svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons.svg#icon-check" /></svg></span><span id="toast-message">ثبت شد.</span><button type="button" id="toast-undo">واگردانی</button></div>
+    <script>
+      (() => {
+        "use strict";
+        const toast = document.getElementById("toast");
+        const toastMessage = document.getElementById("toast-message");
+        const toastUndo = document.getElementById("toast-undo");
+        const totalCalories = document.getElementById("nutrition-total-calories");
+        const totalGoal = document.getElementById("nutrition-total-goal");
+        const totalRemaining = document.getElementById("nutrition-total-remaining");
+        const totalPercent = document.getElementById("nutrition-total-percent");
+        const totalRing = document.getElementById("nutrition-total-ring");
+        const totalMeals = document.getElementById("nutrition-total-meals");
+        const totalFoods = document.getElementById("nutrition-total-foods");
+        const totalLastMeal = document.getElementById("nutrition-total-last-meal");
+        const totalSource = document.getElementById("nutrition-total-source");
+        const macroRefs = {
+          protein: {
+            value: document.getElementById("nutrition-macro-protein-value"),
+            remaining: document.getElementById("nutrition-macro-protein-remaining"),
+            ring: document.getElementById("nutrition-macro-protein-ring"),
+            bar: document.getElementById("nutrition-macro-protein-bar"),
+          },
+          carbs: {
+            value: document.getElementById("nutrition-macro-carbs-value"),
+            remaining: document.getElementById("nutrition-macro-carbs-remaining"),
+            ring: document.getElementById("nutrition-macro-carbs-ring"),
+            bar: document.getElementById("nutrition-macro-carbs-bar"),
+          },
+          fat: {
+            value: document.getElementById("nutrition-macro-fat-value"),
+            remaining: document.getElementById("nutrition-macro-fat-remaining"),
+            ring: document.getElementById("nutrition-macro-fat-ring"),
+            bar: document.getElementById("nutrition-macro-fat-bar"),
+          },
+        };
+        const dateLabel = document.getElementById("nutrition-date-label");
+        let undo = null;
+        let dateOffset = 0;
+        const nutritionTargetsKey = "avocado:nutrition-targets-v1";
+        let lastLoggedMealKey = "lunch";
+
+        const mealNames = {
+          breakfast: "صبحانه",
+          lunch: "ناهار",
+          dinner: "شام",
+          snack: "میان‌وعده",
+          other: "سایر",
+        };
+        const weekdayNames = ["یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه"];
+        const digitMap = { "۰": "0", "۱": "1", "۲": "2", "۳": "3", "۴": "4", "۵": "5", "۶": "6", "۷": "7", "۸": "8", "۹": "9", "٠": "0", "١": "1", "٢": "2", "٣": "3", "٤": "4", "٥": "5", "٦": "6", "٧": "7", "٨": "8", "٩": "9" };
+        const persianDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+        const logEntriesKey = "avocado-food-log-entries-v1";
+
+        function toEnglish(value) {
+          return String(value || "").replace(/[۰-۹٠-٩]/g, (digit) => digitMap[digit] || digit);
+        }
+
+        function toNumber(value) {
+          const normalized = toEnglish(value).replace(/,/g, "").trim();
+          const number = Number(normalized);
+          return Number.isFinite(number) ? number : 0;
+        }
+
+        function toPersian(value) {
+          return String(Math.round(value)).replace(/\d/g, (digit) => persianDigits[Number(digit)]);
+        }
+
+        function readNutritionTargets() {
+          try {
+            const stored = JSON.parse(localStorage.getItem(nutritionTargetsKey) || "{}");
+            if (!stored || typeof stored !== "object") throw new Error("invalid");
+            return stored;
+          } catch (_) {
+            return {
+              source: "self",
+              dayMode: "single",
+              activeDay: "single",
+              single: { calories: 1800, protein: 110, carbs: 160, fat: 70 },
+              workout: { calories: 1950, protein: 120, carbs: 185, fat: 68 },
+              rest: { calories: 1700, protein: 110, carbs: 140, fat: 66 },
+            };
+          }
+        }
+
+        function nutritionSourceLabel(source) {
+          return {
+            self: "تنظیم‌شده توسط من",
+            plan: "برگرفته از برنامه فعال",
+            coach: "تعیین‌شده توسط مربی",
+            avocado: "پیشنهاد آووکادو",
+          }[source] || "تنظیم‌شده توسط من";
+        }
+
+        function activeNutritionTargets() {
+          const state = readNutritionTargets();
+          if (state.dayMode === "split") {
+            const activeDay = state.activeDay === "workout" ? "workout" : "rest";
+            return {
+              ...(state[activeDay] || { calories: 1700, protein: 110, carbs: 140, fat: 66 }),
+              source: state.source,
+            };
+          }
+          return {
+            ...(state.single || { calories: 1800, protein: 110, carbs: 160, fat: 70 }),
+            source: state.source,
+          };
+        }
+
+        function currentLogDateIso() {
+          const date = new Date();
+          date.setHours(12, 0, 0, 0);
+          date.setDate(date.getDate() + dateOffset);
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          return `${year}-${month}-${day}`;
+        }
+
+        function renderDateNavigation() {
+          const dayNumber = 19 + dateOffset;
+          const weekdayIndex = (3 + dateOffset % 7 + 7) % 7;
+          dateLabel.textContent = `${weekdayNames[weekdayIndex]} ${toPersian(dayNumber)} تیر`;
+          document.querySelectorAll("[data-day-relative]").forEach((button) => {
+            const relative = Number(button.dataset.dayRelative);
+            const targetDay = dayNumber + relative;
+            const label = button.querySelector(".nutrition-date-nav__day-label");
+            if (label) label.textContent = toPersian(targetDay);
+            button.dataset.streak = targetDay === 14 || targetDay === 15 ? "true" : "false";
+            button.setAttribute("aria-label", `انتخاب ${weekdayNames[(weekdayIndex + relative + 7) % 7]} ${toPersian(targetDay)} تیر`);
+          });
+        }
+
+        function showToast(message, undoAction) {
+          if (!toast || !toastMessage) return;
+          toastMessage.textContent = message;
+          toast.hidden = false;
+          undo = undoAction || null;
+          if (toastUndo) toastUndo.textContent = undo ? "واگردانی" : "بستن";
+        }
+
+        function updateMeals() {
+          const rows = Array.from(document.querySelectorAll("[data-food-row]"));
+          const targets = activeNutritionTargets();
+          const totals = rows.reduce((sum, row) => ({
+            calories: sum.calories + toNumber(row.querySelector("[data-calories]")?.value),
+            protein: sum.protein + Number(row.dataset.protein || 0),
+            carbs: sum.carbs + Number(row.dataset.carbs || 0),
+            fat: sum.fat + Number(row.dataset.fat || 0),
+          }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
+          const total = totals.calories;
+          const loggedMeals = new Set(rows.map((row) => row.dataset.meal));
+          const calorieGoal = Math.max(1, Number(targets.calories || 1800));
+          const remaining = Math.max(calorieGoal - total, 0);
+          const percent = Math.max(0, Math.min(100, Math.round((total / calorieGoal) * 100)));
+          const existingLastMeal = lastLoggedMealKey !== "—" && rows.some((row) => row.dataset.meal === lastLoggedMealKey);
+          const fallbackLastMeal = rows.length ? rows[rows.length - 1].dataset.meal : "—";
+          const lastMealKey = existingLastMeal ? lastLoggedMealKey : fallbackLastMeal;
+          if (totalCalories) totalCalories.textContent = toPersian(total);
+          if (totalGoal) totalGoal.textContent = toPersian(calorieGoal);
+          if (totalRemaining) totalRemaining.textContent = toPersian(remaining);
+          if (totalPercent) totalPercent.textContent = `${toPersian(percent)}٪`;
+          if (totalRing) totalRing.style.setProperty("--progress", `${percent / 100}turn`);
+          if (totalMeals) totalMeals.textContent = toPersian(loggedMeals.size);
+          if (totalFoods) totalFoods.textContent = toPersian(rows.length);
+          if (totalLastMeal) totalLastMeal.textContent = lastMealKey === "—" ? "—" : mealNames[lastMealKey];
+          if (totalSource) totalSource.textContent = nutritionSourceLabel(targets.source);
+
+          [
+            ["protein", totals.protein, Number(targets.protein || 0)],
+            ["carbs", totals.carbs, Number(targets.carbs || 0)],
+            ["fat", totals.fat, Number(targets.fat || 0)],
+          ].forEach(([key, consumed, goal]) => {
+            const ref = macroRefs[key];
+            if (!ref) return;
+            const safeGoal = Math.max(1, goal);
+            const macroPercent = Math.max(0, Math.min(100, Math.round((consumed / safeGoal) * 100)));
+            const remainingValue = Math.max(goal - consumed, 0);
+            if (ref.value) ref.value.textContent = `${toPersian(consumed)} از ${toPersian(goal)} گرم`;
+            if (ref.remaining) ref.remaining.textContent = `${toPersian(remainingValue)} گرم باقی‌مانده`;
+            if (ref.ring) ref.ring.style.setProperty("--macro-progress", `${macroPercent / 100}turn`);
+            if (ref.bar) ref.bar.style.width = `${macroPercent}%`;
+          });
+
+          Object.keys(mealNames).forEach((meal) => {
+            const group = document.querySelector(`[data-meal-group="${meal}"]`);
+            const count = document.querySelector(`[data-meal-count="${meal}"]`);
+            const empty = document.querySelector(`[data-meal-empty="${meal}"]`);
+            const mealRows = rows.filter((row) => row.dataset.meal === meal);
+            if (count) count.textContent = mealRows.length ? `${toPersian(mealRows.length)} مورد` : "ثبت نشده";
+            if (empty) empty.hidden = mealRows.length > 0;
+            if (group && !empty && mealRows.length === 0) {
+              const body = group.querySelector("[data-meal-panel]") || group;
+              const note = document.createElement("p");
+              note.className = "nutrition-empty nutrition-empty-row";
+              note.dataset.mealEmpty = meal;
+              note.innerHTML = "<span>هنوز چیزی ثبت نشده.</span>";
+              body.append(note);
+            }
+          });
+        }
+
+        function setMealOpen(group, open) {
+          if (!group) return;
+          const panel = group.querySelector("[data-meal-panel]");
+          const toggle = group.querySelector("[data-meal-toggle]");
+          group.classList.toggle("is-open", open);
+          if (panel) panel.hidden = !open;
+          if (toggle) toggle.setAttribute("aria-expanded", String(open));
+        }
+
+        function openMealGroup(meal) {
+          setMealOpen(document.querySelector(`[data-meal-group="${meal}"]`), true);
+        }
+
+        function rowValues(row) {
+          return {
+            id: row.dataset.entryId || `food-log-entry-${Date.now()}`,
+            meal: row.dataset.meal,
+            name: row.querySelector("strong[dir='auto']")?.textContent.trim() || "",
+            quantity: row.querySelector("[data-quantity]")?.value || "",
+            unit: row.querySelector("[data-unit]")?.value || "",
+            calories: row.querySelector("[data-calories]")?.value || "",
+            protein: Number(row.dataset.protein || 0),
+            carbs: Number(row.dataset.carbs || 0),
+            fat: Number(row.dataset.fat || 0),
+            note: row.querySelector("[data-note]")?.value || "",
+          };
+        }
+
+        function syncRowSummary(row) {
+          const values = rowValues(row);
+          const amount = row.querySelector("[data-row-amount]");
+          const calorie = row.querySelector("[data-row-calorie]");
+          const note = row.querySelector("[data-row-note]");
+          if (amount) amount.textContent = `${values.quantity || "—"} ${values.unit || ""}`.trim();
+          if (calorie) calorie.textContent = `${values.calories || "۰"} کیلوکالری`;
+          if (note) {
+            note.textContent = values.note;
+            note.hidden = !values.note;
+          }
+        }
+
+        function persistStoredRows() {
+          const entries = Array.from(document.querySelectorAll("[data-food-row][data-entry-id]")).map((row) => rowValues(row));
+          writeStoredLogEntries(entries);
+        }
+
+        function createRow(values) {
+          const row = document.createElement("article");
+          row.className = "food-row";
+          row.dataset.foodRow = "";
+          row.dataset.meal = values.meal;
+          if (values.id) row.dataset.entryId = values.id;
+          row.innerHTML = `<div class="food-row__head">
+            <div class="food-row__summary">
+              <span class="semantic-label semantic-label--actual"><i class="track-marker track-marker--actual" aria-hidden="true"></i>ثبت‌شده</span>
+              <strong dir="auto"></strong>
+              <div class="food-row__meta"><span data-row-amount></span><span class="food-row__dot" aria-hidden="true">·</span><bdi data-row-calorie dir="auto"></bdi></div>
+              <p class="food-row__note" data-row-note hidden></p>
+            </div>
+            <div class="food-row__actions"><button class="button button--quiet button--sm" type="button" data-edit-food aria-expanded="false">ویرایش</button><button class="icon-button food-row__delete" type="button" data-delete-food aria-label="حذف خوراک"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-trash" /></svg></button></div>
+          </div>
+          <div class="food-row__edit">
+            <div class="form-row">
+              <label class="field"><span class="field__label">مقدار</span><input data-quantity /></label>
+              <label class="field"><span class="field__label">واحد</span><select data-unit><option>بشقاب</option><option>کاسه</option><option>گرم</option><option>عدد</option><option>لیوان</option><option>قاشق</option><option>کف دست</option><option>وعده</option></select></label>
+              <label class="field"><span class="field__label">کالری واردشده</span><input inputmode="numeric" dir="ltr" data-calories /></label>
+            </div>
+            <label class="field"><span class="field__label">یادداشت اختیاری</span><textarea rows="2" data-note></textarea></label>
+          </div>
+          `;
+          applyRowValues(row, values);
+          return row;
+        }
+
+        function applyRowValues(row, values) {
+          row.dataset.meal = values.meal;
+          if (values.id) row.dataset.entryId = values.id;
+          row.dataset.protein = values.protein || 0;
+          row.dataset.carbs = values.carbs || 0;
+          row.dataset.fat = values.fat || 0;
+          row.querySelector("strong[dir='auto']").textContent = values.name;
+          row.querySelector("[data-quantity]").value = values.quantity;
+          row.querySelector("[data-unit]").value = values.unit;
+          row.querySelector("[data-calories]").value = values.calories;
+          row.querySelector("[data-note]").value = values.note || "";
+          syncRowSummary(row);
+        }
+
+        function appendLoggedFood(entry) {
+          const values = {
+            id: entry.id,
+            meal: entry.meal,
+            name: entry.name,
+            quantity: entry.quantity || "۱",
+            unit: entry.unit || "وعده",
+            calories: entry.calories || "0",
+            protein: entry.protein || 0,
+            carbs: entry.carbs || 0,
+            fat: entry.fat || 0,
+            note: entry.note || "",
+          };
+          const group = document.querySelector(`[data-meal-group="${values.meal}"]`);
+          const body = group?.querySelector("[data-meal-panel]") || group;
+          if (!body) return;
+          const existing = body.querySelector(`[data-entry-id="${values.id}"]`);
+          if (existing) {
+            applyRowValues(existing, values);
+          } else {
+            body.append(createRow(values));
+          }
+          lastLoggedMealKey = values.meal;
+          openMealGroup(values.meal);
+          updateMeals();
+          persistStoredRows();
+        }
+
+        function importStoredEntries(entries = []) {
+          entries.forEach((entry) => {
+            if (document.querySelector(`[data-entry-id="${entry.id}"]`)) return;
+            appendLoggedFood(entry);
+          });
+        }
+
+        function readStoredLogEntries() {
+          try {
+            return JSON.parse(localStorage.getItem(logEntriesKey) || "[]");
+          } catch {
+            return [];
+          }
+        }
+
+        function writeStoredLogEntries(entries) {
+          localStorage.setItem(logEntriesKey, JSON.stringify(entries));
+        }
+
+        document.querySelectorAll("[data-meal-toggle]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const group = button.closest("[data-meal-group]");
+            setMealOpen(group, !group.classList.contains("is-open"));
+          });
+        });
+
+        const planToggle = document.querySelector("[data-plan-toggle]");
+        const planContent = document.getElementById("nutrition-plan-content");
+        if (planToggle && planContent) {
+          planToggle.addEventListener("click", () => {
+            const expanded = planToggle.getAttribute("aria-expanded") === "true";
+            planToggle.setAttribute("aria-expanded", String(!expanded));
+            planToggle.textContent = expanded ? "نمایش برنامه" : "جمع‌کردن برنامه";
+            planContent.hidden = expanded;
+          });
+        }
+
+        document.addEventListener("input", (event) => {
+          const row = event.target.closest?.("[data-food-row]");
+          if (!row) return;
+          syncRowSummary(row);
+          updateMeals();
+          if (row.dataset.entryId) persistStoredRows();
+        });
+
+        document.addEventListener("click", (event) => {
+          const edit = event.target.closest("[data-edit-food]");
+          if (edit) {
+            const row = edit.closest("[data-food-row]");
+            const editing = !row.classList.contains("is-editing");
+            row.classList.toggle("is-editing", editing);
+            edit.setAttribute("aria-expanded", String(editing));
+            edit.textContent = editing ? "بستن ویرایش" : "ویرایش";
+            if (!editing) {
+              syncRowSummary(row);
+              persistStoredRows();
+            }
+          }
+
+          const remove = event.target.closest("[data-delete-food]");
+          if (remove) {
+            const row = remove.closest("[data-food-row]");
+            const parent = row.parentElement;
+            const next = row.nextElementSibling;
+            const deletedName = row.querySelector("strong[dir='auto']")?.textContent.trim() || "خوراک";
+            const entryId = row.dataset.entryId || "";
+            if (lastLoggedMealKey === row.dataset.meal) {
+              const remainingRows = Array.from(document.querySelectorAll("[data-food-row]")).filter((item) => item !== row);
+              lastLoggedMealKey = remainingRows.length ? remainingRows[remainingRows.length - 1].dataset.meal : "—";
+            }
+            row.remove();
+            updateMeals();
+            persistStoredRows();
+            showToast(`«${deletedName}» از ثبت امروز حذف شد.`, () => {
+              parent.insertBefore(row, next);
+              lastLoggedMealKey = row.dataset.meal;
+              updateMeals();
+              persistStoredRows();
+              setMealOpen(parent.closest("[data-meal-group]"), true);
+              showToast("حذف خوراک واگردانی شد.");
+            });
+          }
+        });
+
+        document.querySelectorAll("[data-day-relative]").forEach((button) => {
+          button.addEventListener("click", () => {
+            dateOffset += Number(button.dataset.dayRelative);
+            renderDateNavigation();
+          });
+        });
+
+        document.querySelectorAll("[data-day-step]").forEach((button) => {
+          button.addEventListener("click", () => {
+            dateOffset += Number(button.dataset.dayStep);
+            renderDateNavigation();
+          });
+        });
+
+        toastUndo?.addEventListener("click", (event) => {
+          event.stopImmediatePropagation();
+          if (undo) {
+            const action = undo;
+            undo = null;
+            action();
+          } else if (toast) {
+            toast.hidden = true;
+          }
+        }, true);
+
+        renderDateNavigation();
+        importStoredEntries(readStoredLogEntries());
+        updateMeals();
+        window.addEventListener("avocado:nutrition-targets-updated", updateMeals);
+        window.addEventListener("storage", (event) => {
+          if (event.key === nutritionTargetsKey) updateMeals();
+        });
+
+        const comboMealsKey = "avocado-combo-meals";
+        const customMealBuilderRoot = document.getElementById("custom-meal-builder");
+        const customMealNameInput = document.getElementById("custom-meal-name");
+        const customMealTypeInput = document.getElementById("custom-meal-type");
+        const customMealNoteInput = document.getElementById("custom-meal-note");
+        const customMealItems = document.getElementById("custom-meal-items");
+        const customMealTotals = document.getElementById("custom-meal-totals");
+        const customMealError = document.getElementById("custom-meal-error");
+        const customMealState = {
+          name: "",
+          meal: "breakfast",
+          note: "",
+          items: [],
+        };
+
+        function readComboMeals() {
+          try {
+            return JSON.parse(localStorage.getItem(comboMealsKey) || "[]");
+          } catch {
+            return [];
+          }
+        }
+
+        function writeComboMeals(items) {
+          localStorage.setItem(comboMealsKey, JSON.stringify(items));
+        }
+
+        function formatBuilderNumber(value) {
+          return new Intl.NumberFormat("fa-IR", { maximumFractionDigits: 1 }).format(Number(value || 0));
+        }
+
+        function builderMetricTemplate(label, value, suffix = "") {
+          return `<article class="custom-meal-builder__metric"><span>${label}</span><strong><bdi dir="ltr">${formatBuilderNumber(value)}</bdi>${suffix}</strong></article>`;
+        }
+
+        function normalizeBuilderEntry(entry) {
+          const quantity = Math.max(Number(toEnglish(entry.quantity || 1)) || 1, 0.5);
+          const calories = Number(toEnglish(entry.calories || 0)) || 0;
+          const protein = Number(entry.protein || 0) || 0;
+          const carbs = Number(entry.carbs || 0) || 0;
+          const fat = Number(entry.fat || 0) || 0;
+          return {
+            builderId: `builder-item-${Date.now()}-${Math.random().toString(16).slice(2, 6)}`,
+            foodId: entry.foodId || entry.id || "",
+            name: entry.name || "خوراک بدون نام",
+            quantity,
+            unit: entry.unit || "واحد",
+            calories,
+            protein,
+            carbs,
+            fat,
+            note: entry.note || "",
+            baseCalories: calories / quantity,
+            baseProtein: protein / quantity,
+            baseCarbs: carbs / quantity,
+            baseFat: fat / quantity,
+          };
+        }
+
+        function customMealTotalsData() {
+          return customMealState.items.reduce((totals, item) => ({
+            calories: totals.calories + Number(item.calories || 0),
+            protein: totals.protein + Number(item.protein || 0),
+            carbs: totals.carbs + Number(item.carbs || 0),
+            fat: totals.fat + Number(item.fat || 0),
+          }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
+        }
+
+        function renderCustomMealBuilder() {
+          if (!customMealBuilderRoot) return;
+          customMealNameInput.value = customMealState.name;
+          customMealTypeInput.value = customMealState.meal;
+          customMealNoteInput.value = customMealState.note;
+
+          if (!customMealState.items.length) {
+            customMealItems.innerHTML = `
+              <div class="custom-meal-builder__empty">
+                <strong>هنوز خوراکی به این وعده اضافه نشده</strong>
+                <p>از دکمه‌های بالا استفاده کن تا خوراک‌های این ترکیب را بسازی.</p>
+              </div>
+            `;
+          } else {
+            customMealItems.innerHTML = customMealState.items.map((item, index) => `
+              <article class="custom-meal-builder__item" data-builder-item="${item.builderId}">
+                <div class="custom-meal-builder__item-head">
+                  <div class="custom-meal-builder__item-title">
+                    <strong>${item.name}</strong>
+                    <span class="custom-meal-builder__item-meta">${formatBuilderNumber(item.quantity)} ${item.unit} · <bdi dir="ltr">${formatBuilderNumber(item.calories)}</bdi> kcal</span>
+                  </div>
+                  <div class="custom-meal-builder__mini-actions">
+                    <button class="button button--quiet button--sm" type="button" data-builder-move="up" data-builder-id="${item.builderId}" ${index === 0 ? "disabled" : ""}>بالا</button>
+                    <button class="button button--quiet button--sm" type="button" data-builder-move="down" data-builder-id="${item.builderId}" ${index === customMealState.items.length - 1 ? "disabled" : ""}>پایین</button>
+                    <button class="button button--quiet button--sm" type="button" data-builder-delete="${item.builderId}">حذف</button>
+                  </div>
+                </div>
+                <div class="custom-meal-builder__item-fields">
+                  <label class="field">
+                    <span class="field__label">مقدار</span>
+                    <input type="number" min="0.5" step="0.5" value="${item.quantity}" data-builder-quantity="${item.builderId}" />
+                  </label>
+                  <label class="field">
+                    <span class="field__label">واحد</span>
+                    <input type="text" value="${item.unit}" data-builder-unit="${item.builderId}" />
+                  </label>
+                </div>
+                <div class="custom-meal-builder__item-summary">
+                  <span>پروتئین ${formatBuilderNumber(item.protein)}</span>
+                  <span>کربوهیدرات ${formatBuilderNumber(item.carbs)}</span>
+                  <span>چربی ${formatBuilderNumber(item.fat)}</span>
+                </div>
+              </article>
+            `).join("");
+          }
+
+          const totals = customMealTotalsData();
+          customMealTotals.innerHTML = [
+            builderMetricTemplate("کالری", totals.calories, " kcal"),
+            builderMetricTemplate("پروتئین", totals.protein),
+            builderMetricTemplate("کربوهیدرات", totals.carbs),
+            builderMetricTemplate("چربی", totals.fat),
+          ].join("");
+        }
+
+        function openCustomMealBuilder() {
+          customMealState.name = "";
+          customMealState.meal = lastLoggedMealKey && mealNames[lastLoggedMealKey] ? lastLoggedMealKey : "breakfast";
+          customMealState.note = "";
+          customMealState.items = [];
+          customMealError.hidden = true;
+          customMealError.textContent = "";
+          renderCustomMealBuilder();
+          customMealBuilderRoot.hidden = false;
+          document.body.classList.add("has-custom-meal-builder");
+          window.setTimeout(() => customMealNameInput?.focus(), 30);
+        }
+
+        function closeCustomMealBuilder() {
+          customMealBuilderRoot.hidden = true;
+          document.body.classList.remove("has-custom-meal-builder");
+        }
+
+        function setCustomMealError(message = "") {
+          if (!message) {
+            customMealError.hidden = true;
+            customMealError.textContent = "";
+            return;
+          }
+          customMealError.hidden = false;
+          customMealError.textContent = message;
+        }
+
+        function addItemsToCustomMeal(entries = []) {
+          if (!entries.length) return;
+          customMealState.items = [...customMealState.items, ...entries.map(normalizeBuilderEntry)];
+          if (entries[0]?.meal && mealNames[entries[0].meal]) {
+            customMealState.meal = entries[0].meal;
+          }
+          setCustomMealError("");
+          renderCustomMealBuilder();
+          customMealBuilderRoot.hidden = false;
+          document.body.classList.add("has-custom-meal-builder");
+        }
+
+        function launchCustomMealPicker(flowTab) {
+          if (!window.AvocadoFoodFlow?.openFoodPicker) {
+            setCustomMealError("امکان بازکردن انتخاب‌گر خوراک در این لحظه وجود ندارد.");
+            return;
+          }
+          window.AvocadoFoodFlow.openFoodPicker({
+            meal: customMealState.meal || "other",
+            flowTab,
+            onPick(entries) {
+              addItemsToCustomMeal(entries);
+            },
+          });
+        }
+
+        function updateCustomMealItem(builderId, patch) {
+          customMealState.items = customMealState.items.map((item) => {
+            if (item.builderId !== builderId) return item;
+            const next = { ...item, ...patch };
+            const quantity = Math.max(Number(next.quantity || 0) || 0.5, 0.5);
+            return {
+              ...next,
+              quantity,
+              calories: Number((next.baseCalories * quantity).toFixed(1)),
+              protein: Number((next.baseProtein * quantity).toFixed(1)),
+              carbs: Number((next.baseCarbs * quantity).toFixed(1)),
+              fat: Number((next.baseFat * quantity).toFixed(1)),
+            };
+          });
+          renderCustomMealBuilder();
+        }
+
+        function moveCustomMealItem(builderId, direction) {
+          const index = customMealState.items.findIndex((item) => item.builderId === builderId);
+          if (index === -1) return;
+          const nextIndex = direction === "up" ? index - 1 : index + 1;
+          if (nextIndex < 0 || nextIndex >= customMealState.items.length) return;
+          const nextItems = [...customMealState.items];
+          [nextItems[index], nextItems[nextIndex]] = [nextItems[nextIndex], nextItems[index]];
+          customMealState.items = nextItems;
+          renderCustomMealBuilder();
+        }
+
+        function saveCustomMeal() {
+          const name = customMealNameInput.value.trim();
+          if (!name) {
+            setCustomMealError("برای ذخیره، نام وعده را وارد کن.");
+            customMealNameInput.focus();
+            return;
+          }
+          if (!customMealState.items.length) {
+            setCustomMealError("حداقل یک خوراک به این وعده اضافه کن.");
+            return;
+          }
+          const totals = customMealTotalsData();
+          const comboMeals = readComboMeals();
+          const record = {
+            id: `combo-meal-${Date.now()}`,
+            kind: "combo",
+            name,
+            mealType: customMealTypeInput.value,
+            reference: `${formatBuilderNumber(customMealState.items.length)} خوراک`,
+            defaultQuantity: 1,
+            defaultUnit: "وعده",
+            category: "وعده ترکیبی",
+            calories: Number(totals.calories.toFixed(1)),
+            protein: Number(totals.protein.toFixed(1)),
+            carbs: Number(totals.carbs.toFixed(1)),
+            fat: Number(totals.fat.toFixed(1)),
+            units: [{ label: "۱ وعده", multiplier: 1 }],
+            ingredients: customMealState.items.map((item) => item.name).join(" + "),
+            note: customMealNoteInput.value.trim(),
+            items: customMealState.items.map((item) => ({
+              foodId: item.foodId,
+              name: item.name,
+              quantity: item.quantity,
+              unit: item.unit,
+              calories: item.calories,
+              protein: item.protein,
+              carbs: item.carbs,
+              fat: item.fat,
+              note: item.note || "",
+            })),
+            usageCount: 0,
+            savedAt: new Date().toISOString(),
+          };
+          writeComboMeals([record, ...comboMeals]);
+          closeCustomMealBuilder();
+          showToast("وعده سفارشی با موفقیت ذخیره شد.");
+        }
+
+        document.addEventListener("click", (event) => {
+          const openBuilder = event.target.closest("[data-open-saved-foods-create]");
+          if (openBuilder) {
+            event.preventDefault();
+            openCustomMealBuilder();
+            return;
+          }
+          const closeBuilder = event.target.closest("[data-custom-meal-close],[data-custom-meal-cancel]");
+          if (closeBuilder) {
+            event.preventDefault();
+            closeCustomMealBuilder();
+            return;
+          }
+          const pickerButton = event.target.closest("[data-custom-meal-picker]");
+          if (pickerButton) {
+            event.preventDefault();
+            launchCustomMealPicker(pickerButton.dataset.customMealPicker);
+            return;
+          }
+          const deleteButton = event.target.closest("[data-builder-delete]");
+          if (deleteButton) {
+            customMealState.items = customMealState.items.filter((item) => item.builderId !== deleteButton.dataset.builderDelete);
+            renderCustomMealBuilder();
+            return;
+          }
+          const moveButton = event.target.closest("[data-builder-move]");
+          if (moveButton) {
+            moveCustomMealItem(moveButton.dataset.builderId, moveButton.dataset.builderMove);
+            return;
+          }
+          const saveButton = event.target.closest("[data-custom-meal-save]");
+          if (saveButton) {
+            saveCustomMeal();
+          }
+        });
+
+        document.addEventListener("input", (event) => {
+          if (event.target === customMealNameInput) customMealState.name = event.target.value;
+          if (event.target === customMealNoteInput) customMealState.note = event.target.value;
+          const quantityInput = event.target.closest("[data-builder-quantity]");
+          if (quantityInput) {
+            updateCustomMealItem(quantityInput.dataset.builderQuantity, { quantity: quantityInput.value });
+          }
+          const unitInput = event.target.closest("[data-builder-unit]");
+          if (unitInput) {
+            customMealState.items = customMealState.items.map((item) => item.builderId === unitInput.dataset.builderUnit ? { ...item, unit: unitInput.value } : item);
+          }
+        });
+
+        customMealTypeInput?.addEventListener("change", (event) => {
+          customMealState.meal = event.target.value;
+        });
+
+        window.AvocadoFoodLogApi = {
+          mealNames,
+          appendLoggedFood,
+          importStoredEntries,
+          openMealGroup,
+          showToast,
+          updateMeals,
+          getFlowContext() {
+            return {
+              meal: lastLoggedMealKey && mealNames[lastLoggedMealKey] ? lastLoggedMealKey : "lunch",
+              date: currentLogDateIso(),
+              sourcePage: "food-log-botanical.html",
+              fromFlow: true,
+            };
+          },
+        };
+      })();
+    </script>
+  </body>
+</html>
+
+

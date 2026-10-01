@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "workout-weekly-botanical.html",
+  "entry": "workout-weekly-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-24T18:42:11.328Z",
+  "updatedAt": "2026-07-24T18:42:11.328Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "system-states-botanical.html",
+  "entry": "system-states-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-12T11:49:28.550Z",
+  "updatedAt": "2026-07-12T11:49:28.550Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "coach-space-botanical.html",
+  "entry": "coach-space-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-25T17:31:33.149Z",
+  "updatedAt": "2026-07-25T17:31:33.149Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

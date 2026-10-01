@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "mvp-navigation.html",
+  "entry": "mvp-navigation.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-12T12:44:20.042Z",
+  "updatedAt": "2026-07-12T12:44:20.042Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

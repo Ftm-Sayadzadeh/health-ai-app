@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0d685d" />
+    <title>ورود یا ساخت حساب — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body data-page="auth" data-theme="botanical">
+    <a class="skip-link" href="#auth-main">پرش به فرم ورود</a>
+    <main class="auth-page" id="auth-main">
+      <aside class="auth-art" aria-label="معرفی کوتاه آووکادو">
+        <a class="brand" href="index.html"
+          ><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect
+              class="brand-mark__plan"
+              x="7"
+              y="9"
+              width="29"
+              height="11"
+              rx="5.5"
+            />
+            <rect
+              class="brand-mark__actual"
+              x="12"
+              y="27"
+              width="29"
+              height="11"
+              rx="5.5"
+            />
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4" /></svg
+          ><span>آووکادو</span></a
+        >
+        <div class="auth-art__content">
+          <h2>هر روز، یک ثبت ساده.</h2>
+          <p>
+            برای دیدن امروز، ثبت غذای واقعی و دسترسی به برنامه‌ها فقط شماره
+            همراهتان را تأیید کنید.
+          </p>
+          <div class="auth-art__tracks">
+            <div class="auth-track">
+              <i class="track-marker" aria-hidden="true"></i
+              ><span>برنامه‌ها؛ آنچه قصد دارید انجام دهید</span>
+            </div>
+            <div class="auth-track">
+              <i
+                class="track-marker track-marker--actual"
+                aria-hidden="true"
+              ></i
+              ><span>ثبت امروز؛ آنچه واقعاً انجام شده است</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+      <section class="auth-content" data-od-id="auth-page">
+        <header class="auth-top">
+          <a class="brand" href="index.html"
+            ><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+              <rect
+                class="brand-mark__plan"
+                x="7"
+                y="9"
+                width="29"
+                height="11"
+                rx="5.5"
+              />
+              <rect
+                class="brand-mark__actual"
+                x="12"
+                y="27"
+                width="29"
+                height="11"
+                rx="5.5"
+              />
+              <circle class="brand-mark__pulse" cx="39" cy="13" r="4" /></svg
+            ><span>آووکادو</span></a
+          ><a class="auth-top__back" href="index.html"
+            ><svg class="icon" aria-hidden="true">
+              <use href="assets/icons.svg#icon-close" /></svg
+            >بستن</a
+          >
+        </header>
+        <div class="auth-card">
+          <p class="eyebrow">ورود یا ساخت حساب</p>
+          <h1>شماره همراهتان را وارد کنید</h1>
+          <p>
+            اگر قبلاً حساب ساخته‌اید وارد می‌شوید؛ اگر کاربر جدید باشید بعد از
+            تأیید شماره، حساب شما آماده است.
+          </p>
+          <form class="form-stack" id="phone-form" novalidate>
+            <label class="field"
+              ><span class="field__label">شماره همراه</span
+              ><span class="phone-control" id="phone-control"
+                ><span class="phone-control__prefix">+98</span
+                ><input
+                  id="mobile-number"
+                  name="mobile"
+                  type="tel"
+                  inputmode="tel"
+                  autocomplete="tel"
+                  dir="ltr"
+                  placeholder="912 345 6789"
+                  aria-describedby="phone-help phone-error" /></span
+              ><small class="field__hint" id="phone-help"
+                >شماره را با صفر یا بدون صفر وارد کنید.</small
+              ><small class="field__error" id="phone-error" role="alert" aria-live="assertive" hidden
+                >شماره همراه باید با ۰۹ شروع شود و ۱۱ رقم داشته باشد.</small
+              ></label
+            >
+            <div
+              class="form-alert form-alert--error"
+              id="server-error"
+              role="alert"
+              aria-live="assertive"
+              hidden
+            >
+              <svg class="icon" aria-hidden="true">
+                <use href="assets/icons.svg#icon-info" /></svg
+              ><span
+                >ارسال کد انجام نشد. اتصال را بررسی کنید و دوباره تلاش
+                کنید.</span
+              >
+            </div>
+            <button
+              class="button button--primary button--lg button--full"
+              id="phone-submit"
+              type="submit"
+              aria-describedby="phone-submit-help"
+              disabled
+            >
+              <span class="button__loader" aria-hidden="true" hidden></span
+              ><span data-button-label>دریافت کد تأیید</span>
+            </button>
+            <small class="field__hint" id="phone-submit-help" aria-live="polite"
+              >پس از ورود شماره معتبر، دکمه فعال می‌شود. اگر ارسال کامل نشود، همین شماره در فرم باقی می‌ماند.</small
+            >
+            <p class="consent-copy">
+              با ادامه، <a href="#terms">شرایط استفاده</a> و
+              <a href="#privacy">حریم خصوصی</a> آووکادو را می‌پذیرید.
+            </p>
+          </form>
+        </div>
+        <footer class="auth-footer">
+          ورود امن با کد یک‌بارمصرف · بدون رمز عبور
+        </footer>
+      </section>
+    </main>
+  </body>
+</html>

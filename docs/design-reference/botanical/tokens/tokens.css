@@ -1,0 +1,138 @@
+:root {
+  color-scheme: light;
+
+  /* Foundations — cool mineral canvas from the first approved direction */
+  --av-color-canvas: oklch(98.5% 0.006 188);
+  --av-color-surface: oklch(100% 0 0);
+  --av-color-surface-subtle: oklch(96.5% 0.012 188);
+  --av-color-surface-raised: oklch(99.4% 0.004 188);
+  --av-color-ink-strong: oklch(21% 0.035 220);
+  --av-color-ink: oklch(30% 0.03 220);
+  --av-color-ink-muted: oklch(48% 0.028 220);
+  --av-color-border: oklch(88% 0.018 190);
+  --av-color-border-strong: oklch(74% 0.026 192);
+
+  /* Brand and product semantics */
+  --av-color-primary: oklch(42% 0.105 176);
+  --av-color-primary-hover: oklch(36% 0.1 176);
+  --av-color-primary-active: oklch(32% 0.09 176);
+  --av-color-primary-soft: oklch(94% 0.035 176);
+  --av-color-pulse: oklch(82% 0.17 112);
+  --av-color-pulse-ink: oklch(28% 0.07 118);
+  --av-color-plan: oklch(49% 0.145 268);
+  --av-color-plan-hover: oklch(42% 0.135 268);
+  --av-color-plan-soft: oklch(95% 0.027 268);
+  --av-color-actual: var(--av-color-primary);
+  --av-color-actual-soft: var(--av-color-primary-soft);
+
+  /* Status */
+  --av-color-success: oklch(42% 0.105 152);
+  --av-color-success-soft: oklch(95% 0.035 152);
+  --av-color-warning: oklch(52% 0.13 76);
+  --av-color-warning-soft: oklch(96% 0.045 76);
+  --av-color-danger: oklch(48% 0.165 26);
+  --av-color-danger-soft: oklch(96% 0.035 26);
+  --av-color-info: oklch(48% 0.12 245);
+  --av-color-info-soft: oklch(95% 0.028 245);
+  --av-color-focus: oklch(61% 0.18 255);
+  --av-color-overlay: oklch(15% 0.03 220 / 0.58);
+
+  /* Typography */
+  --av-font-display: "Kalameh", Tahoma, system-ui, sans-serif;
+  --av-font-body: "Kalameh", Tahoma, system-ui, sans-serif;
+  --av-font-technical: "Kalameh", Tahoma, system-ui, sans-serif;
+  --av-font-weight-regular: 400;
+  --av-font-weight-medium: 500;
+  --av-font-weight-semibold: 650;
+  --av-font-weight-bold: 780;
+  --av-text-xs: 0.75rem;
+  --av-text-sm: 0.875rem;
+  --av-text-md: 1rem;
+  --av-text-lg: 1.125rem;
+  --av-text-xl: 1.375rem;
+  --av-text-2xl: clamp(1.625rem, 1.35rem + 1vw, 2.125rem);
+  --av-text-3xl: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+  --av-leading-tight: 1.25;
+  --av-leading-body: 1.75;
+  --av-leading-relaxed: 1.95;
+
+  /* Spacing — 4px base with touch-oriented jumps */
+  --av-space-0: 0;
+  --av-space-1: 0.25rem;
+  --av-space-2: 0.5rem;
+  --av-space-3: 0.75rem;
+  --av-space-4: 1rem;
+  --av-space-5: 1.25rem;
+  --av-space-6: 1.5rem;
+  --av-space-8: 2rem;
+  --av-space-10: 2.5rem;
+  --av-space-12: 3rem;
+  --av-space-16: 4rem;
+  --av-space-20: 5rem;
+
+  /* Shape */
+  --av-radius-xs: 0.375rem;
+  --av-radius-sm: 0.625rem;
+  --av-radius-md: 0.875rem;
+  --av-radius-lg: 1.125rem;
+  --av-radius-xl: 1.5rem;
+  --av-radius-pill: 999px;
+  --av-border-width: 1px;
+  --av-border-width-strong: 2px;
+
+  /* Elevation — reserved for temporary layers */
+  --av-shadow-1: 0 1px 2px oklch(21% 0.035 220 / 0.06), 0 8px 24px oklch(21% 0.035 220 / 0.06);
+  --av-shadow-2: 0 12px 40px oklch(21% 0.035 220 / 0.14);
+  --av-shadow-focus: 0 0 0 3px color-mix(in oklch, var(--av-color-focus) 38%, transparent);
+
+  /* Motion */
+  --av-duration-instant: 80ms;
+  --av-duration-fast: 160ms;
+  --av-duration-normal: 240ms;
+  --av-duration-slow: 360ms;
+  --av-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --av-ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Layout */
+  --av-control-min: 2.75rem;
+  --av-control-comfortable: 3rem;
+  --av-page-gutter: clamp(1rem, 3vw, 2rem);
+  --av-content-max: 76rem;
+  --av-reading-max: 42rem;
+  --av-bottom-nav-height: 4.75rem;
+  --av-z-sticky: 20;
+  --av-z-sheet: 60;
+  --av-z-dialog: 80;
+  --av-z-toast: 100;
+}
+
+:root[data-theme="botanical"] {
+  --av-color-canvas: oklch(98.2% 0.012 116);
+  --av-color-surface: oklch(100% 0 0);
+  --av-color-surface-subtle: oklch(96.2% 0.025 116);
+  --av-color-surface-raised: oklch(99.4% 0.006 116);
+  --av-color-ink-strong: oklch(25% 0.075 148);
+  --av-color-ink: oklch(32% 0.055 150);
+  --av-color-ink-muted: oklch(46% 0.04 150);
+  --av-color-border: oklch(88% 0.035 120);
+  --av-color-border-strong: oklch(72% 0.055 122);
+  --av-color-primary: oklch(34% 0.105 150);
+  --av-color-primary-hover: oklch(29% 0.1 150);
+  --av-color-primary-active: oklch(25% 0.09 150);
+  --av-color-primary-soft: oklch(94% 0.055 118);
+  --av-color-pulse: oklch(80% 0.15 112);
+  --av-color-pulse-ink: oklch(27% 0.07 142);
+  --av-color-plan: oklch(53% 0.12 292);
+  --av-color-plan-hover: oklch(44% 0.12 292);
+  --av-color-plan-soft: oklch(95% 0.028 292);
+  --av-color-focus: oklch(60% 0.15 292);
+  --av-color-overlay: oklch(18% 0.055 150 / 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --av-duration-fast: 1ms;
+    --av-duration-normal: 1ms;
+    --av-duration-slow: 1ms;
+  }
+}

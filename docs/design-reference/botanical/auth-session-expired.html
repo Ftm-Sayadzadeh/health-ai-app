@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0d685d" />
+    <title>نشست منقضی شد — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .session-recovery { min-block-size: 100svh; display: grid; background: var(--av-color-surface); }
+      .session-card-main { inline-size: min(100%, 32rem); align-self: center; justify-self: center; display: grid; gap: 1rem; border: 1px solid color-mix(in oklch, var(--av-color-danger) 20%, var(--av-color-border)); border-radius: 2rem 2rem .8rem 2rem; background: color-mix(in oklch, white 94%, transparent); padding: clamp(1.25rem, 4vw, 2.25rem); box-shadow: 0 1.5rem 4rem color-mix(in oklch, var(--av-color-primary) 8%, transparent); }
+      .session-card-main h1 { margin: 0; color: var(--av-color-ink-strong); font-size: clamp(2rem, 1.6rem + 1.6vw, 3rem); line-height: 1.25; }
+      .session-card-main p { margin: 0; color: var(--av-color-ink-muted); line-height: 1.8; }
+      .session-details { display: grid; gap: .7rem; margin: 0; padding: 0; list-style: none; }
+      .session-details li { display: grid; grid-template-columns: auto 1fr; gap: .55rem; align-items: start; border: 1px solid var(--av-color-border); border-radius: 1rem 1rem .45rem 1rem; background: var(--av-color-surface-subtle); padding: .75rem; color: var(--av-color-ink-muted); }
+      .session-details i { inline-size: 1.45rem; block-size: 1.45rem; display: grid; place-items: center; border-radius: .5rem .5rem .2rem .5rem; background: var(--av-color-primary-soft); color: var(--av-color-primary); font-style: normal; font-weight: 700; }
+      .session-actions { display: grid; gap: .7rem; margin-block-start: .25rem; }
+      .session-alert { border-radius: 1rem 1rem .45rem 1rem; background: var(--av-color-warning-soft); color: var(--av-color-ink-strong); padding: .75rem; line-height: 1.75; }
+      @media (min-width: 58rem) {
+        .session-recovery { grid-template-columns: minmax(22rem, .85fr) minmax(26rem, 1.15fr); }
+        .session-card-main { justify-self: center; }
+      }
+    </style>
+  </head>
+  <body data-page="auth-session-expired" data-theme="botanical">
+    <a class="skip-link" href="#session-main">پرش به بازیابی نشست</a>
+    <main class="session-recovery" id="session-main">
+      <aside class="auth-art" aria-label="بازیابی امن نشست">
+        <a class="brand" href="index-botanical.html">
+          <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect class="brand-mark__plan" x="7" y="9" width="29" height="11" rx="5.5" />
+            <rect class="brand-mark__actual" x="12" y="27" width="29" height="11" rx="5.5" />
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4" />
+          </svg>
+          <span>آووکادو</span>
+        </a>
+        <div class="auth-art__content">
+          <h2>برای ادامه، دوباره وارد شوید.</h2>
+          <p>مسیر فعلی حفظ می‌شود و پس از ورود، به همان بخش امن برمی‌گردید.</p>
+        </div>
+      </aside>
+      <section class="auth-content" data-od-id="session-expired-page">
+        <header class="auth-top">
+          <a class="brand" href="index-botanical.html">
+            <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+              <rect class="brand-mark__plan" x="7" y="9" width="29" height="11" rx="5.5" />
+              <rect class="brand-mark__actual" x="12" y="27" width="29" height="11" rx="5.5" />
+              <circle class="brand-mark__pulse" cx="39" cy="13" r="4" />
+            </svg>
+            <span>آووکادو</span>
+          </a>
+          <a class="auth-top__back" href="index-botanical.html">صفحه عمومی</a>
+        </header>
+        <article class="session-card-main" aria-labelledby="session-title" aria-describedby="session-copy" data-od-id="session-card">
+          <p class="eyebrow">بازیابی نشست</p>
+          <h1 id="session-title">نشست شما منقضی شد</h1>
+          <p id="session-copy">برای حفظ امنیت حساب، لازم است دوباره وارد شوید. پس از ورود، اگر مسیر قبلی امن باشد به همان مقصد برمی‌گردید.</p>
+          <div class="session-alert" role="status" aria-live="polite">اگر پیش‌نویس محلی امنی وجود داشته باشد، تا پایان ورود نگه داشته می‌شود.</div>
+          <ul class="session-details" aria-label="جزئیات حفظ مسیر">
+            <li><i aria-hidden="true">۱</i><span>مقصد محفوظ: <bdi dir="auto">/nutrition?date=today</bdi></span></li>
+            <li><i aria-hidden="true">۲</i><span>پیش‌نویس‌های محلی فقط وقتی امن باشند حفظ می‌شوند.</span></li>
+            <li><i aria-hidden="true">۳</i><span>در خطای تکراری ورود، جزئیات فنی نمایش داده نمی‌شود.</span></li>
+          </ul>
+          <div class="session-actions">
+            <a class="button button--primary button--lg button--full" href="auth-botanical.html">ورود دوباره</a>
+            <a class="button button--secondary button--lg button--full" href="index-botanical.html">بازگشت به صفحه عمومی</a>
+          </div>
+        </article>
+        <footer class="auth-footer">این پیام به خطای داخلی یا وضعیت توکن اشاره نمی‌کند.</footer>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#123f26" />
+    <title>ناوبری MVP — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <style>
+      @font-face { font-family: Kalameh; src: url("assets/fonts/kalameh/Kalameh-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+      @font-face { font-family: Kalameh; src: url("assets/fonts/kalameh/Kalameh-SemiBold.ttf") format("truetype"); font-weight: 650; font-display: swap; }
+      @font-face { font-family: Kalameh; src: url("assets/fonts/kalameh/Kalameh-Bold.ttf") format("truetype"); font-weight: 780; font-display: swap; }
+      * { box-sizing: border-box; }
+      html { background: var(--av-color-canvas); color: var(--av-color-ink); }
+      body { margin: 0; font-family: var(--av-font-body); line-height: var(--av-leading-body); }
+      a { color: inherit; text-decoration: none; }
+      button { font: inherit; color: inherit; }
+      :where(a, button):focus-visible { outline: 3px solid var(--av-color-focus); outline-offset: 3px; }
+      .page { max-inline-size: 76rem; margin-inline: auto; padding: clamp(1rem, 3vw, 2rem); }
+      .intro { display: grid; gap: .55rem; margin-block-end: 1.25rem; }
+      .intro h1 { margin: 0; color: var(--av-color-ink-strong); font-size: clamp(1.6rem, 3vw, 2.35rem); line-height: 1.35; }
+      .intro p { max-inline-size: 46rem; margin: 0; color: var(--av-color-ink-muted); }
+      .grid { display: grid; gap: 1rem; }
+      .nav-card { overflow: hidden; border: 1px solid var(--av-color-border); border-radius: 1.35rem 1.35rem .65rem 1.35rem; background: var(--av-color-surface); }
+      .nav-card > header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-block-end: 1px solid var(--av-color-border); padding: 1rem; }
+      .nav-card h2 { margin: 0; color: var(--av-color-ink-strong); font-size: var(--av-text-lg); }
+      .nav-card small { color: var(--av-color-ink-muted); font-variant-numeric: tabular-nums; }
+      .phone-shell { max-inline-size: 25rem; margin-inline: auto; border: 1px solid var(--av-color-border); border-radius: 2rem; background: var(--av-color-canvas); padding: .75rem; }
+      .phone-screen { min-block-size: 41rem; display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; border-radius: 1.35rem; background: var(--av-color-surface); }
+      .phone-top { display: flex; align-items: center; justify-content: space-between; border-block-end: 1px solid var(--av-color-border); padding: .75rem; }
+      .phone-body { display: grid; align-content: start; gap: .75rem; padding: 1rem; background: var(--av-color-canvas); }
+      .ghost { border: 1px solid var(--av-color-border); border-radius: 1rem; background: var(--av-color-surface); padding: .85rem; }
+      .ghost strong { display: block; color: var(--av-color-ink-strong); }
+      .ghost span { color: var(--av-color-ink-muted); font-size: var(--av-text-xs); }
+      .bottom-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .25rem; border: 1px solid var(--av-color-border); border-radius: 1.2rem 1.2rem .6rem 1.2rem; background: color-mix(in oklch, var(--av-color-surface) 96%, transparent); padding: .35rem; padding-block-end: max(.35rem, env(safe-area-inset-bottom)); box-shadow: var(--av-shadow-1); }
+      .bottom-nav a { min-block-size: 3.65rem; display: grid; place-items: center; align-content: center; gap: .1rem; border-radius: 1rem; color: var(--av-color-ink-muted); font-size: .72rem; }
+      .bottom-nav a[aria-current="page"] { background: var(--av-color-primary-soft); color: var(--av-color-primary); font-weight: 650; }
+      .tablet-shell { display: grid; gap: 1rem; padding: 1rem; background: var(--av-color-canvas); }
+      .tablet-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(15rem, .7fr); gap: 1rem; }
+      .desktop-shell { display: grid; grid-template-columns: 15.5rem minmax(0, 1fr); min-block-size: 34rem; background: var(--av-color-canvas); }
+      .side-nav { display: flex; flex-direction: column; gap: 1.5rem; background: linear-gradient(180deg, var(--av-color-primary-active), var(--av-color-ink-strong)); padding: 1rem; color: white; }
+      .brand { display: flex; align-items: center; gap: .6rem; font-weight: 780; }
+      .mark { inline-size: 2.1rem; block-size: 2.1rem; border-radius: .9rem .9rem .35rem .9rem; background: white; }
+      .side-nav nav { display: grid; gap: .35rem; }
+      .side-nav a { min-block-size: 3rem; display: flex; align-items: center; border-radius: 1rem 1rem .35rem 1rem; padding-inline: .85rem; color: color-mix(in oklch, white 78%, transparent); }
+      .side-nav a[aria-current="page"] { background: var(--av-color-pulse); color: var(--av-color-pulse-ink); font-weight: 650; }
+      .desktop-main { display: grid; align-content: start; gap: 1rem; padding: 1.25rem; }
+      .desktop-header { display: flex; justify-content: space-between; align-items: center; border-block-end: 1px solid var(--av-color-border); padding-block-end: .85rem; }
+      .desktop-header strong { color: var(--av-color-ink-strong); }
+      .rule-list { display: grid; gap: .65rem; padding: 1rem; }
+      .rule { display: grid; grid-template-columns: auto 1fr; gap: .65rem; align-items: start; }
+      .rule i { inline-size: .65rem; block-size: .65rem; border-radius: 50%; background: var(--av-color-primary); margin-block-start: .6rem; }
+      .rule strong { color: var(--av-color-ink-strong); }
+      .rule span { display: block; color: var(--av-color-ink-muted); font-size: var(--av-text-sm); }
+      @media (min-width: 56rem) { .grid { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: start; } .nav-card--wide { grid-column: 1 / -1; } }
+      @media (max-width: 42rem) { .tablet-layout { grid-template-columns: 1fr; } .desktop-shell { grid-template-columns: 1fr; } .side-nav { display: none; } }
+    </style>
+  </head>
+  <body>
+    <main class="page" data-od-id="navigation-foundation-page">
+      <section class="intro" data-od-id="navigation-intro">
+        <h1>ناوبری تولیدی MVP</h1>
+        <p>چهار مقصد ثابت در همه اندازه‌ها حفظ می‌شوند: امروز، ثبت غذا، برنامه‌ها، من. دسکتاپ فقط وقتی فضای کافی دارد ریل RTL را نمایش می‌دهد.</p>
+      </section>
+
+      <div class="grid">
+        <article class="nav-card" data-od-id="mobile-navigation-example">
+          <header><h2>موبایل</h2><small dir="ltr">360 / 390 / 430px</small></header>
+          <div class="phone-shell">
+            <div class="phone-screen">
+              <div class="phone-top"><strong>امروز</strong><span>سارا</span></div>
+              <div class="phone-body">
+                <div class="ghost"><strong>ثبت خوراک امروز</strong><span>اقدام اصلی در دسترس انگشت باقی می‌ماند.</span></div>
+                <div class="ghost"><strong>برنامه فعال</strong><span>نمایش قصد برنامه، نه مصرف واقعی.</span></div>
+              </div>
+              <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل">
+                <a href="/dashboard" aria-current="page">امروز</a>
+                <a href="/nutrition">ثبت غذا</a>
+                <a href="/plans">برنامه‌ها</a>
+                <a href="/profile">من</a>
+              </nav>
+            </div>
+          </div>
+        </article>
+
+        <article class="nav-card" data-od-id="tablet-navigation-example">
+          <header><h2>تبلت</h2><small dir="ltr">768px</small></header>
+          <div class="tablet-shell">
+            <div class="desktop-header"><strong>امروز</strong><span>نمای فشرده</span></div>
+            <div class="tablet-layout">
+              <div class="ghost"><strong>خلاصه روز</strong><span>محتوا همچنان خوانا و یک‌مسیره است.</span></div>
+              <div class="ghost"><strong>اقدام بعدی</strong><span>کارت‌های مکمل کنار محتوا می‌آیند.</span></div>
+            </div>
+            <nav class="bottom-nav" aria-label="ناوبری اصلی تبلت">
+              <a href="/dashboard" aria-current="page">امروز</a>
+              <a href="/nutrition">ثبت غذا</a>
+              <a href="/plans">برنامه‌ها</a>
+              <a href="/profile">من</a>
+            </nav>
+          </div>
+        </article>
+
+        <article class="nav-card nav-card--wide" data-od-id="desktop-navigation-example">
+          <header><h2>دسکتاپ</h2><small dir="ltr">1024 / 1440px</small></header>
+          <div class="desktop-shell">
+            <aside class="side-nav" aria-label="ناوبری اصلی دسکتاپ">
+              <div class="brand"><span class="mark" aria-hidden="true"></span><span>آووکادو</span></div>
+              <nav>
+                <a href="/dashboard" aria-current="page">امروز</a>
+                <a href="/nutrition">ثبت غذا</a>
+                <a href="/plans">برنامه‌ها</a>
+                <a href="/profile">من</a>
+              </nav>
+            </aside>
+            <section class="desktop-main">
+              <div class="desktop-header"><strong>امروز</strong><span>عرض محتوا کنترل‌شده</span></div>
+              <div class="tablet-layout">
+                <div class="ghost"><strong>ستون اصلی</strong><span>داده‌های امروز و اقدام اصلی.</span></div>
+                <div class="ghost"><strong>ستون کمکی</strong><span>ادامه پرسش‌نامه یا برنامه فعال.</span></div>
+              </div>
+            </section>
+          </div>
+        </article>
+
+        <article class="nav-card nav-card--wide" data-od-id="navigation-rules">
+          <header><h2>قواعد ناوبری</h2><small>برای همه صفحات MVP</small></header>
+          <div class="rule-list">
+            <div class="rule"><i></i><div><strong>ترتیب ثابت</strong><span>امروز، ثبت غذا، برنامه‌ها، من؛ در موبایل و دسکتاپ یکسان.</span></div></div>
+            <div class="rule"><i></i><div><strong>وضعیت فعال روشن</strong><span>فعال با زمینه نرم، متن و وزن مشخص می‌شود؛ رنگ تنها نشانه نیست.</span></div></div>
+            <div class="rule"><i></i><div><strong>ریل دسکتاپ آرام</strong><span>ناوبری کناری فشرده، محصولی و غیراداری است؛ از شلوغی داشبوردهای سازمانی دور می‌ماند.</span></div></div>
+            <div class="rule"><i></i><div><strong>ایمنی موبایل</strong><span>ناوبری پایین safe-area را رعایت می‌کند و CTA یا فیلدها را نمی‌پوشاند.</span></div></div>
+          </div>
+        </article>
+      </div>
+    </main>
+  </body>
+</html>

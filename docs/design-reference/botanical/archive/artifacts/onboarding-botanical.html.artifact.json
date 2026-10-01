@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "onboarding-botanical.html",
+  "entry": "onboarding-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-12T11:41:54.584Z",
+  "updatedAt": "2026-07-12T11:41:54.584Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

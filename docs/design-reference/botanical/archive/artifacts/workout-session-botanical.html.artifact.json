@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "workout-session-botanical.html",
+  "entry": "workout-session-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-24T18:42:11.329Z",
+  "updatedAt": "2026-07-24T18:42:11.329Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

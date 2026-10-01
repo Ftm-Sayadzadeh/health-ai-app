@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#123f26" />
+    <title>آب امروز — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="src/date-utils.js" defer></script>
+    <script src="app.js" defer></script>
+    <style>
+      .water-page {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .water-hero {
+        display: grid;
+        gap: 1rem;
+        border-radius: 1.7rem 1.7rem .8rem 1.7rem;
+        background:
+          linear-gradient(145deg, color-mix(in oklch, var(--av-color-primary-soft) 74%, white) 0%, color-mix(in oklch, var(--av-color-surface) 94%, white) 100%);
+        padding: 1rem;
+      }
+
+      .water-hero__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: .8rem;
+        flex-wrap: wrap;
+      }
+
+      .water-hero__eyebrow,
+      .water-badge,
+      .water-chip,
+      .water-menu__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-block-size: 2rem;
+        border-radius: 999px;
+        font-size: .78rem;
+        font-weight: 650;
+      }
+
+      .water-hero__eyebrow {
+        padding-inline: .85rem;
+        background: color-mix(in oklch, var(--av-color-surface) 80%, white);
+        color: var(--av-color-primary);
+      }
+
+      .water-hero h1,
+      .water-card h2,
+      .water-card h3,
+      .reminder-card h2,
+      .sheet__header h2 {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+      }
+
+      .water-hero h1 {
+        margin-block-start: .45rem;
+        font-size: clamp(1.65rem, 1.45rem + .8vw, 2.4rem);
+        font-weight: 800;
+      }
+
+      .water-hero p,
+      .water-card p,
+      .reminder-card p,
+      .sheet__header p {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+      }
+
+      .water-hero__layout {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .water-hero__stats {
+        display: grid;
+        gap: .75rem;
+      }
+
+      .water-kpis {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .55rem;
+      }
+
+      .water-chip {
+        padding-inline: .8rem;
+        background: color-mix(in oklch, var(--av-color-primary-soft) 82%, white);
+        color: var(--av-color-ink-strong);
+      }
+
+      .water-badge {
+        padding-inline: .85rem;
+        background: color-mix(in oklch, var(--av-color-success-soft) 74%, white);
+        color: var(--av-color-success);
+      }
+
+      .water-copy-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .7rem;
+      }
+
+      .water-copy-item {
+        border-radius: 1rem 1rem .45rem 1rem;
+        background: color-mix(in oklch, var(--av-color-surface) 86%, white);
+        padding: .8rem;
+      }
+
+      .water-copy-item span {
+        display: block;
+        color: var(--av-color-ink-muted);
+        font-size: .74rem;
+      }
+
+      .water-copy-item strong {
+        display: block;
+        margin-block-start: .2rem;
+        color: var(--av-color-ink-strong);
+        font-size: 1.15rem;
+      }
+
+      .water-motivation {
+        border-inline-start: 3px solid color-mix(in oklch, var(--av-color-primary) 34%, transparent);
+        padding-inline-start: .85rem;
+        color: var(--av-color-ink-strong);
+        font-size: .9rem;
+      }
+
+      .water-hero__visual {
+        display: grid;
+        gap: .9rem;
+        align-content: start;
+      }
+
+      .water-hero__visual-card {
+        display: grid;
+        place-items: center;
+        gap: .8rem;
+        border-radius: 1.25rem 1.25rem .55rem 1.25rem;
+        background: color-mix(in oklch, var(--av-color-surface) 88%, white);
+        padding: 1rem;
+      }
+
+      .water-ring {
+        --value: 62.5;
+        inline-size: 8.2rem;
+        block-size: 8.2rem;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: conic-gradient(var(--av-color-primary) calc(var(--value) * 1%), color-mix(in oklch, var(--av-color-primary) 10%, var(--av-color-border)) 0);
+      }
+
+      .water-ring::before {
+        content: "";
+        grid-area: 1 / 1;
+        inline-size: 6.15rem;
+        block-size: 6.15rem;
+        border-radius: 50%;
+        background: var(--av-color-surface);
+      }
+
+      .water-ring__inner {
+        position: relative;
+        grid-area: 1 / 1;
+        display: grid;
+        gap: .12rem;
+        place-items: center;
+        text-align: center;
+      }
+
+      .water-ring__inner strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1.35rem;
+      }
+
+      .water-ring__inner span {
+        color: var(--av-color-ink-muted);
+        font-size: .74rem;
+      }
+
+      .water-bottle {
+        inline-size: 4rem;
+        block-size: 7rem;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid color-mix(in oklch, var(--av-color-primary) 18%, var(--av-color-border));
+        border-radius: 1.1rem 1.1rem .7rem .7rem;
+        background: color-mix(in oklch, white 78%, var(--av-color-surface));
+      }
+
+      .water-bottle::before {
+        content: "";
+        position: absolute;
+        inset-block-start: -.7rem;
+        inset-inline: 1rem;
+        block-size: 1rem;
+        border: 2px solid color-mix(in oklch, var(--av-color-primary) 18%, var(--av-color-border));
+        border-block-end: 0;
+        border-radius: .7rem .7rem 0 0;
+        background: color-mix(in oklch, white 78%, var(--av-color-surface));
+      }
+
+      .water-bottle__fill {
+        --fill: 62.5%;
+        position: absolute;
+        inset-inline: .2rem;
+        inset-block-end: .2rem;
+        block-size: var(--fill);
+        border-radius: .9rem .9rem .5rem .5rem;
+        background:
+          linear-gradient(180deg, color-mix(in oklch, white 24%, var(--av-color-primary)) 0%, var(--av-color-primary) 100%);
+        transition: block-size 240ms var(--ease-out);
+      }
+
+      .water-quick-actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: .55rem;
+      }
+
+      .water-quick-actions button,
+      .water-custom-trigger {
+        min-block-size: 3rem;
+      }
+
+      .water-custom-trigger {
+        inline-size: 100%;
+      }
+
+      .water-main-grid {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .water-main-grid > :nth-child(1) { order: 2; }
+      .water-main-grid > :nth-child(2) { order: 1; }
+
+      .water-card,
+      .reminder-card {
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 8%, var(--av-color-border));
+        border-radius: 1.3rem 1.3rem .6rem 1.3rem;
+        background: var(--av-color-surface);
+        padding: 1rem;
+      }
+
+      .water-card__header,
+      .reminder-card__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: .85rem;
+        margin-block-end: 1rem;
+      }
+
+      .water-week-chart {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        align-items: end;
+        gap: .55rem;
+        min-block-size: 11rem;
+      }
+
+      .water-week-bar {
+        display: grid;
+        gap: .45rem;
+        justify-items: center;
+      }
+
+      .water-week-bar__track {
+        inline-size: 100%;
+        min-inline-size: 1.8rem;
+        block-size: 8.2rem;
+        display: grid;
+        align-items: end;
+        padding: .18rem;
+        border-radius: 1rem 1rem .45rem 1rem;
+        background: color-mix(in oklch, var(--av-color-primary-soft) 82%, white);
+      }
+
+      .water-week-bar__fill {
+        block-size: var(--value, 50%);
+        border-radius: .8rem .8rem .3rem .8rem;
+        background: linear-gradient(180deg, color-mix(in oklch, white 26%, var(--av-color-primary)) 0%, var(--av-color-primary) 100%);
+      }
+
+      .water-week-bar strong,
+      .water-week-bar span {
+        color: var(--av-color-ink-muted);
+        font-size: .72rem;
+      }
+
+      .water-empty {
+        display: grid;
+        place-items: center;
+        gap: .35rem;
+        min-block-size: 12rem;
+        border: 1px dashed color-mix(in oklch, var(--av-color-primary) 18%, var(--av-color-border));
+        border-radius: 1rem;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .water-empty h3 {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+      }
+
+      .water-timeline {
+        display: grid;
+        gap: .7rem;
+      }
+
+      .water-entry {
+        position: relative;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: .75rem;
+        border: 1px solid var(--av-color-border);
+        border-radius: 1rem 1rem .45rem 1rem;
+        background: var(--av-color-surface);
+        padding: .85rem;
+      }
+
+      .water-entry__dot {
+        inline-size: .75rem;
+        block-size: .75rem;
+        border-radius: 50%;
+        background: var(--av-color-primary);
+        box-shadow: 0 0 0 .35rem var(--av-color-primary-soft);
+      }
+
+      .water-entry__meta strong {
+        display: block;
+        color: var(--av-color-ink-strong);
+      }
+
+      .water-entry__meta small {
+        display: block;
+        color: var(--av-color-ink-muted);
+        font-size: .75rem;
+      }
+
+      .water-menu {
+        position: relative;
+      }
+
+      .water-menu__button {
+        min-inline-size: 2rem;
+        border: 0;
+        background: transparent;
+        color: var(--av-color-ink-muted);
+        cursor: pointer;
+      }
+
+      .water-menu__panel {
+        position: absolute;
+        z-index: 10;
+        inset-block-start: calc(100% + .4rem);
+        inset-inline-end: 0;
+        display: none;
+        min-inline-size: 8rem;
+        border: 1px solid var(--av-color-border);
+        border-radius: .9rem .9rem .35rem .9rem;
+        background: var(--av-color-surface);
+        box-shadow: var(--av-shadow-2);
+        padding: .35rem;
+      }
+
+      .water-menu.is-open .water-menu__panel {
+        display: grid;
+      }
+
+      .water-menu__panel button {
+        min-block-size: 2.5rem;
+        border: 0;
+        border-radius: .7rem;
+        background: transparent;
+        color: var(--av-color-ink-strong);
+        text-align: start;
+        cursor: pointer;
+      }
+
+      .water-menu__panel button[data-water-menu-action="delete"] {
+        color: var(--av-color-danger);
+      }
+
+      .reminder-stack {
+        display: grid;
+        gap: .85rem;
+      }
+
+      .reminder-summary {
+        display: grid;
+        gap: .55rem;
+      }
+
+      .reminder-times {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem;
+      }
+
+      .reminder-times span {
+        display: inline-flex;
+        align-items: center;
+        min-block-size: 2rem;
+        border-radius: 999px;
+        padding-inline: .8rem;
+        background: var(--av-color-surface-subtle);
+        color: var(--av-color-ink-strong);
+        font-size: .8rem;
+      }
+
+      .reminder-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .55rem;
+      }
+
+      .water-fab {
+        position: fixed;
+        z-index: 42;
+        inset-inline: 1rem;
+        inset-block-end: calc(var(--bottom-nav-height) + 1rem);
+        min-block-size: 3.35rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: .45rem;
+        border: 0;
+        border-radius: 1rem 1rem .4rem 1rem;
+        background: var(--av-color-primary);
+        color: white;
+        box-shadow: var(--av-shadow-2);
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .sheet--water-entry {
+        inline-size: min(100%, 32rem);
+      }
+
+      .sheet-form {
+        display: grid;
+        gap: .9rem;
+      }
+
+      .field-inline {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: .6rem;
+        align-items: end;
+      }
+
+      .field-inline .field {
+        margin: 0;
+      }
+
+      .field-inline__suffix {
+        min-block-size: 3rem;
+        display: inline-flex;
+        align-items: center;
+        border-radius: .85rem;
+        background: var(--av-color-surface-subtle);
+        padding-inline: .85rem;
+        color: var(--av-color-ink-muted);
+      }
+
+      .water-status {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        color: var(--av-color-ink-muted);
+        font-size: .78rem;
+      }
+
+      .water-status::before {
+        content: "";
+        inline-size: .55rem;
+        block-size: .55rem;
+        border-radius: 50%;
+        background: var(--av-color-success);
+      }
+
+      .sheet .chip-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @media (min-width: 56rem) {
+        .water-hero {
+          padding: 1.25rem;
+        }
+
+        .water-hero__layout {
+          grid-template-columns: minmax(0, 1.35fr) minmax(16rem, .9fr);
+          align-items: start;
+        }
+
+        .water-main-grid {
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        }
+
+        .water-main-grid > :nth-child(1),
+        .water-main-grid > :nth-child(2) {
+          order: initial;
+        }
+
+        .water-fab {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="app-body" data-page="water" data-theme="botanical">
+    <div class="app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی محصول">
+        <a class="brand" href="dashboard-botanical.html"
+          ><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect class="brand-mark__plan" x="7" y="9" width="29" height="11" rx="5.5" />
+            <rect class="brand-mark__actual" x="12" y="27" width="29" height="11" rx="5.5" />
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4" /></svg
+          ><span>آووکادو</span></a
+        >
+          <nav aria-label="بخش‌های اصلی">
+          <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+          <a href="quick-log-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+          <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+          <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+          <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+        </nav>
+        <div class="side-nav__foot">مسیرهای اصلی همیشه از همین پنج بخش در دسترس هستند.</div>
+      </aside>
+
+      <main class="app-main" id="water-main" data-od-id="water-page">
+        <header class="app-topbar">
+          <div class="app-topbar__title">
+            <span>ثبت آب</span>
+            <strong>امروز</strong>
+          </div>
+          <div class="app-topbar__actions">
+            <a class="header-action-link" href="messages-botanical.html" aria-label="پیام‌ها"><img class="header-action-icon" src="assets/icons/icon-message.png" alt="" aria-hidden="true" /></a>
+            <a class="header-action-link header-action-link--notification" href="notifications-botanical.html" aria-label="اعلان‌ها"><img class="header-action-icon" src="assets/icons/icon-bell.png" alt="" aria-hidden="true" /><span class="header-action-badge" aria-hidden="true"></span></a>
+            <a class="avatar-link" href="settings-botanical.html" aria-label="پروفایل سارا">س</a>
+          </div>
+        </header>
+
+        <div class="app-container page-content water-page">
+          <section class="water-hero" data-od-id="water-hero">
+            <div class="water-hero__header">
+              <div>
+                <span class="water-hero__eyebrow">پایش آب روزانه</span>
+                <h1>آب امروز</h1>
+                <p>ثبت سریع، مرور واضح، و یک یادآوری نرم برای اینکه ریتم روزتان حفظ شود.</p>
+              </div>
+              <span class="water-badge" id="water-hero-status">تا اینجا خوب پیش رفته‌اید</span>
+            </div>
+
+            <div class="water-hero__layout">
+              <div class="water-hero__stats">
+                <div class="water-kpis">
+                  <span class="water-chip" id="consumed-chip">مصرف‌شده: ۱٬۲۵۰ ml</span>
+                  <span class="water-chip" id="target-chip">هدف: ۲٬۰۰۰ ml</span>
+                  <span class="water-chip" id="remaining-chip">باقی‌مانده: ۷۵۰ ml</span>
+                </div>
+
+                <div class="water-copy-grid">
+                  <div class="water-copy-item">
+                    <span>مصرف امروز</span>
+                    <strong id="hero-consumed">۱٬۲۵۰ ml</strong>
+                  </div>
+                  <div class="water-copy-item">
+                    <span>باقی‌مانده</span>
+                    <strong id="hero-remaining">۷۵۰ ml</strong>
+                  </div>
+                </div>
+
+                <p class="water-motivation" id="water-motivation">
+                  آووکادو می‌گوید: همین چند جرعه‌های منظم، روز را سبک‌تر نگه می‌دارند.
+                </p>
+
+                <div class="water-quick-actions" id="quick-entry" data-od-id="water-quick-actions">
+                  <button class="button button--secondary" type="button" data-quick-add="250">۲۵۰ ml</button>
+                  <button class="button button--secondary" type="button" data-quick-add="350">۳۵۰ ml</button>
+                  <button class="button button--secondary" type="button" data-quick-add="500">۵۰۰ ml</button>
+                </div>
+
+                <button class="button button--primary water-custom-trigger" type="button" data-open-water-sheet>
+                  ثبت مقدار دلخواه
+                </button>
+              </div>
+
+              <div class="water-hero__visual">
+                <div class="water-hero__visual-card">
+                  <div class="water-ring" id="water-ring">
+                    <div class="water-ring__inner">
+                      <strong id="hero-percent">۶۳٪</strong>
+                      <span>از هدف روزانه</span>
+                    </div>
+                  </div>
+                  <div class="water-bottle" aria-hidden="true">
+                    <div class="water-bottle__fill" id="water-bottle-fill"></div>
+                  </div>
+                  <div class="water-status" id="water-last-log">آخرین ثبت: ۱۳:۴۵</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div class="water-main-grid">
+            <section class="water-card" data-od-id="water-weekly-chart-card">
+              <div class="water-card__header">
+                <div>
+                  <h2>روند هفته</h2>
+                  <p>هفت روز اخیر را با ستون‌های ساده و خوانا ببینید.</p>
+                </div>
+              </div>
+              <div class="water-week-chart" id="water-week-chart" aria-label="نمودار مصرف هفتگی آب"></div>
+            </section>
+
+            <section class="water-card" data-od-id="water-today-timeline-card">
+              <div class="water-card__header">
+                <div>
+                  <h2>ثبت‌های امروز</h2>
+                  <p>ویرایش و حذف داخل منوی هر ردیف قرار دارد تا صفحه تمیز بماند.</p>
+                </div>
+              </div>
+              <div class="water-empty hidden" id="water-empty-state">
+                <h3>هنوز آبی ثبت نشده</h3>
+                <p>اولین ثبت امروز را از دکمه‌های سریع یا ثبت مقدار دلخواه شروع کنید.</p>
+              </div>
+              <div class="water-timeline" id="water-timeline"></div>
+            </section>
+          </div>
+
+          <section class="reminder-card" data-od-id="water-reminder-card">
+            <div class="reminder-card__header">
+              <div>
+                <h2>یادآوری آب</h2>
+                <p>در یک کارت مستقل و جمع‌وجور، بدون شبیه شدن به فرم مدیریتی.</p>
+              </div>
+            </div>
+            <div class="reminder-stack">
+              <div class="reminder-summary">
+                <strong id="reminder-title">یادآوری فعال است</strong>
+                <p id="reminder-copy">هر ۲ ساعت بین ۹ صبح تا ۹ شب، یک یادآوری کوتاه برای نوشیدن آب دریافت می‌کنید.</p>
+              </div>
+              <div class="reminder-times" id="reminder-times"></div>
+              <div class="reminder-actions">
+                <button class="button button--secondary" type="button" id="toggle-reminder-button">خاموش‌کردن یادآوری</button>
+                <button class="button button--quiet" type="button" id="edit-reminder-button">ویرایش یادآوری</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <button class="water-fab" type="button" data-open-water-sheet>
+      <span aria-hidden="true">+</span>
+      <span>ثبت آب</span>
+    </button>
+
+    <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل">
+      <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+      <a href="quick-log-botanical.html" class="quick-log-trigger bottom-nav__primary" aria-current="page"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+      <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+      <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+      <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+    </nav>
+
+    <dialog class="sheet sheet--water-entry" id="water-entry-dialog" aria-labelledby="water-entry-title">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__header">
+        <div>
+          <h2 id="water-entry-title">ثبت مقدار آب</h2>
+          <p id="water-entry-description">مقدار دلخواه را وارد کنید یا یکی از گزینه‌های سریع را انتخاب کنید.</p>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog aria-label="بستن">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-close" /></svg>
+        </button>
+      </div>
+      <form class="sheet-form" id="water-entry-form">
+        <div class="chip-list">
+          <label><input type="radio" name="preset" value="250" />۲۵۰ ml</label>
+          <label><input type="radio" name="preset" value="350" />۳۵۰ ml</label>
+          <label><input type="radio" name="preset" value="500" />۵۰۰ ml</label>
+        </div>
+        <div class="field-inline">
+          <label class="field">
+            <span class="field__label">مقدار دلخواه</span>
+            <input id="water-amount-input" name="amount" type="number" inputmode="numeric" min="50" step="50" placeholder="مثلاً ۴۰۰" required />
+            <small class="field__hint">مقدار را با واحد میلی‌لیتر ثبت کنید.</small>
+          </label>
+          <span class="field-inline__suffix">ml</span>
+        </div>
+        <label class="field">
+          <span class="field__label">زمان ثبت</span>
+          <input id="water-time-input" name="time" type="time" required />
+        </label>
+        <div class="sheet-actions">
+          <button class="button button--secondary" type="button" data-close-dialog>انصراف</button>
+          <button class="button button--primary" type="submit" id="water-submit-button">ثبت آب</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="sheet" id="water-reminder-dialog" aria-labelledby="water-reminder-title">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__header">
+        <div>
+          <h2 id="water-reminder-title">ویرایش یادآوری</h2>
+          <p>بازه و فاصله یادآوری را تنظیم کنید تا با ریتم روزتان هماهنگ بماند.</p>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog aria-label="بستن">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-close" /></svg>
+        </button>
+      </div>
+      <form class="sheet-form" id="water-reminder-form">
+        <label class="field">
+          <span class="field__label">شروع یادآوری</span>
+          <input name="start" type="time" required />
+        </label>
+        <label class="field">
+          <span class="field__label">پایان یادآوری</span>
+          <input name="end" type="time" required />
+        </label>
+        <label class="field">
+          <span class="field__label">فاصله تکرار</span>
+          <select name="interval">
+            <option value="60">هر ۱ ساعت</option>
+            <option value="90">هر ۱.۵ ساعت</option>
+            <option value="120">هر ۲ ساعت</option>
+            <option value="180">هر ۳ ساعت</option>
+          </select>
+        </label>
+        <div class="sheet-actions">
+          <button class="button button--secondary" type="button" data-close-dialog>انصراف</button>
+          <button class="button button--primary" type="submit">ذخیره یادآوری</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <span class="toast__check"><svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons.svg#icon-check" /></svg></span>
+      <span id="toast-message">ثبت شد.</span>
+      <button type="button" id="toast-undo">بستن</button>
+    </div>
+
+    <script>
+        (() => {
+          const stateKey = "avocado:water-botanical";
+          const dateUtils = window.AvocadoDate || null;
+          const todayKey = dateUtils?.dateOnlyLocal?.() || (() => {
+            const now = new Date();
+            return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+          })();
+          const defaultState = {
+            target: 2000,
+            entries: [
+              { id: "w1", amount: 250, time: "10:20", date: todayKey },
+              { id: "w2", amount: 300, time: "13:45", date: todayKey },
+              { id: "w3", amount: 700, time: "16:10", date: todayKey }
+            ],
+          week: [
+            { day: "ش", amount: 1350 },
+            { day: "ی", amount: 1600 },
+            { day: "د", amount: 1450 },
+            { day: "س", amount: 1850 },
+            { day: "چ", amount: 1700 },
+            { day: "پ", amount: 1100 },
+            { day: "ج", amount: 1250 }
+          ],
+          reminder: {
+            enabled: true,
+            start: "09:00",
+            end: "21:00",
+            interval: 120
+          }
+        };
+
+        let state = readState();
+        let editingId = null;
+        let toastTimer = null;
+
+        const $ = (selector, root = document) => root.querySelector(selector);
+        const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+        function readState() {
+          try {
+            const raw = JSON.parse(localStorage.getItem(stateKey) || "null");
+            if (!raw) return structuredClone(defaultState);
+            return {
+              target: Number(raw.target) || defaultState.target,
+                entries: Array.isArray(raw.entries) ? raw.entries.map((entry) => ({ ...entry, date: entry.date || todayKey })) : structuredClone(defaultState.entries),
+              week: Array.isArray(raw.week) ? raw.week : structuredClone(defaultState.week),
+              reminder: {
+                enabled: raw.reminder?.enabled !== false,
+                start: raw.reminder?.start || defaultState.reminder.start,
+                end: raw.reminder?.end || defaultState.reminder.end,
+                interval: Number(raw.reminder?.interval) || defaultState.reminder.interval
+              }
+            };
+          } catch {
+            return structuredClone(defaultState);
+          }
+        }
+
+        function saveState() {
+          localStorage.setItem(stateKey, JSON.stringify(state));
+        }
+
+        function toPersianNumber(value) {
+          return new Intl.NumberFormat("fa-IR").format(value);
+        }
+
+        function formatMl(value) {
+          return `${toPersianNumber(value)} ml`;
+        }
+
+        function showToast(message) {
+          const toast = $("#toast");
+          const messageNode = $("#toast-message");
+          if (!toast || !messageNode) return;
+          window.clearTimeout(toastTimer);
+          messageNode.textContent = message;
+          toast.hidden = false;
+          toastTimer = window.setTimeout(() => {
+            toast.hidden = true;
+          }, 3200);
+        }
+
+        function openDialog(dialog) {
+          if (!dialog) return;
+          if (typeof dialog.showModal === "function") dialog.showModal();
+          else dialog.setAttribute("open", "");
+        }
+
+        function closeDialog(dialog) {
+          if (!dialog) return;
+          if (typeof dialog.close === "function" && dialog.open) dialog.close();
+          else dialog.removeAttribute("open");
+        }
+
+        function getConsumed() {
+          return state.entries.reduce((total, entry) => total + Number(entry.amount || 0), 0);
+        }
+
+        function getPercent() {
+          return Math.min(100, Math.round((getConsumed() / state.target) * 100));
+        }
+
+        function getRemaining() {
+          return Math.max(0, state.target - getConsumed());
+        }
+
+        function getLastTime() {
+          if (!state.entries.length) return "هنوز ثبت نشده";
+          return state.entries.slice().sort((a, b) => a.time.localeCompare(b.time)).at(-1).time;
+        }
+
+        function getMotivation(percent) {
+          if (percent >= 100) return "آووکادو می‌گوید: هدف امروز کامل شد؛ ادامه‌اش فقط برای حس بهتر بدنتان است.";
+          if (percent >= 75) return "آووکادو می‌گوید: تا هدف امروز فاصله کمی مانده؛ یک ثبت کوچک کافی است.";
+          if (percent >= 40) return "آووکادو می‌گوید: ریتم خوبی دارید؛ همین پیوستگی مهم‌تر از عجله است.";
+          return "آووکادو می‌گوید: با یک لیوان ساده شروع کنید تا بدن‌تان از همان حالا همراه شود.";
+        }
+
+        function renderHero() {
+          const consumed = getConsumed();
+          const remaining = getRemaining();
+          const percent = getPercent();
+          $("#consumed-chip").textContent = `مصرف‌شده: ${formatMl(consumed)}`;
+          $("#target-chip").textContent = `هدف: ${formatMl(state.target)}`;
+          $("#remaining-chip").textContent = `باقی‌مانده: ${formatMl(remaining)}`;
+          $("#hero-consumed").textContent = formatMl(consumed);
+          $("#hero-remaining").textContent = formatMl(remaining);
+          $("#hero-percent").textContent = `${toPersianNumber(percent)}٪`;
+          $("#water-ring").style.setProperty("--value", String(percent));
+          $("#water-bottle-fill").style.setProperty("--fill", `${percent}%`);
+          $("#water-last-log").textContent = `آخرین ثبت: ${getLastTime()}`;
+          $("#water-motivation").textContent = getMotivation(percent);
+          $("#water-hero-status").textContent =
+            percent >= 100 ? "هدف امروز کامل شد" :
+            percent >= 70 ? "تا اینجا خوب پیش رفته‌اید" :
+            "یک ثبت کوچک می‌تواند شروع خوبی باشد";
+        }
+
+        function renderWeek() {
+          const chart = $("#water-week-chart");
+          chart.innerHTML = "";
+          state.week.forEach((item) => {
+            const percent = Math.min(100, Math.round((item.amount / state.target) * 100));
+            const cell = document.createElement("div");
+            cell.className = "water-week-bar";
+            cell.innerHTML = `
+              <strong>${item.day}</strong>
+              <div class="water-week-bar__track">
+                <div class="water-week-bar__fill" style="--value:${percent}%"></div>
+              </div>
+              <span>${toPersianNumber(item.amount)}</span>
+            `;
+            chart.append(cell);
+          });
+        }
+
+        function renderTimeline() {
+          const list = $("#water-timeline");
+          const empty = $("#water-empty-state");
+          const entries = state.entries.slice().sort((a, b) => a.time.localeCompare(b.time));
+          list.innerHTML = "";
+          if (!entries.length) {
+            empty.classList.remove("hidden");
+            list.classList.add("hidden");
+            return;
+          }
+          empty.classList.add("hidden");
+          list.classList.remove("hidden");
+          entries.forEach((entry) => {
+            const row = document.createElement("article");
+            row.className = "water-entry";
+            row.dataset.entryId = entry.id;
+            row.innerHTML = `
+              <span class="water-entry__dot" aria-hidden="true"></span>
+              <div class="water-entry__meta">
+                <strong>${formatMl(entry.amount)}</strong>
+                <small>${toPersianNumber(entry.time.replace(":", "٫"))} · ثبت امروز</small>
+              </div>
+              <div class="water-menu">
+                <button class="water-menu__button" type="button" aria-label="منوی عملیات">•••</button>
+                <div class="water-menu__panel" role="menu">
+                  <button type="button" role="menuitem" data-water-menu-action="edit">ویرایش</button>
+                  <button type="button" role="menuitem" data-water-menu-action="delete">حذف</button>
+                </div>
+              </div>
+            `;
+            list.append(row);
+          });
+        }
+
+        function buildReminderTimes() {
+          const times = [];
+          let [hour, minute] = state.reminder.start.split(":").map(Number);
+          const [endHour, endMinute] = state.reminder.end.split(":").map(Number);
+          while (hour < endHour || (hour === endHour && minute <= endMinute)) {
+            times.push(`${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`);
+            minute += state.reminder.interval;
+            while (minute >= 60) {
+              hour += 1;
+              minute -= 60;
+            }
+          }
+          return times;
+        }
+
+        function renderReminder() {
+          const title = $("#reminder-title");
+          const copy = $("#reminder-copy");
+          const timesWrap = $("#reminder-times");
+          const toggleButton = $("#toggle-reminder-button");
+          timesWrap.innerHTML = "";
+          if (state.reminder.enabled) {
+            title.textContent = "یادآوری فعال است";
+            copy.textContent = `هر ${toPersianNumber(state.reminder.interval / 60 === 1.5 ? "۱.۵" : state.reminder.interval / 60)} ساعت بین ${state.reminder.start} تا ${state.reminder.end} یک یادآوری کوتاه دریافت می‌کنید.`;
+            toggleButton.textContent = "خاموش‌کردن یادآوری";
+            buildReminderTimes().forEach((time) => {
+              const chip = document.createElement("span");
+              chip.textContent = time;
+              timesWrap.append(chip);
+            });
+          } else {
+            title.textContent = "یادآوری غیرفعال است";
+            copy.textContent = "اگر می‌خواهید در طول روز ریتم نوشیدن آب را از دست ندهید، یادآوری را دوباره فعال کنید.";
+            toggleButton.textContent = "فعال‌کردن یادآوری";
+            const chip = document.createElement("span");
+            chip.textContent = "یادآوری خاموش";
+            timesWrap.append(chip);
+          }
+        }
+
+        function renderAll() {
+          renderHero();
+          renderWeek();
+          renderTimeline();
+          renderReminder();
+        }
+
+        function resetEntryForm() {
+          const form = $("#water-entry-form");
+          form.reset();
+          $("#water-submit-button").textContent = "ثبت آب";
+          $("#water-entry-title").textContent = "ثبت مقدار آب";
+          $("#water-entry-description").textContent = "مقدار دلخواه را وارد کنید یا یکی از گزینه‌های سریع را انتخاب کنید.";
+          $("#water-time-input").value = "18:30";
+          editingId = null;
+        }
+
+        function openEntryDialog(presetValue = "") {
+          resetEntryForm();
+          if (presetValue) $("#water-amount-input").value = presetValue;
+          openDialog($("#water-entry-dialog"));
+        }
+
+        $$("[data-open-water-sheet]").forEach((button) => {
+          button.addEventListener("click", () => openEntryDialog());
+        });
+
+        $$("[data-quick-add]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const amount = Number(button.dataset.quickAdd);
+            const id = `w${Date.now()}`;
+            state.entries.push({ id, amount, time: "18:30", date: todayKey });
+            state.week[state.week.length - 1].amount = getConsumed();
+            saveState();
+            renderAll();
+            showToast(`${formatMl(amount)} به ثبت امروز اضافه شد.`);
+          });
+        });
+
+        $$("[data-close-dialog]").forEach((button) => {
+          button.addEventListener("click", () => closeDialog(button.closest("dialog")));
+        });
+
+        $$("dialog").forEach((dialog) => {
+          dialog.addEventListener("click", (event) => {
+            if (event.target === dialog) closeDialog(dialog);
+          });
+        });
+
+        $("#water-entry-form").addEventListener("change", (event) => {
+          if (event.target.name === "preset") {
+            $("#water-amount-input").value = event.target.value;
+          }
+        });
+
+        $("#water-entry-form").addEventListener("submit", (event) => {
+          event.preventDefault();
+          const amount = Number($("#water-amount-input").value);
+          const time = $("#water-time-input").value;
+          if (!amount || amount < 50 || !time) return;
+          if (editingId) {
+            const entry = state.entries.find((item) => item.id === editingId);
+            if (entry) {
+              entry.amount = amount;
+              entry.time = time;
+              entry.date = todayKey;
+            }
+            showToast("ثبت آب ویرایش شد.");
+          } else {
+            state.entries.push({ id: `w${Date.now()}`, amount, time, date: todayKey });
+            showToast(`${formatMl(amount)} ثبت شد.`);
+          }
+          state.week[state.week.length - 1].amount = getConsumed();
+          saveState();
+          renderAll();
+          closeDialog($("#water-entry-dialog"));
+          resetEntryForm();
+        });
+
+        $("#water-timeline").addEventListener("click", (event) => {
+          const menuButton = event.target.closest(".water-menu__button");
+          const actionButton = event.target.closest("[data-water-menu-action]");
+          if (menuButton) {
+            const menu = menuButton.closest(".water-menu");
+            $$(".water-menu").forEach((item) => {
+              if (item !== menu) item.classList.remove("is-open");
+            });
+            menu.classList.toggle("is-open");
+            return;
+          }
+          if (actionButton) {
+            const row = actionButton.closest(".water-entry");
+            const id = row?.dataset.entryId;
+            const entry = state.entries.find((item) => item.id === id);
+            if (!entry) return;
+            if (actionButton.dataset.waterMenuAction === "edit") {
+              editingId = id;
+              $("#water-entry-title").textContent = "ویرایش ثبت آب";
+              $("#water-entry-description").textContent = "مقدار یا زمان این ثبت را تغییر دهید.";
+              $("#water-submit-button").textContent = "ذخیره تغییرات";
+              $("#water-amount-input").value = entry.amount;
+              $("#water-time-input").value = entry.time;
+              openDialog($("#water-entry-dialog"));
+            } else if (actionButton.dataset.waterMenuAction === "delete") {
+              state.entries = state.entries.filter((item) => item.id !== id);
+              state.week[state.week.length - 1].amount = getConsumed();
+              saveState();
+              renderAll();
+              showToast("ثبت آب حذف شد.");
+            }
+          }
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".water-menu")) {
+            $$(".water-menu").forEach((menu) => menu.classList.remove("is-open"));
+          }
+        });
+
+        $("#toggle-reminder-button").addEventListener("click", () => {
+          state.reminder.enabled = !state.reminder.enabled;
+          saveState();
+          renderReminder();
+          showToast(state.reminder.enabled ? "یادآوری آب فعال شد." : "یادآوری آب خاموش شد.");
+        });
+
+        $("#edit-reminder-button").addEventListener("click", () => {
+          const form = $("#water-reminder-form");
+          form.elements.start.value = state.reminder.start;
+          form.elements.end.value = state.reminder.end;
+          form.elements.interval.value = String(state.reminder.interval);
+          openDialog($("#water-reminder-dialog"));
+        });
+
+        $("#water-reminder-form").addEventListener("submit", (event) => {
+          event.preventDefault();
+          const form = event.currentTarget;
+          state.reminder.start = form.elements.start.value;
+          state.reminder.end = form.elements.end.value;
+          state.reminder.interval = Number(form.elements.interval.value);
+          state.reminder.enabled = true;
+          saveState();
+          renderReminder();
+          closeDialog($("#water-reminder-dialog"));
+          showToast("یادآوری آب ذخیره شد.");
+        });
+
+        $("#toast-undo")?.addEventListener("click", () => {
+          $("#toast").hidden = true;
+        });
+
+        saveState();
+        renderAll();
+      })();
+    </script>
+  </body>
+</html>

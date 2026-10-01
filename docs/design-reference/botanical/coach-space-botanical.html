@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#123f26" />
+    <title>فضای مشترک مربی — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="src/coach-flow.css" />
+    <script src="app.js" defer></script>
+    <script src="src/coach-flow.js" defer></script>
+  </head>
+  <body class="app-body" data-page="coach-space" data-theme="botanical">
+    <div class="app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی محصول">
+        <a class="brand" href="dashboard-botanical.html"><span>آووکادو</span></a>
+        <nav aria-label="بخش‌های اصلی">
+          <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+          <a href="quick-log-botanical.html"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+          <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+          <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+          <a href="settings-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+        </nav>
+        <div class="side-nav__foot">کنترل حریم خصوصی و دسترسی‌ها همیشه در اختیار تو می‌ماند.</div>
+      </aside>
+
+      <main class="app-main" data-od-id="coach-space-page">
+        <header class="app-topbar">
+          <div class="app-topbar__title">
+            <span>مربی و دسترسی‌ها</span>
+            <strong>فضای مشترک با مربی</strong>
+          </div>
+          <div class="app-topbar__actions">
+            <a class="header-action-link" href="messages-botanical.html" aria-label="پیام‌ها"><img class="header-action-icon" src="assets/icons/icon-message.png" alt="" aria-hidden="true" /></a>
+            <a class="header-action-link header-action-link--notification" href="notifications-botanical.html" aria-label="اعلان‌ها"><img class="header-action-icon" src="assets/icons/icon-bell.png" alt="" aria-hidden="true" /><span class="header-action-badge" aria-hidden="true"></span></a>
+            <a class="avatar-link" href="settings-botanical.html" aria-label="پروفایل سارا">س</a>
+          </div>
+        </header>
+
+        <div class="app-container page-content coach-page" id="coach-space-root">
+          <section class="coach-empty-state" data-od-id="coach-shell-fallback">
+            <div class="coach-empty-state__art">م</div>
+            <h1>فضای مربی در حال آماده‌شدن است</h1>
+            <p>اگر داده‌ای در دسترس نباشد، همین‌جا وضعیت فعلی همکاری یا اتصال نمایش داده می‌شود.</p>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل">
+      <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+      <a href="quick-log-botanical.html" class="quick-log-trigger bottom-nav__primary"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+      <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+      <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+      <a href="settings-botanical.html" aria-current="page"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+    </nav>
+
+    <dialog class="coach-dialog" id="coach-connect-dialog" aria-labelledby="coach-connect-title">
+      <div class="coach-dialog__panel">
+        <div class="coach-dialog__head">
+          <div>
+            <h2 id="coach-connect-title">اتصال به مربی</h2>
+            <p>کد یا لینک دعوت را وارد کن، دعوت را بررسی کن و بعد دسترسی‌ها را خودت تعیین کن.</p>
+          </div>
+          <button class="icon-button" type="button" id="coach-connect-cancel" aria-label="بستن">×</button>
+        </div>
+        <div class="coach-dialog__content">
+          <label class="coach-dialog__field">
+            <span>کد یا لینک دعوت</span>
+            <input id="coach-invite-input" type="text" placeholder="کد یا لینک دعوت مربی را وارد کن" />
+          </label>
+          <div class="coach-dialog__error" id="coach-invite-error"></div>
+          <button class="button button--primary" type="button" id="coach-verify-invite">بررسی دعوت</button>
+          <div class="coach-dialog__results" id="coach-connect-results"></div>
+          <div class="coach-dialog__actions">
+            <button class="button button--secondary" type="button" id="coach-connect-cancel-secondary">انصراف</button>
+            <button class="button button--primary" type="button" id="coach-invite-continue" disabled>ادامه و تعیین دسترسی‌ها</button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="coach-dialog" id="coach-end-dialog" aria-labelledby="coach-end-title">
+      <div class="coach-dialog__panel">
+        <div class="coach-dialog__head">
+          <div>
+            <h2 id="coach-end-title">پایان همکاری</h2>
+            <p>با پایان همکاری، همه دسترسی‌ها قطع می‌شود، پیام‌های قبلی می‌مانند و برنامه‌های ساخته‌شده فقط‌خواندنی یا بایگانی خواهند شد.</p>
+          </div>
+          <button class="icon-button" type="button" id="coach-end-cancel" aria-label="بستن">×</button>
+        </div>
+        <div class="coach-dialog__content">
+          <ul class="coach-status-list">
+            <li>قطع همه دسترسی‌ها به‌صورت خودکار انجام می‌شود.</li>
+            <li>پیام‌های قبلی حفظ می‌شوند و از بین نمی‌روند.</li>
+            <li>برنامه‌های ساخته‌شده توسط مربی حذف نمی‌شوند.</li>
+          </ul>
+          <label class="coach-dialog__field">
+            <span>دلیل پایان همکاری (اختیاری)</span>
+            <textarea id="coach-end-reason" placeholder="اگر لازم است توضیح کوتاهی ثبت کن."></textarea>
+          </label>
+          <div class="coach-dialog__actions">
+            <button class="button button--secondary" type="button" id="coach-end-cancel-secondary">انصراف</button>
+            <button class="button button--danger" type="button" id="coach-end-submit">پایان همکاری</button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "mvp-system-states.html",
+  "entry": "mvp-system-states.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-12T12:47:30.563Z",
+  "updatedAt": "2026-07-12T12:47:30.563Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

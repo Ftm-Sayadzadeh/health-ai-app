@@ -24,25 +24,34 @@ export function PlannedMeals({
   const populatedMeals = structure.meals.filter((meal) => meal.items.length);
 
   return (
-    <section className="mt-4 rounded-[1.5rem] border border-[#DCE9B0] bg-gradient-to-l from-[#F4FBE3] to-white p-4 shadow-[0_12px_30px_rgba(85,117,54,0.06)] sm:p-5">
-      <div className="flex flex-col gap-3 border-b border-[#DCE9B0] pb-4 sm:flex-row sm:items-start sm:justify-between">
+    <section className="mt-4 rounded-xl border border-[var(--border-lime)] bg-[var(--brand-avocado-softer)] p-4 sm:p-5">
+      <div className="flex flex-col gap-3 border-b border-[var(--border-lime)] pb-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <div className="flex flex-wrap items-center gap-2"><h2 className="font-extrabold">از برنامه روزانه</h2><span className="rounded-full bg-white px-2.5 py-1 text-[0.65rem] font-extrabold text-[#557536]">{toPersianNumber(structure.item_count)} مورد برنامه‌ریزی‌شده</span></div>
-          <p className="mt-1 text-xs font-bold text-[#557536]">{structure.plan.title}</p>
-          <p className="mt-1 max-w-2xl text-[0.72rem] leading-6 text-[#6B7A5A]">این‌ها مواردی هستن که خودت در برنامه وارد کردی، نه چیزهایی که خوردی. هر مورد قبل از ثبت واقعی قابل بررسی و ویرایشه.</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="font-bold">از برنامه روزانه</h2>
+            <span className="chip chip-green">{toPersianNumber(structure.item_count)} مورد برنامه‌ریزی‌شده</span>
+          </div>
+          <p className="mt-1 text-xs font-bold text-[var(--brand-green)]">{structure.plan.title}</p>
+          <p className="mt-1 max-w-2xl text-[0.72rem] leading-6 text-[var(--text-muted)]">این‌ها مواردی هستن که خودت در برنامه وارد کردی، نه چیزهایی که خوردی. هر مورد قبل از ثبت واقعی قابل بررسی و ویرایشه.</p>
         </div>
-        <Link href={`/plans/${structure.plan.id}`} className="shrink-0 rounded-full border border-[#DCE9B0] bg-white px-4 py-2 text-xs font-extrabold text-[#557536]">مشاهده برنامه</Link>
+        <Link href={`/plans/${structure.plan.id}`} className="btn btn-secondary btn-sm shrink-0">مشاهده برنامه</Link>
       </div>
 
       <div className="mt-4 grid gap-3 lg:grid-cols-2">
         {populatedMeals.map((meal) => (
-          <div key={meal.meal_type} className="rounded-[1.1rem] border border-[#E4ECCB] bg-white p-3">
-            <div className="mb-2 flex items-center justify-between gap-3"><h3 className="text-sm font-extrabold">{mealLabels[meal.meal_type]}</h3><span className="text-[0.65rem] font-bold text-[#8A9A78]">{toPersianNumber(meal.items.length)} مورد</span></div>
+          <div key={meal.meal_type} className="rounded-lg border border-[var(--border-soft)] bg-white p-3">
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <h3 className="text-sm font-bold">{mealLabels[meal.meal_type]}</h3>
+              <span className="text-[0.65rem] font-bold text-[var(--text-subtle)]">{toPersianNumber(meal.items.length)} مورد</span>
+            </div>
             <div className="space-y-2">
               {meal.items.map((item) => (
-                <button key={item.id} type="button" onClick={() => onSelect(item)} className="flex w-full items-center justify-between gap-3 rounded-xl bg-[#FFFDF8] px-3 py-2.5 text-right transition hover:bg-[#F4FBE3] focus:outline-none focus:ring-4 focus:ring-[#EAF7C7]">
-                  <span className="min-w-0"><span className="block truncate text-xs font-extrabold">{item.food_name}</span><span className="mt-0.5 block truncate text-[0.65rem] text-[#6B7A5A]">{item.serving_description}</span></span>
-                  <span className="shrink-0 text-[0.68rem] font-extrabold text-[#557536]">{item.calories === null ? "بررسی و ثبت" : `${toPersianNumber(item.calories)} کالری`}</span>
+                <button key={item.id} type="button" onClick={() => onSelect(item)} className="flex w-full items-center justify-between gap-3 rounded-lg border border-dashed border-[var(--border-lime)] bg-[var(--brand-avocado-soft)] px-3 py-2.5 text-right transition hover:border-[var(--brand-avocado)] focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--ring-soft)]">
+                  <span className="min-w-0">
+                    <span className="block truncate text-xs font-bold">{item.food_name}</span>
+                    <span className="mt-0.5 block truncate text-[0.65rem] text-[var(--text-muted)]">{item.serving_description}</span>
+                  </span>
+                  <span className="shrink-0 text-[0.68rem] font-bold text-[var(--brand-green)]">{item.calories === null ? "بررسی و ثبت" : `${toPersianNumber(item.calories)} کالری`}</span>
                 </button>
               ))}
             </div>

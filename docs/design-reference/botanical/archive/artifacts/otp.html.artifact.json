@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "otp.html",
+  "entry": "otp.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-10T14:19:01.114Z",
+  "updatedAt": "2026-07-10T14:19:01.114Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

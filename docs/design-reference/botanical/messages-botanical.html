@@ -1,0 +1,1681 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#123f26" />
+    <title>پیام‌ها — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="src/coach-flow.css" />
+    <script src="src/date-utils.js" defer></script>
+    <script src="app.js" defer></script>
+    <script src="src/coach-flow.js" defer></script>
+    <style>
+      .messages-page {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .messages-shell {
+        display: grid;
+        gap: 1rem;
+        min-block-size: calc(100dvh - 10rem);
+      }
+
+      .messages-pane,
+      .thread-pane,
+      .message-composer,
+      .message-preview,
+      .specialist-card,
+      .attachment-option,
+      .reservation-card {
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 8%, var(--av-color-border));
+        background: var(--av-color-surface);
+      }
+
+      .messages-pane,
+      .thread-pane {
+        border-radius: 1.4rem 1.4rem .65rem 1.4rem;
+        overflow: hidden;
+      }
+
+      .messages-pane {
+        display: grid;
+        grid-template-rows: auto 1fr;
+      }
+
+      .messages-pane__head,
+      .thread-pane__head {
+        display: grid;
+        gap: .85rem;
+        padding: 1rem;
+        border-block-end: 1px solid color-mix(in oklch, var(--av-color-primary) 7%, var(--av-color-border));
+      }
+
+      .messages-pane__head h1,
+      .thread-pane__head h2,
+      .sheet__header h2 {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+      }
+
+      .messages-pane__head p,
+      .thread-pane__head p,
+      .sheet__header p {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+      }
+
+      .messages-pane__title,
+      .thread-pane__title {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .messages-search {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: .55rem;
+        border: 1px solid var(--av-color-border);
+        border-radius: .9rem .9rem .42rem .9rem;
+        background: var(--av-color-surface-subtle);
+        padding-inline: .8rem;
+      }
+
+      .messages-search input {
+        min-block-size: 2.8rem;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: var(--av-color-ink-strong);
+        font: inherit;
+      }
+
+      .messages-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .55rem;
+      }
+
+      .messages-filter {
+        min-block-size: 2.35rem;
+        padding-inline: .82rem;
+        border: 1px solid var(--av-color-border);
+        border-radius: 999px;
+        background: var(--av-color-surface);
+        color: var(--av-color-ink-muted);
+        font: inherit;
+        font-size: .82rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .messages-filter.is-active {
+        border-color: color-mix(in oklch, var(--av-color-primary) 24%, var(--av-color-border));
+        background: color-mix(in oklch, var(--av-color-primary-soft) 76%, white);
+        color: var(--av-color-primary);
+      }
+
+      .messages-list {
+        display: grid;
+        gap: .45rem;
+        padding: .75rem;
+        align-content: start;
+        overflow: auto;
+      }
+
+      .conversation-row {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: .7rem;
+        align-items: center;
+        inline-size: 100%;
+        padding: .78rem .82rem;
+        border: 1px solid transparent;
+        border-radius: 1.05rem 1.05rem .5rem 1.05rem;
+        background: transparent;
+        text-align: start;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+      }
+
+      .conversation-row:hover,
+      .conversation-row.is-active {
+        border-color: color-mix(in oklch, var(--av-color-primary) 12%, var(--av-color-border));
+        background: color-mix(in oklch, var(--av-color-primary-soft) 58%, white);
+      }
+
+      .conversation-avatar {
+        inline-size: 2.8rem;
+        block-size: 2.8rem;
+        display: grid;
+        place-items: center;
+        border-radius: 1rem 1rem .42rem 1rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 76%, white);
+        color: var(--av-color-primary);
+        font-weight: 800;
+      }
+
+      .conversation-copy {
+        min-inline-size: 0;
+        display: grid;
+        gap: .2rem;
+      }
+
+      .conversation-copy strong,
+      .conversation-copy small,
+      .conversation-copy p,
+      .thread-meta strong,
+      .thread-meta span,
+      .message-meta,
+      .message-text,
+      .system-chip,
+      .specialist-card strong,
+      .specialist-card span,
+      .attachment-option strong,
+      .attachment-option p,
+      .reservation-card label,
+      .reservation-card small {
+        direction: rtl;
+      }
+
+      .conversation-copy strong {
+        color: var(--av-color-ink-strong);
+        font-size: .92rem;
+      }
+
+      .conversation-copy small,
+      .conversation-copy p {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+        font-size: .77rem;
+        line-height: 1.55;
+      }
+
+      .conversation-copy p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .conversation-side {
+        display: grid;
+        justify-items: end;
+        gap: .35rem;
+      }
+
+      .conversation-time {
+        color: var(--av-color-ink-muted);
+        font-size: .72rem;
+      }
+
+      .unread-badge {
+        min-inline-size: 1.45rem;
+        min-block-size: 1.45rem;
+        display: inline-grid;
+        place-items: center;
+        padding-inline: .3rem;
+        border-radius: 999px;
+        background: var(--av-color-primary);
+        color: white;
+        font-size: .72rem;
+        font-weight: 800;
+      }
+
+      .thread-pane {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        min-block-size: 0;
+      }
+
+      .thread-pane__head {
+        gap: .65rem;
+      }
+
+      .thread-head-bar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .thread-head-main {
+        display: flex;
+        align-items: flex-start;
+        gap: .75rem;
+      }
+
+      .thread-avatar {
+        inline-size: 3rem;
+        block-size: 3rem;
+        display: grid;
+        place-items: center;
+        border-radius: 1rem 1rem .42rem 1rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 74%, white);
+        color: var(--av-color-primary);
+        font-size: 1.05rem;
+        font-weight: 800;
+      }
+
+      .thread-meta {
+        display: grid;
+        gap: .18rem;
+      }
+
+      .thread-meta strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+      }
+
+      .thread-meta span {
+        color: var(--av-color-ink-muted);
+        font-size: .82rem;
+      }
+
+      .thread-actions {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        flex-wrap: wrap;
+      }
+
+      .thread-outline {
+        border: 1px solid color-mix(in oklch, var(--av-color-plan) 24%, var(--av-color-border));
+        background: transparent;
+        color: var(--av-color-ink-strong);
+      }
+
+      .thread-outline:hover:not(:disabled) {
+        border-color: var(--av-color-plan);
+        color: var(--av-color-plan);
+      }
+
+      .thread-kebab {
+        position: relative;
+      }
+
+      .thread-kebab summary {
+        inline-size: 2.7rem;
+        block-size: 2.7rem;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--av-color-border);
+        border-radius: .95rem .95rem .4rem .95rem;
+        background: var(--av-color-surface);
+        color: var(--av-color-ink-strong);
+        list-style: none;
+        cursor: pointer;
+      }
+
+      .thread-kebab summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .thread-kebab__menu {
+        position: absolute;
+        inset-block-start: calc(100% + .45rem);
+        inset-inline-end: 0;
+        z-index: 5;
+        min-inline-size: 12rem;
+        display: grid;
+        gap: .3rem;
+        padding: .45rem;
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 8%, var(--av-color-border));
+        border-radius: 1rem 1rem .45rem 1rem;
+        background: var(--av-color-surface);
+        box-shadow: var(--av-shadow-2);
+      }
+
+      .thread-kebab__menu button {
+        min-block-size: 2.7rem;
+        border: 0;
+        border-radius: .8rem .8rem .3rem .8rem;
+        background: transparent;
+        color: var(--av-color-ink-strong);
+        font: inherit;
+        text-align: start;
+        padding-inline: .75rem;
+        cursor: pointer;
+      }
+
+      .thread-kebab__menu button:hover {
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 72%, white);
+      }
+
+      .thread-status-line {
+        display: flex;
+        align-items: center;
+        gap: .4rem;
+        color: var(--av-color-ink-muted);
+        font-size: .78rem;
+      }
+
+      .thread-status-dot {
+        inline-size: .55rem;
+        block-size: .55rem;
+        border-radius: 50%;
+        background: var(--av-color-primary);
+      }
+
+      .messages-scroller {
+        overflow: auto;
+        min-block-size: 0;
+        padding: 1rem 1rem .5rem;
+        background:
+          linear-gradient(180deg, color-mix(in oklch, var(--av-color-surface-subtle) 52%, white) 0%, var(--av-color-surface) 20%);
+      }
+
+      .messages-stack {
+        display: grid;
+        gap: .75rem;
+        align-content: start;
+        padding-block-end: .5rem;
+      }
+
+      .message-row {
+        display: grid;
+      }
+
+      .message-row[data-author="user"] {
+        justify-items: end;
+      }
+
+      .message-row[data-author="expert"] {
+        justify-items: start;
+      }
+
+      .message-bubble {
+        max-inline-size: 70%;
+        display: grid;
+        gap: .35rem;
+        padding: .8rem .9rem;
+        border-radius: 1.1rem 1.1rem .45rem 1.1rem;
+      }
+
+      .message-row[data-author="expert"] .message-bubble {
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 8%, var(--av-color-border));
+        background: var(--av-color-surface);
+      }
+
+      .message-row[data-author="user"] .message-bubble {
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 15%, var(--av-color-border));
+        background: color-mix(in oklch, var(--av-color-primary-soft) 72%, white);
+      }
+
+      .message-text {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+        line-height: 1.8;
+      }
+
+      .message-meta {
+        color: var(--av-color-ink-muted);
+        font-size: .72rem;
+      }
+
+      .message-attachment {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        max-inline-size: 100%;
+        padding: .55rem .65rem;
+        border-radius: .85rem .85rem .35rem .85rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 70%, white);
+        color: var(--av-color-ink-strong);
+        font-size: .8rem;
+      }
+
+      .system-row {
+        display: flex;
+        justify-content: center;
+      }
+
+      .system-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        padding: .5rem .8rem;
+        border-radius: 999px;
+        background: color-mix(in oklch, var(--av-color-plan-soft) 72%, white);
+        color: var(--av-color-plan);
+        font-size: .76rem;
+        font-weight: 700;
+      }
+
+      .composer-wrap {
+        position: sticky;
+        inset-block-end: 0;
+        z-index: 2;
+        padding: .8rem 1rem 1rem;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, color-mix(in oklch, var(--av-color-surface) 92%, white) 24%, var(--av-color-surface) 100%);
+      }
+
+      .message-preview {
+        display: none;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: .75rem;
+        margin-block-end: .65rem;
+        padding: .7rem .8rem;
+        border-radius: 1rem 1rem .42rem 1rem;
+      }
+
+      .message-preview.is-visible {
+        display: grid;
+      }
+
+      .message-preview__thumb {
+        inline-size: 3rem;
+        block-size: 3rem;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        border-radius: .85rem .85rem .35rem .85rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 70%, white);
+      }
+
+      .message-preview__thumb img {
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+      }
+
+      .message-preview__meta {
+        display: grid;
+        gap: .16rem;
+        min-inline-size: 0;
+      }
+
+      .message-preview__meta strong {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: var(--av-color-ink-strong);
+        font-size: .86rem;
+      }
+
+      .message-preview__meta span {
+        color: var(--av-color-ink-muted);
+        font-size: .74rem;
+      }
+
+      .message-preview__remove {
+        inline-size: 2.4rem;
+        block-size: 2.4rem;
+        border: 0;
+        border-radius: .85rem .85rem .35rem .85rem;
+        background: transparent;
+        color: var(--av-color-ink-muted);
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .message-composer {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: end;
+        gap: .65rem;
+        padding: .7rem;
+        border-radius: 1.15rem 1.15rem .5rem 1.15rem;
+      }
+
+      .composer-attach,
+      .composer-send,
+      .thread-back {
+        inline-size: 3rem;
+        block-size: 3rem;
+        display: grid;
+        place-items: center;
+        border-radius: .95rem .95rem .42rem .95rem;
+      }
+
+      .composer-attach {
+        border: 1px solid var(--av-color-border);
+        background: var(--av-color-surface);
+        color: var(--av-color-ink-strong);
+      }
+
+      .composer-send {
+        border: 0;
+        background: var(--av-color-primary);
+        color: white;
+      }
+
+      .composer-attach img,
+      .composer-send img,
+      .sheet__header .icon-button img {
+        inline-size: 1.18rem;
+        block-size: 1.18rem;
+        object-fit: contain;
+        display: block;
+      }
+
+      .composer-send img {
+        inline-size: 1.26rem;
+        block-size: 1.26rem;
+        filter: brightness(0) invert(1);
+      }
+
+      .composer-field {
+        display: grid;
+        gap: .3rem;
+      }
+
+      .composer-field textarea {
+        min-block-size: 3rem;
+        max-block-size: 9rem;
+        resize: none;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: var(--av-color-ink-strong);
+        font: inherit;
+        line-height: 1.75;
+        padding-block: .28rem;
+      }
+
+      .composer-field small {
+        color: var(--av-color-ink-muted);
+        font-size: .72rem;
+      }
+
+      .thread-empty,
+      .messages-empty,
+      .messages-skeleton {
+        display: grid;
+        gap: .7rem;
+        place-items: center;
+        text-align: center;
+        color: var(--av-color-ink-muted);
+        padding: 2rem 1rem;
+      }
+
+      .thread-empty strong,
+      .messages-empty strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+      }
+
+      .messages-skeleton {
+        align-content: start;
+        padding: .9rem;
+      }
+
+      .messages-skeleton span,
+      .thread-skeleton span {
+        display: block;
+        border-radius: 999px;
+        background: linear-gradient(90deg, color-mix(in oklch, var(--av-color-surface-subtle) 86%, white) 25%, color-mix(in oklch, var(--av-color-surface) 96%, white) 50%, color-mix(in oklch, var(--av-color-surface-subtle) 86%, white) 75%);
+        background-size: 200% 100%;
+        animation: message-skeleton 1.4s ease infinite;
+      }
+
+      .messages-skeleton span:nth-child(1) {
+        inline-size: 100%;
+        block-size: 4.8rem;
+      }
+
+      .messages-skeleton span:nth-child(2),
+      .messages-skeleton span:nth-child(3) {
+        inline-size: 100%;
+        block-size: 4rem;
+      }
+
+      .thread-skeleton {
+        display: grid;
+        gap: .75rem;
+        padding: 1rem;
+      }
+
+      .thread-skeleton span:nth-child(1) {
+        inline-size: 48%;
+        block-size: 3.8rem;
+      }
+
+      .thread-skeleton span:nth-child(2) {
+        inline-size: 62%;
+        block-size: 4rem;
+        justify-self: start;
+      }
+
+      .thread-skeleton span:nth-child(3) {
+        inline-size: 56%;
+        block-size: 4rem;
+        justify-self: end;
+      }
+
+      .sheet__body {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .attachment-grid {
+        display: grid;
+        gap: .8rem;
+      }
+
+      .attachment-option {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: .75rem;
+        padding: .85rem .9rem;
+        border-radius: 1rem 1rem .45rem 1rem;
+        text-align: start;
+        cursor: pointer;
+      }
+
+      .attachment-option__icon {
+        inline-size: 2.6rem;
+        block-size: 2.6rem;
+        display: grid;
+        place-items: center;
+        border-radius: .9rem .9rem .35rem .9rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 74%, white);
+        color: var(--av-color-primary);
+      }
+
+      .attachment-option strong {
+        color: var(--av-color-ink-strong);
+        font-size: .92rem;
+      }
+
+      .attachment-option p {
+        margin: .15rem 0 0;
+        color: var(--av-color-ink-muted);
+        font-size: .76rem;
+      }
+
+      .sheet-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: .65rem;
+      }
+
+      .reservation-form {
+        display: grid;
+        gap: .85rem;
+      }
+
+      .reservation-grid {
+        display: grid;
+        gap: .8rem;
+      }
+
+      .reservation-grid label,
+      .reservation-form label {
+        display: grid;
+        gap: .35rem;
+        color: var(--av-color-ink-strong);
+        font-size: .84rem;
+        font-weight: 600;
+      }
+
+      .reservation-grid input,
+      .reservation-grid select,
+      .reservation-form textarea {
+        min-block-size: 3rem;
+        border: 1px solid var(--av-color-border);
+        border-radius: .9rem .9rem .38rem .9rem;
+        background: var(--av-color-surface);
+        color: var(--av-color-ink-strong);
+        font: inherit;
+        padding-inline: .85rem;
+      }
+
+      .reservation-form textarea {
+        min-block-size: 7rem;
+        resize: vertical;
+        padding-block: .85rem;
+      }
+
+      .specialist-card {
+        display: grid;
+        gap: .65rem;
+        padding: 1rem;
+        border-radius: 1.2rem 1.2rem .5rem 1.2rem;
+      }
+
+      .specialist-card__head {
+        display: flex;
+        align-items: center;
+        gap: .7rem;
+      }
+
+      .specialist-card__head .thread-avatar {
+        inline-size: 3.2rem;
+        block-size: 3.2rem;
+      }
+
+      .specialist-card__meta {
+        display: grid;
+        gap: .2rem;
+      }
+
+      .specialist-card__meta strong {
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+      }
+
+      .specialist-card__meta span,
+      .specialist-card li {
+        color: var(--av-color-ink-muted);
+        font-size: .8rem;
+      }
+
+      .specialist-card ul {
+        margin: 0;
+        padding-inline-start: 1rem;
+      }
+
+      .thread-back {
+        display: none;
+        border: 1px solid var(--av-color-border);
+        background: var(--av-color-surface);
+        color: var(--av-color-ink-strong);
+      }
+
+      .thread-back .icon {
+        transform: rotate(180deg);
+      }
+
+      .desktop-only {
+        display: inline-flex;
+      }
+
+      @keyframes message-skeleton {
+        from {
+          background-position: 200% 0;
+        }
+        to {
+          background-position: -200% 0;
+        }
+      }
+
+      @media (min-width: 64rem) {
+        .messages-shell {
+          grid-template-columns: 20rem minmax(0, 1fr);
+          align-items: stretch;
+        }
+      }
+
+      @media (max-width: 63.99rem) {
+        .messages-shell {
+          min-block-size: calc(100dvh - 8rem);
+        }
+
+        .messages-page.messages-page--thread-open .messages-pane {
+          display: none;
+        }
+
+        .messages-page:not(.messages-page--thread-open) .thread-pane {
+          display: none;
+        }
+
+        .thread-back {
+          display: grid;
+        }
+
+        .thread-head-main {
+          align-items: center;
+        }
+
+        .thread-head-bar {
+          gap: .75rem;
+        }
+
+        .thread-actions .desktop-only {
+          display: none;
+        }
+
+        .message-bubble {
+          max-inline-size: 82%;
+        }
+
+        .sheet-actions .button,
+        .thread-outline {
+          inline-size: 100%;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body class="app-body" data-page="messages" data-theme="botanical">
+    <div class="app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی محصول">
+        <a class="brand" href="dashboard-botanical.html">
+          <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect class="brand-mark__plan" x="7" y="9" width="29" height="11" rx="5.5" />
+            <rect class="brand-mark__actual" x="12" y="27" width="29" height="11" rx="5.5" />
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4" />
+          </svg>
+          <span>آووکادو</span>
+        </a>
+          <nav aria-label="بخش‌های اصلی">
+          <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+          <a href="quick-log-botanical.html"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+          <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+          <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+          <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+        </nav>
+        <div class="side-nav__foot">مسیرهای اصلی همیشه از همین پنج بخش در دسترس هستند.</div>
+      </aside>
+
+      <main class="app-main" data-od-id="messages-page">
+        <header class="app-topbar">
+          <div class="app-topbar__title">
+            <span>پیام‌ها و مشاوره</span>
+            <strong>گفتگو با متخصص</strong>
+          </div>
+          <div class="app-topbar__actions">
+            <a class="header-action-link" href="messages-botanical.html" aria-label="پیام‌ها"><img class="header-action-icon" src="assets/icons/icon-message.png" alt="" aria-hidden="true" /></a>
+            <a class="header-action-link header-action-link--notification" href="notifications-botanical.html" aria-label="اعلان‌ها"><img class="header-action-icon" src="assets/icons/icon-bell.png" alt="" aria-hidden="true" /><span class="header-action-badge" aria-hidden="true"></span></a>
+            <a class="avatar-link" href="settings-botanical.html" aria-label="پروفایل سارا">س</a>
+          </div>
+        </header>
+
+        <div class="app-container page-content messages-page" id="messages-page-root">
+          <section class="messages-shell" data-od-id="messages-shell">
+            <aside class="messages-pane" data-od-id="conversations-pane">
+              <div class="messages-pane__head">
+                <div class="messages-pane__title">
+                  <div>
+                    <h1>گفتگوها</h1>
+                    <p id="conversation-count">۲ گفتگوی فعال</p>
+                  </div>
+                </div>
+
+                <label class="messages-search" aria-label="جست‌وجو در گفتگوها">
+                  <svg class="icon icon--sm" aria-hidden="true">
+                    <use href="assets/icons.svg#icon-search" />
+                  </svg>
+                  <input
+                    id="conversation-search"
+                    type="search"
+                    placeholder="جست‌وجو در گفتگوها"
+                    autocomplete="off"
+                  />
+                </label>
+
+                <div class="messages-filters" role="tablist" aria-label="فیلتر گفتگوها">
+                  <button class="messages-filter is-active" type="button" data-filter="all">همه</button>
+                  <button class="messages-filter" type="button" data-filter="unread">خوانده‌نشده</button>
+                  <button class="messages-filter" type="button" data-filter="specialists">متخصصان</button>
+                </div>
+              </div>
+
+              <div class="messages-list" id="conversation-list"></div>
+            </aside>
+
+            <section class="thread-pane" data-od-id="active-thread-pane">
+              <div class="thread-pane__head" id="thread-header"></div>
+              <div class="messages-scroller" id="messages-scroller">
+                <div class="messages-stack" id="messages-stack"></div>
+              </div>
+              <div class="composer-wrap">
+                <div class="message-preview" id="message-preview"></div>
+                <form class="message-composer" id="message-form" data-od-id="message-composer">
+                  <button
+                    class="composer-attach"
+                    type="button"
+                    aria-label="افزودن پیوست"
+                    data-open-dialog="attachment-dialog"
+                  >
+                    <img src="icons8-attach-file-24.png" alt="" aria-hidden="true" />
+                  </button>
+                  <label class="composer-field">
+                    <textarea
+                      id="message-input"
+                      placeholder="پیام خود را برای متخصص بنویسید"
+                      rows="1"
+                    ></textarea>
+                    <small>پیام، تصویر یا فایل پزشکی را قبل از ارسال بازبینی کنید.</small>
+                  </label>
+                  <button class="composer-send" type="submit" aria-label="ارسال پیام">
+                    <img src="icons8-send-message-24-_1_.png" alt="" aria-hidden="true" />
+                  </button>
+                </form>
+              </div>
+            </section>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل">
+      <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+      <a href="quick-log-botanical.html" class="quick-log-trigger bottom-nav__primary"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+      <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+      <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+      <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+    </nav>
+
+    <dialog class="sheet" id="attachment-dialog" aria-labelledby="attachment-dialog-title">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__header">
+        <div>
+          <h2 id="attachment-dialog-title">افزودن پیوست</h2>
+          <p>نوع فایل یا محتوایی که می‌خواهید برای متخصص بفرستید را انتخاب کنید.</p>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog aria-label="بستن">
+          <img src="icons8-close-24-1.png" alt="" aria-hidden="true" />
+        </button>
+      </div>
+      <div class="sheet__body">
+        <div class="attachment-grid">
+          <button class="attachment-option" type="button" id="attach-image-button">
+            <span class="attachment-option__icon">
+              <svg class="icon" aria-hidden="true">
+                <use href="assets/icons.svg#icon-upload" />
+              </svg>
+            </span>
+            <span>
+              <strong>ارسال تصویر</strong>
+              <p>عکس نسخه، آزمایش یا تصویر مرتبط را انتخاب کنید.</p>
+            </span>
+          </button>
+          <button class="attachment-option" type="button" id="attach-file-button">
+            <span class="attachment-option__icon">
+              <svg class="icon" aria-hidden="true">
+                <use href="assets/icons.svg#icon-file" />
+              </svg>
+            </span>
+            <span>
+              <strong>ارسال فایل پزشکی</strong>
+              <p>فایل PDF، گزارش آزمایش یا مدارک پزشکی را پیوست کنید.</p>
+            </span>
+          </button>
+          <button class="attachment-option" type="button" id="attach-camera-button">
+            <span class="attachment-option__icon">
+              <svg class="icon" aria-hidden="true">
+                <use href="assets/icons.svg#icon-upload" />
+              </svg>
+            </span>
+            <span>
+              <strong>گرفتن عکس</strong>
+              <p>همین حالا با دوربین دستگاه عکس بگیرید.</p>
+            </span>
+          </button>
+          <button class="attachment-option" type="button" id="attach-report-button">
+            <span class="attachment-option__icon">
+              <svg class="icon" aria-hidden="true">
+                <use href="assets/icons.svg#icon-reports" />
+              </svg>
+            </span>
+            <span>
+              <strong>اشتراک‌گذاری گزارش</strong>
+              <p>خلاصه گزارش سلامت هفتگی را برای گفتگو آماده کنید.</p>
+            </span>
+          </button>
+        </div>
+        <div class="sheet-actions">
+          <button class="button button--secondary" type="button" data-close-dialog>بستن</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="sheet" id="meeting-dialog" aria-labelledby="meeting-dialog-title">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__header">
+        <div>
+          <h2 id="meeting-dialog-title">رزرو جلسه</h2>
+          <p>نوع جلسه، تاریخ، ساعت و موضوع را مشخص کنید تا به‌عنوان پیام سیستمی ثبت شود.</p>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog aria-label="بستن">
+          <img src="icons8-close-24-1.png" alt="" aria-hidden="true" />
+        </button>
+      </div>
+      <form class="sheet__body reservation-form" id="meeting-form">
+        <div class="reservation-grid">
+          <label>
+            نوع جلسه
+            <select id="meeting-type" required>
+              <option value="تماس ویدئویی">تماس ویدئویی</option>
+              <option value="تماس صوتی">تماس صوتی</option>
+              <option value="مرور گزارش">مرور گزارش</option>
+            </select>
+          </label>
+          <label>
+            تاریخ
+            <input id="meeting-date" type="date" required />
+          </label>
+          <label>
+            ساعت
+            <input id="meeting-time" type="time" value="18:00" required />
+          </label>
+        </div>
+        <label>
+          موضوع
+          <textarea
+            id="meeting-topic"
+            placeholder="مثلاً مرور روند آب، تنظیم وعده‌ها یا بررسی پاسخ آزمایش"
+            required
+          >مرور روند ثبت آب و تنظیم یادآوری عصر</textarea>
+        </label>
+        <div class="sheet-actions">
+          <button class="button button--secondary" type="button" data-close-dialog>انصراف</button>
+          <button class="button button--primary" type="submit">ثبت درخواست جلسه</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="sheet" id="specialist-dialog" aria-labelledby="specialist-dialog-title">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__header">
+        <div>
+          <h2 id="specialist-dialog-title">اطلاعات گفتگو</h2>
+          <p>جزئیات متخصص و راه‌های پیگیری همین گفتگو در این بخش قرار دارند.</p>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog aria-label="بستن">
+          <img src="icons8-close-24-1.png" alt="" aria-hidden="true" />
+        </button>
+      </div>
+      <div class="sheet__body">
+        <div class="specialist-card" id="specialist-card"></div>
+      </div>
+    </dialog>
+
+    <input id="image-input" type="file" accept="image/*" hidden />
+    <input id="camera-input" type="file" accept="image/*" capture="environment" hidden />
+    <input id="medical-file-input" type="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" hidden />
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <span class="toast__check">
+        <svg class="icon icon--sm" aria-hidden="true">
+          <use href="assets/icons.svg#icon-check" />
+        </svg>
+      </span>
+      <span id="toast-message">ارسال شد.</span>
+      <button type="button" id="toast-undo">بستن</button>
+    </div>
+
+    <script>
+      (() => {
+        const pageRoot = document.getElementById("messages-page-root");
+        const conversationList = document.getElementById("conversation-list");
+        const conversationCount = document.getElementById("conversation-count");
+        const threadHeader = document.getElementById("thread-header");
+        const messagesStack = document.getElementById("messages-stack");
+        const messagesScroller = document.getElementById("messages-scroller");
+        const messageForm = document.getElementById("message-form");
+        const messageInput = document.getElementById("message-input");
+        const messagePreview = document.getElementById("message-preview");
+        const searchInput = document.getElementById("conversation-search");
+        const filters = Array.from(document.querySelectorAll(".messages-filter"));
+        const toast = document.getElementById("toast");
+        const toastMessage = document.getElementById("toast-message");
+        const toastUndo = document.getElementById("toast-undo");
+        const threadParam = new URLSearchParams(window.location.search).get("thread") || "";
+        const entryParam = new URLSearchParams(window.location.search).get("entry") || "";
+        const attachmentDialog = document.getElementById("attachment-dialog");
+        const meetingDialog = document.getElementById("meeting-dialog");
+        const specialistDialog = document.getElementById("specialist-dialog");
+        const specialistCard = document.getElementById("specialist-card");
+        const imageInput = document.getElementById("image-input");
+        const cameraInput = document.getElementById("camera-input");
+        const medicalFileInput = document.getElementById("medical-file-input");
+        const meetingForm = document.getElementById("meeting-form");
+
+        const state = {
+          loading: true,
+          filter: "all",
+          query: "",
+          activeId: threadParam || "nazanin",
+          mobileThreadOpen: threadParam === "nazanin",
+          pendingAttachment: null,
+        };
+
+        const conversations = [
+          {
+            id: "nazanin",
+            name: "نازنین رستگار",
+            role: "متخصص تغذیه",
+            specialty: "تنظیم وعده و پایش روزانه",
+            status: "پاسخ معمولاً در همان روز",
+            avatar: "ن",
+            unread: 2,
+            lastTime: "۱۰:۱۸",
+            isSpecialist: true,
+            meetingLabel: "آخرین رزرو: پنجشنبه ۲۴ تیر · ۱۸:۰۰",
+            notes: [
+              "در دسترس برای مرور برنامه و گزارش‌های تغذیه",
+              "می‌توانید فایل یا تصویر آزمایش را در همین گفتگو بفرستید",
+            ],
+            messages: [
+              {
+                id: "m1",
+                author: "expert",
+                text: "سلام. گزارش هفته را دیدم. اگر موافق باشید این هفته روی منظم‌تر شدن ثبت آب تمرکز کنیم.",
+                time: "۱۰:۱۲",
+                status: "خوانده‌شده",
+              },
+              {
+                id: "m2",
+                author: "user",
+                text: "بله، یادآوری عصر برایم بهتر است و بعد از ساعت ۵ بیشتر فراموش می‌کنم.",
+                time: "۱۰:۱۸",
+                status: "ارسال‌شده",
+              },
+              {
+                id: "m3",
+                author: "system",
+                text: "پیشنهاد جلسه نمایشی برای مرور عادت آب این هفته آماده است.",
+              },
+            ],
+          },
+          {
+            id: "support",
+            name: "پشتیبانی آووکادو",
+            role: "هماهنگی مدارک",
+            specialty: "پیگیری فایل و گزارش",
+            status: "پاسخ در ساعات اداری",
+            avatar: "پ",
+            unread: 0,
+            lastTime: "دیروز",
+            isSpecialist: false,
+            meetingLabel: "جلسه‌ای برای این گفتگو ثبت نشده است",
+            notes: [
+              "برای بارگذاری مجدد گزارش یا مدارک می‌توانید از منوی پیوست استفاده کنید",
+              "فایل‌های پزشکی پیش از ثبت نهایی توسط شما فقط به‌صورت پیش‌نمایش نگه داشته می‌شوند",
+            ],
+            messages: [
+              {
+                id: "s1",
+                author: "system",
+                text: "فایل پزشکی شما دریافت و برای بررسی آماده شد.",
+              },
+              {
+                id: "s2",
+                author: "expert",
+                text: "اگر نسخه تازه‌تری دارید، همان را در همین گفتگو پیوست کنید تا جایگزین شود.",
+                time: "دیروز",
+                status: "خوانده‌شده",
+              },
+            ],
+          },
+        ];
+
+        let toastTimer = null;
+
+        function findConversation(id) {
+          return conversations.find((item) => item.id === id) || null;
+        }
+
+        function formatBytes(size) {
+          if (!size) return "حجم نامشخص";
+          return `${(size / 1024 / 1024).toFixed(1)} MB`;
+        }
+
+        const dateUtils = window.AvocadoDate || null;
+
+        function toPersianDate(value) {
+          if (dateUtils?.formatPersianDate) return dateUtils.formatPersianDate(value, { weekday: true });
+          try {
+            return new Intl.DateTimeFormat("fa-IR", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+            }).format(new Date(value));
+          } catch {
+            return value;
+          }
+        }
+
+        function showToast(message, mode = "close") {
+          if (!toast || !toastMessage) return;
+          window.clearTimeout(toastTimer);
+          toastMessage.textContent = message;
+          if (toastUndo) {
+            toastUndo.hidden = mode === "hidden";
+            toastUndo.textContent = "بستن";
+          }
+          toast.hidden = false;
+          toastTimer = window.setTimeout(() => {
+            toast.hidden = true;
+          }, 3800);
+        }
+
+        function closeDialog(dialog) {
+          if (!dialog) return;
+          if (typeof dialog.close === "function" && dialog.open) dialog.close();
+          else dialog.removeAttribute("open");
+        }
+
+        function openDialog(dialog) {
+          if (!dialog) return;
+          if (typeof dialog.showModal === "function") dialog.showModal();
+          else dialog.setAttribute("open", "");
+        }
+
+        function getFilteredConversations() {
+          const query = state.query.trim();
+          return conversations.filter((item) => {
+            const matchesFilter =
+              state.filter === "all"
+                ? true
+                : state.filter === "unread"
+                  ? item.unread > 0
+                  : item.isSpecialist;
+            const haystack = `${item.name} ${item.role} ${item.messages[item.messages.length - 1]?.text || ""}`;
+            const matchesQuery = !query || haystack.includes(query);
+            return matchesFilter && matchesQuery;
+          });
+        }
+
+        function renderConversationList() {
+          const items = getFilteredConversations();
+          conversationCount.textContent = `${items.length} گفتگو`;
+          if (!items.length) {
+            conversationList.innerHTML = `
+              <div class="messages-empty">
+                <strong>نتیجه‌ای پیدا نشد</strong>
+                <p>هنوز گفتگویی برای این فیلتر یا جست‌وجو پیدا نشده است.</p>
+              </div>
+            `;
+            return;
+          }
+
+          if (!items.some((item) => item.id === state.activeId)) {
+            state.activeId = items[0].id;
+          }
+
+          conversationList.innerHTML = items
+            .map((item) => {
+              const latest = item.messages[item.messages.length - 1];
+              return `
+                <button class="conversation-row ${item.id === state.activeId ? "is-active" : ""}" type="button" data-conversation-id="${item.id}">
+                  <span class="conversation-avatar">${item.avatar}</span>
+                  <span class="conversation-copy">
+                    <strong>${item.name}</strong>
+                    <small>${item.role}</small>
+                    ${item.id === "nazanin" ? `<span class="coach-conversation-chip">گفت‌وگوی مربی فعلی</span>` : ""}
+                    <p>${latest?.text || "بدون پیام"}</p>
+                  </span>
+                  <span class="conversation-side">
+                    <span class="conversation-time">${item.lastTime}</span>
+                    ${item.unread ? `<span class="unread-badge">${item.unread}</span>` : ""}
+                  </span>
+                </button>
+              `;
+            })
+            .join("");
+        }
+
+        function renderSpecialistCard(conversation) {
+          if (!specialistCard || !conversation) return;
+          specialistCard.innerHTML = `
+            <div class="specialist-card__head">
+              <span class="thread-avatar">${conversation.avatar}</span>
+              <div class="specialist-card__meta">
+                <strong>${conversation.name}</strong>
+                <span>${conversation.role}</span>
+                <span>${conversation.status}</span>
+              </div>
+            </div>
+            <div class="thread-status-line">
+              <span class="thread-status-dot"></span>
+              <span>${conversation.meetingLabel}</span>
+            </div>
+            <ul>
+              ${conversation.notes.map((note) => `<li>${note}</li>`).join("")}
+            </ul>
+          `;
+        }
+
+        function renderThreadHeader() {
+          const conversation = findConversation(state.activeId);
+          if (!conversation) {
+            threadHeader.innerHTML = `
+              <div class="thread-empty">
+                <strong>گفتگویی برای نمایش نیست</strong>
+                <p>از فهرست گفتگوها یک مورد را انتخاب کنید.</p>
+              </div>
+            `;
+            return;
+          }
+
+          renderSpecialistCard(conversation);
+
+          threadHeader.innerHTML = `
+            <div class="thread-head-bar">
+              <div class="thread-head-main">
+                <button class="thread-back" type="button" id="thread-back-button" aria-label="بازگشت">
+                  <svg class="icon" aria-hidden="true">
+                    <use href="assets/icons.svg#icon-arrow" />
+                  </svg>
+                </button>
+                <span class="thread-avatar">${conversation.avatar}</span>
+                <div class="thread-meta">
+                  <strong>${conversation.name}</strong>
+                  <span>${conversation.role}</span>
+                </div>
+              </div>
+              <div class="thread-actions">
+                <button class="button thread-outline desktop-only" type="button" data-open-dialog="meeting-dialog">رزرو جلسه</button>
+                <details class="thread-kebab">
+                  <summary aria-label="گزینه‌های بیشتر">⋯</summary>
+                  <div class="thread-kebab__menu">
+                    <button type="button" data-open-dialog="specialist-dialog">اطلاعات گفتگو</button>
+                    <button type="button" data-open-dialog="meeting-dialog">رزرو جلسه</button>
+                  </div>
+                </details>
+              </div>
+            </div>
+            <div class="thread-status-line">
+              <span class="thread-status-dot"></span>
+              <span>${conversation.specialty} · ${conversation.status}</span>
+            </div>
+            ${entryParam === "coach-space" && conversation.id === "nazanin" ? `<a class="coach-link-row" data-back-to-coach href="coach-space-botanical.html">بازگشت به فضای مشترک مربی</a>` : ""}
+          `;
+
+          document.getElementById("thread-back-button")?.addEventListener("click", () => {
+            state.mobileThreadOpen = false;
+            syncMobileThread();
+          });
+        }
+
+        function renderPendingAttachmentMarkup() {
+          const attachment = state.pendingAttachment;
+          if (!attachment) {
+            messagePreview.className = "message-preview";
+            messagePreview.innerHTML = "";
+            return;
+          }
+
+          const thumb = attachment.preview
+            ? `<span class="message-preview__thumb"><img src="${attachment.preview}" alt="" /></span>`
+            : `<span class="message-preview__thumb">
+                <svg class="icon" aria-hidden="true">
+                  <use href="assets/icons.svg#icon-file" />
+                </svg>
+              </span>`;
+
+          messagePreview.className = "message-preview is-visible";
+          messagePreview.innerHTML = `
+            ${thumb}
+            <div class="message-preview__meta">
+              <strong>${attachment.name}</strong>
+              <span>${attachment.caption}</span>
+            </div>
+            <button class="message-preview__remove" type="button" aria-label="حذف پیوست">×</button>
+          `;
+
+          messagePreview.querySelector(".message-preview__remove")?.addEventListener("click", () => {
+            state.pendingAttachment = null;
+            renderPendingAttachmentMarkup();
+          });
+        }
+
+        function renderMessages() {
+          const conversation = findConversation(state.activeId);
+          if (!conversation) {
+            messagesStack.innerHTML = `
+              <div class="thread-empty">
+                <strong>گفتگویی برای نمایش نیست</strong>
+                <p>اگر هنوز گفتگویی وجود ندارد، از رزرو جلسه یا ارسال اولین پیام شروع کنید.</p>
+              </div>
+            `;
+            return;
+          }
+
+          messagesStack.innerHTML = conversation.messages
+            .map((message) => {
+              if (message.author === "system") {
+                return `
+                  <div class="system-row">
+                    <div class="system-chip">${message.text}</div>
+                  </div>
+                `;
+              }
+
+              const attachment = message.attachment
+                ? `
+                    <div class="message-attachment">
+                      <svg class="icon icon--sm" aria-hidden="true">
+                        <use href="assets/icons.svg#icon-file" />
+                      </svg>
+                      <span>${message.attachment.name}</span>
+                    </div>
+                  `
+                : "";
+
+              return `
+                <div class="message-row" data-author="${message.author}">
+                  <article class="message-bubble">
+                    ${attachment}
+                    ${message.text ? `<p class="message-text">${message.text}</p>` : ""}
+                    <span class="message-meta">${message.time || ""}${message.status ? ` · ${message.status}` : ""}</span>
+                  </article>
+                </div>
+              `;
+            })
+            .join("");
+
+          requestAnimationFrame(() => {
+            messagesScroller.scrollTo({ top: messagesScroller.scrollHeight, behavior: "smooth" });
+          });
+        }
+
+        function syncMobileThread() {
+          pageRoot.classList.toggle("messages-page--thread-open", state.mobileThreadOpen);
+        }
+
+        function renderLoadingState() {
+          conversationList.innerHTML = `
+            <div class="messages-skeleton" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          `;
+          threadHeader.innerHTML = `
+            <div class="thread-skeleton" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          `;
+          messagesStack.innerHTML = "";
+        }
+
+        function renderAll() {
+          if (state.loading) {
+            renderLoadingState();
+            return;
+          }
+          renderConversationList();
+          renderThreadHeader();
+          renderMessages();
+          renderPendingAttachmentMarkup();
+          syncMobileThread();
+        }
+
+        function setAttachmentFromFile(file, type) {
+          if (!file) return;
+          const isImage = file.type.startsWith("image/");
+          const attachment = {
+            name: file.name,
+            type,
+            size: file.size,
+            preview: "",
+            caption: `${type} · ${formatBytes(file.size)}`,
+          };
+
+          if (isImage) {
+            attachment.preview = URL.createObjectURL(file);
+          }
+
+          state.pendingAttachment = attachment;
+          closeDialog(attachmentDialog);
+          renderPendingAttachmentMarkup();
+          showToast("پیوست آماده ارسال شد.");
+        }
+
+        function appendSystemMessage(text) {
+          const conversation = findConversation(state.activeId);
+          if (!conversation) return;
+          conversation.messages.push({
+            id: `sys-${Date.now()}`,
+            author: "system",
+            text,
+          });
+          conversation.lastTime = "اکنون";
+          renderAll();
+        }
+
+        function bindEvents() {
+          filters.forEach((filterButton) => {
+            filterButton.addEventListener("click", () => {
+              state.filter = filterButton.dataset.filter;
+              filters.forEach((button) => button.classList.toggle("is-active", button === filterButton));
+              renderAll();
+            });
+          });
+
+          searchInput?.addEventListener("input", () => {
+            state.query = searchInput.value;
+            renderAll();
+          });
+
+          conversationList?.addEventListener("click", (event) => {
+            const row = event.target.closest("[data-conversation-id]");
+            if (!row) return;
+            const nextId = row.dataset.conversationId;
+            state.activeId = nextId;
+            const current = findConversation(nextId);
+            if (current) current.unread = 0;
+            state.mobileThreadOpen = true;
+            renderAll();
+          });
+
+          threadHeader?.addEventListener("click", (event) => {
+            const trigger = event.target.closest("[data-open-dialog]");
+            if (trigger) {
+              const dialog = document.getElementById(trigger.dataset.openDialog);
+              openDialog(dialog);
+            }
+          });
+
+          document.querySelectorAll("[data-close-dialog]").forEach((button) => {
+            button.addEventListener("click", () => closeDialog(button.closest("dialog")));
+          });
+
+          document.querySelectorAll("dialog").forEach((dialog) => {
+            dialog.addEventListener("click", (event) => {
+              if (event.target === dialog) closeDialog(dialog);
+            });
+          });
+
+          document.querySelectorAll("[data-open-dialog]").forEach((button) => {
+            button.addEventListener("click", () => {
+              const dialog = document.getElementById(button.dataset.openDialog);
+              openDialog(dialog);
+            });
+          });
+
+          messageInput?.addEventListener("input", () => {
+            messageInput.style.blockSize = "auto";
+            messageInput.style.blockSize = `${Math.min(messageInput.scrollHeight, 144)}px`;
+          });
+
+          messageForm?.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const conversation = findConversation(state.activeId);
+            const text = messageInput.value.trim();
+            if (!conversation || (!text && !state.pendingAttachment)) {
+              showToast("برای ارسال، یک پیام یا پیوست انتخاب کنید.");
+              return;
+            }
+
+            conversation.messages.push({
+              id: `msg-${Date.now()}`,
+              author: "user",
+              text,
+              time: "اکنون",
+              status: "ارسال‌شده",
+              attachment: state.pendingAttachment
+                ? { name: state.pendingAttachment.name }
+                : null,
+            });
+            conversation.lastTime = "اکنون";
+            if (text) {
+              conversation.messages.push({
+                id: `reply-${Date.now() + 1}`,
+                author: "expert",
+                text: "پیام شما دریافت شد. پاسخ دقیق‌تر را بعد از بررسی برایتان می‌فرستم.",
+                time: "اکنون",
+                status: "خوانده‌نشده",
+              });
+            }
+            messageInput.value = "";
+            messageInput.style.blockSize = "auto";
+            state.pendingAttachment = null;
+            renderAll();
+            showToast("پیام با موفقیت ارسال شد.");
+          });
+
+        meetingForm?.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const type = document.getElementById("meeting-type").value;
+            const date = document.getElementById("meeting-date").value;
+            const time = document.getElementById("meeting-time").value;
+            const topic = document.getElementById("meeting-topic").value.trim();
+            appendSystemMessage(`درخواست ${type} برای ${toPersianDate(date)} ساعت ${time} با موضوع «${topic}» ثبت شد.`);
+            closeDialog(meetingDialog);
+          showToast("درخواست جلسه ثبت شد.");
+        });
+
+        const meetingDateInput = document.getElementById("meeting-date");
+        if (meetingDateInput) {
+          const minDate = dateUtils?.minBookingDate?.() || new Date().toISOString().slice(0, 10);
+          meetingDateInput.min = minDate;
+          if (!meetingDateInput.value || meetingDateInput.value < minDate) {
+            meetingDateInput.value = minDate;
+          }
+        }
+
+          document.getElementById("attach-image-button")?.addEventListener("click", () => imageInput.click());
+          document.getElementById("attach-file-button")?.addEventListener("click", () => medicalFileInput.click());
+          document.getElementById("attach-camera-button")?.addEventListener("click", () => cameraInput.click());
+          document.getElementById("attach-report-button")?.addEventListener("click", () => {
+            state.pendingAttachment = {
+              name: "گزارش هفتگی سلامت.pdf",
+              type: "report",
+              size: 840000,
+              preview: "",
+              caption: "اشتراک‌گذاری گزارش · 0.8 MB",
+            };
+            closeDialog(attachmentDialog);
+            renderPendingAttachmentMarkup();
+            showToast("گزارش برای ارسال آماده شد.");
+          });
+
+          imageInput?.addEventListener("change", () => setAttachmentFromFile(imageInput.files?.[0], "تصویر"));
+          cameraInput?.addEventListener("change", () => setAttachmentFromFile(cameraInput.files?.[0], "عکس تازه"));
+          medicalFileInput?.addEventListener("change", () => setAttachmentFromFile(medicalFileInput.files?.[0], "فایل پزشکی"));
+
+          toastUndo?.addEventListener("click", () => {
+            toast.hidden = true;
+          });
+        }
+
+        bindEvents();
+        renderAll();
+        window.setTimeout(() => {
+          state.loading = false;
+          renderAll();
+        }, 320);
+      })();
+    </script>
+  </body>
+</html>

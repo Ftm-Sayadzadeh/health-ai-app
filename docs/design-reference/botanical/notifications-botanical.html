@@ -1,0 +1,938 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#123f26" />
+    <title>اعلان‌ها — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="src/community-flow.css" />
+    <script src="app.js" defer></script>
+    <script src="src/community-flow.js" defer></script>
+    <style>
+      .notifications-page {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .notifications-header,
+      .notifications-state,
+      .notification-group,
+      .notification-menu {
+        border: 1px solid color-mix(in oklch, var(--av-color-primary) 8%, var(--av-color-border));
+        background: var(--av-color-surface);
+      }
+
+      .notifications-header,
+      .notifications-state,
+      .notification-group {
+        border-radius: 1.35rem 1.35rem .62rem 1.35rem;
+      }
+
+      .notifications-header {
+        display: grid;
+        gap: .95rem;
+        padding: 1rem 1rem .95rem;
+      }
+
+      .notifications-header__top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .notifications-header h1,
+      .notification-group__head h2,
+      .notifications-state h2 {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+      }
+
+      .notifications-header p,
+      .notification-group__head p,
+      .notifications-state p {
+        margin: 0;
+        color: var(--av-color-ink-muted);
+      }
+
+      .notifications-header__copy {
+        display: grid;
+        gap: .38rem;
+      }
+
+      .notifications-header__count {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        padding: .45rem .78rem;
+        border-radius: 999px;
+        background: color-mix(in oklch, var(--av-color-primary-soft) 76%, white);
+        color: var(--av-color-primary);
+        font-size: .82rem;
+        font-weight: 700;
+      }
+
+      .notifications-filters {
+        display: flex;
+        gap: .55rem;
+        overflow: auto hidden;
+        padding-block-end: .15rem;
+        scrollbar-width: none;
+      }
+
+      .notifications-filters::-webkit-scrollbar {
+        display: none;
+      }
+
+      .notification-filter {
+        min-block-size: 2.55rem;
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        padding-inline: .88rem;
+        border: 1px solid var(--av-color-border);
+        border-radius: 999px;
+        background: var(--av-color-surface);
+        color: var(--av-color-ink-muted);
+        font: inherit;
+        font-size: .82rem;
+        font-weight: 700;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+
+      .notification-filter[aria-pressed="true"] {
+        border-color: color-mix(in oklch, var(--av-color-primary) 24%, var(--av-color-border));
+        background: color-mix(in oklch, var(--av-color-primary-soft) 78%, white);
+        color: var(--av-color-primary);
+      }
+
+      .notification-filter__count {
+        display: inline-grid;
+        place-items: center;
+        min-inline-size: 1.45rem;
+        min-block-size: 1.45rem;
+        padding-inline: .28rem;
+        border-radius: 999px;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 76%, white);
+        color: currentColor;
+        font-size: .72rem;
+        font-weight: 800;
+      }
+
+      .notifications-stack {
+        display: grid;
+        gap: .9rem;
+      }
+
+      .notification-group {
+        display: grid;
+        gap: .4rem;
+        padding: .82rem .82rem .75rem;
+      }
+
+      .notification-group__head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: .75rem;
+        padding-inline: .2rem;
+      }
+
+      .notification-group__head h2 {
+        font-size: 1rem;
+      }
+
+      .notification-group__head p {
+        font-size: .74rem;
+      }
+
+      .notification-list {
+        display: grid;
+      }
+
+      .notification-row {
+        position: relative;
+        display: grid;
+        grid-template-columns: auto 1fr auto auto;
+        gap: .7rem;
+        align-items: center;
+        min-block-size: 5rem;
+        padding: .78rem .72rem;
+        border-radius: 1rem 1rem .45rem 1rem;
+        background: var(--av-color-surface);
+      }
+
+      .notification-row + .notification-row {
+        border-block-start: 1px solid color-mix(in oklch, var(--av-color-primary) 6%, var(--av-color-border));
+      }
+
+      .notification-row.is-unread {
+        background: color-mix(in oklch, var(--notification-soft, var(--av-color-primary-soft)) 32%, white);
+      }
+
+      .notification-row.is-swipe-open .notification-swipe-actions {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(0);
+      }
+
+      .notification-row.is-swipe-open .notification-main {
+        transform: translateX(-5.4rem);
+      }
+
+      .notification-main {
+        display: contents;
+        transition: transform 180ms ease;
+      }
+
+      .notification-icon {
+        inline-size: 2.7rem;
+        block-size: 2.7rem;
+        display: grid;
+        place-items: center;
+        border-radius: .95rem .95rem .35rem .95rem;
+        background: color-mix(in oklch, var(--notification-soft, var(--av-color-primary-soft)) 58%, white);
+        color: var(--notification-accent, var(--av-color-primary));
+      }
+
+      .notification-icon svg {
+        inline-size: 1.25rem;
+        block-size: 1.25rem;
+      }
+
+      .notification-copy {
+        min-inline-size: 0;
+        display: grid;
+        gap: .18rem;
+      }
+
+      .notification-title-line {
+        display: flex;
+        align-items: center;
+        gap: .45rem;
+        min-inline-size: 0;
+      }
+
+      .notification-title {
+        min-inline-size: 0;
+        color: var(--av-color-ink-strong);
+        font-size: .94rem;
+        font-weight: 760;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .notification-row:not(.is-unread) .notification-title {
+        font-weight: 680;
+      }
+
+      .notification-dot {
+        inline-size: .55rem;
+        block-size: .55rem;
+        border-radius: 50%;
+        background: var(--av-color-primary);
+        flex: 0 0 auto;
+      }
+
+      .notification-row:not(.is-unread) .notification-dot {
+        display: none;
+      }
+
+      .notification-description {
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        color: var(--av-color-ink-muted);
+        font-size: .8rem;
+        line-height: 1.65;
+      }
+
+      .notification-row:not(.is-unread) .notification-description,
+      .notification-row:not(.is-unread) .notification-time {
+        color: color-mix(in oklch, var(--av-color-ink-muted) 84%, white);
+      }
+
+      .notification-time {
+        align-self: start;
+        color: var(--av-color-ink-muted);
+        font-size: .72rem;
+        white-space: nowrap;
+      }
+
+      .notification-action {
+        min-block-size: 2.45rem;
+        padding-inline: .82rem;
+        border: 0;
+        border-radius: .88rem .88rem .35rem .88rem;
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 72%, white);
+        color: var(--av-color-ink-strong);
+        font: inherit;
+        font-size: .78rem;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .notification-action:hover {
+        background: color-mix(in oklch, var(--notification-soft, var(--av-color-primary-soft)) 50%, white);
+      }
+
+      .notification-kebab {
+        position: relative;
+      }
+
+      .notification-kebab summary {
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--av-color-border);
+        border-radius: .9rem .9rem .35rem .9rem;
+        background: var(--av-color-surface);
+        list-style: none;
+        cursor: pointer;
+        color: var(--av-color-ink-strong);
+      }
+
+      .notification-kebab summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .notification-menu {
+        position: absolute;
+        inset-block-start: calc(100% + .38rem);
+        inset-inline-end: 0;
+        z-index: 3;
+        min-inline-size: 12.5rem;
+        display: grid;
+        gap: .25rem;
+        padding: .42rem;
+        border-radius: .95rem .95rem .38rem .95rem;
+        box-shadow: var(--av-shadow-2);
+      }
+
+      .notification-menu button {
+        min-block-size: 2.7rem;
+        padding-inline: .72rem;
+        border: 0;
+        border-radius: .8rem .8rem .3rem .8rem;
+        background: transparent;
+        color: var(--av-color-ink-strong);
+        font: inherit;
+        font-size: .8rem;
+        text-align: start;
+        cursor: pointer;
+      }
+
+      .notification-menu button:hover {
+        background: color-mix(in oklch, var(--av-color-surface-subtle) 72%, white);
+      }
+
+      .notification-swipe-actions {
+        position: absolute;
+        inset-inline-start: .7rem;
+        inset-block: .7rem;
+        display: flex;
+        align-items: center;
+        gap: .45rem;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(-.5rem);
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+
+      .notification-swipe-actions button {
+        inline-size: 2.7rem;
+        block-size: 2.7rem;
+        border: 0;
+        border-radius: .92rem .92rem .35rem .92rem;
+        color: white;
+        cursor: pointer;
+      }
+
+      .notification-swipe-actions button[data-swipe-action="toggle-read"] {
+        background: var(--av-color-primary);
+      }
+
+      .notification-swipe-actions button[data-swipe-action="delete"] {
+        background: var(--av-color-danger);
+      }
+
+      .notifications-state {
+        display: grid;
+        gap: .7rem;
+        place-items: center;
+        text-align: center;
+        padding: 2.2rem 1rem;
+      }
+
+      .notifications-state h2 {
+        font-size: 1.05rem;
+      }
+
+      .notifications-state p {
+        max-inline-size: 28rem;
+      }
+
+      .notifications-skeleton {
+        display: grid;
+        gap: .6rem;
+        inline-size: 100%;
+      }
+
+      .notifications-skeleton span {
+        display: block;
+        inline-size: 100%;
+        block-size: 4.6rem;
+        border-radius: 1rem 1rem .42rem 1rem;
+        background: linear-gradient(90deg, color-mix(in oklch, var(--av-color-surface-subtle) 84%, white) 25%, color-mix(in oklch, var(--av-color-surface) 98%, white) 50%, color-mix(in oklch, var(--av-color-surface-subtle) 84%, white) 75%);
+        background-size: 200% 100%;
+        animation: notification-skeleton 1.3s linear infinite;
+      }
+
+      .retry-button {
+        min-block-size: 2.9rem;
+      }
+
+      @keyframes notification-skeleton {
+        from {
+          background-position: 200% 0;
+        }
+        to {
+          background-position: -200% 0;
+        }
+      }
+
+      @media (max-width: 63.99rem) {
+        .notification-row {
+          grid-template-columns: auto 1fr auto;
+          align-items: start;
+          min-block-size: 4.7rem;
+        }
+
+        .notification-time {
+          grid-column: 2;
+          grid-row: 1;
+          justify-self: end;
+        }
+
+        .notification-action {
+          grid-column: 2 / 4;
+          justify-self: start;
+          margin-block-start: .1rem;
+        }
+
+        .notification-kebab {
+          grid-column: 3;
+          grid-row: 1 / span 2;
+          justify-self: end;
+        }
+      }
+
+      @media (min-width: 64rem) {
+        .notifications-stack {
+          gap: .8rem;
+        }
+
+        .notification-row {
+          min-block-size: 4.45rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="app-body" data-page="notifications" data-theme="botanical">
+    <div class="app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی محصول">
+        <a class="brand" href="dashboard-botanical.html">
+          <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect class="brand-mark__plan" x="7" y="9" width="29" height="11" rx="5.5" />
+            <rect class="brand-mark__actual" x="12" y="27" width="29" height="11" rx="5.5" />
+            <circle class="brand-mark__pulse" cx="39" cy="13" r="4" />
+          </svg>
+          <span>آووکادو</span>
+        </a>
+          <nav aria-label="بخش‌های اصلی">
+          <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+          <a href="quick-log-botanical.html"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+          <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+          <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+          <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+        </nav>
+        <div class="side-nav__foot">مسیرهای اصلی همیشه از همین پنج بخش در دسترس هستند.</div>
+      </aside>
+
+      <main class="app-main" data-od-id="notifications-page">
+        <header class="app-topbar">
+          <div class="app-topbar__title">
+            <span>اعلان‌ها</span>
+            <strong>مرور سریع رویدادها</strong>
+          </div>
+          <div class="app-topbar__actions">
+            <a class="header-action-link" href="messages-botanical.html" aria-label="پیام‌ها"><img class="header-action-icon" src="assets/icons/icon-message.png" alt="" aria-hidden="true" /></a>
+            <a class="header-action-link header-action-link--notification" href="notifications-botanical.html" aria-label="اعلان‌ها"><img class="header-action-icon" src="assets/icons/icon-bell.png" alt="" aria-hidden="true" /><span class="header-action-badge" aria-hidden="true"></span></a>
+            <a class="avatar-link" href="settings-botanical.html" aria-label="پروفایل سارا">س</a>
+          </div>
+        </header>
+
+        <div class="app-container page-content notifications-page">
+          <section class="notifications-header" data-od-id="notifications-header">
+            <div class="notifications-header__top">
+              <div class="notifications-header__copy">
+                <h1>اعلان‌ها</h1>
+                <div class="notifications-header__count" id="unread-counter">۳ اعلان خوانده‌نشده</div>
+                <p>برای مرور سریع کارهای مهم، یادآوری‌ها و پیام‌های تازه این فهرست را بررسی کنید.</p>
+              </div>
+              <button class="button button--secondary" type="button" id="mark-all-read">خواندن همه</button>
+            </div>
+            <div class="notifications-filters" id="notifications-filters" role="tablist" aria-label="فیلتر اعلان‌ها"></div>
+          </section>
+
+          <section class="notifications-stack" id="notifications-content" data-od-id="notifications-content"></section>
+        </div>
+      </main>
+    </div>
+
+    <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل">
+      <a href="dashboard-botanical.html"><img class="nav-icon" src="assets/icons/icon-home.png" alt="" aria-hidden="true" /><span class="nav-link__label">امروز</span></a>
+      <a href="quick-log-botanical.html" class="quick-log-trigger bottom-nav__primary"><img class="nav-icon" src="assets/icons/icon-plus-key.png" alt="" aria-hidden="true" /><span class="nav-link__label">ثبت</span></a>
+      <a href="plans-botanical.html"><img class="nav-icon" src="assets/icons/icon-planner.png" alt="" aria-hidden="true" /><span class="nav-link__label">برنامه‌ها</span></a>
+      <a href="reports-botanical.html"><img class="nav-icon" src="assets/icons/icon-increase.png" alt="" aria-hidden="true" /><span class="nav-link__label">روند</span></a>
+      <a href="settings-botanical.html"><img class="nav-icon" src="assets/icons/icon-user.png" alt="" aria-hidden="true" /><span class="nav-link__label">من</span></a>
+    </nav>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <span class="toast__check">
+        <svg class="icon icon--sm" aria-hidden="true">
+          <use href="assets/icons.svg#icon-check" />
+        </svg>
+      </span>
+      <span id="toast-message">انجام شد.</span>
+      <button type="button" id="toast-undo">بستن</button>
+    </div>
+
+    <script>
+      (() => {
+        const filtersRoot = document.getElementById("notifications-filters");
+        const contentRoot = document.getElementById("notifications-content");
+        const unreadCounter = document.getElementById("unread-counter");
+        const markAllReadButton = document.getElementById("mark-all-read");
+        const toast = document.getElementById("toast");
+        const toastMessage = document.getElementById("toast-message");
+        const toastClose = document.getElementById("toast-undo");
+        let toastTimer = null;
+
+        const state = {
+          loading: true,
+          error: false,
+          filter: "all",
+        };
+
+        const filters = [
+          { id: "all", label: "همه" },
+          { id: "unread", label: "خوانده‌نشده" },
+          { id: "meal", label: "وعده" },
+          { id: "water", label: "آب" },
+          { id: "workout", label: "تمرین" },
+          { id: "message", label: "پیام" },
+        ];
+
+        const notificationMeta = {
+          meal: {
+            accent: "var(--av-color-primary)",
+            soft: "color-mix(in oklch, var(--av-color-primary-soft) 90%, white)",
+            icon: "icon-utensils",
+          },
+          water: {
+            accent: "oklch(67% 0.11 232)",
+            soft: "oklch(96% 0.03 232)",
+            icon: "icon-info",
+          },
+          workout: {
+            accent: "var(--av-color-plan)",
+            soft: "color-mix(in oklch, var(--av-color-plan-soft) 88%, white)",
+            icon: "icon-dumbbell",
+          },
+          message: {
+            accent: "oklch(75% 0.08 170)",
+            soft: "oklch(97% 0.02 170)",
+            icon: "icon-bell",
+          },
+          report: {
+            accent: "oklch(86% 0.13 103)",
+            soft: "oklch(97% 0.05 103)",
+            icon: "icon-reports",
+          },
+        };
+
+        const notifications = [
+          {
+            id: "notif-1",
+            type: "meal",
+            group: "today",
+            title: "ناهار پیشنهادی امروز آماده است",
+            description: "می‌توانید وعده امروز را از روی برنامه بررسی کنید و فقط در صورت تأیید ثبتش کنید.",
+            relativeTime: "۱۵ دقیقه پیش",
+            unread: true,
+            actionLabel: "مشاهده وعده",
+            href: "meal-plan-botanical.html",
+          },
+          {
+            id: "notif-2",
+            type: "water",
+            group: "today",
+            title: "از آخرین ثبت آب فاصله افتاده",
+            description: "اگر آب عصر را هنوز ثبت نکرده‌اید، همین حالا مقدار واقعی را وارد کنید.",
+            relativeTime: "۳۵ دقیقه پیش",
+            unread: true,
+            actionLabel: "ثبت آب",
+            href: "water-botanical.html",
+          },
+          {
+            id: "notif-3",
+            type: "message",
+            group: "today",
+            title: "پاسخ تازه از متخصص",
+            description: "برای گفتگو با نازنین رستگار یک پیام تازه دارید و پاسخ در همان thread آماده است.",
+            relativeTime: "۱ ساعت پیش",
+            unread: true,
+            actionLabel: "باز کردن گفتگو",
+            href: "messages-botanical.html",
+          },
+          {
+            id: "notif-4",
+            type: "workout",
+            group: "yesterday",
+            title: "جلسه امروز تمرین آماده شروع است",
+            description: "چهار حرکت برای جلسه قدرت پایه آماده شده و می‌توانید مستقیم وارد اجرای تمرین شوید.",
+            relativeTime: "دیروز · ۱۸:۱۰",
+            unread: false,
+            actionLabel: "شروع تمرین",
+            href: "workout-botanical.html",
+          },
+          {
+            id: "notif-5",
+            type: "report",
+            group: "older",
+            title: "گزارش هفتگی بدون قضاوت آماده است",
+            description: "خلاصه روند هفته گذشته برای مرور سریع آماده شده و فقط الگوها را نشان می‌دهد.",
+            relativeTime: "۳ روز پیش",
+            unread: false,
+            actionLabel: "مشاهده گزارش",
+            href: "reports-botanical.html",
+          },
+          {
+            id: "notif-6",
+            type: "meal",
+            group: "older",
+            title: "میان‌وعده عصر هنوز بررسی نشده",
+            description: "اگر از روی برنامه میان‌وعده را خورده‌اید، مقدار واقعی را قبل از ثبت مرور کنید.",
+            relativeTime: "۴ روز پیش",
+            unread: false,
+            actionLabel: "مشاهده وعده",
+            href: "food-log-botanical.html",
+          },
+        ];
+
+        function showToast(message) {
+          if (!toast || !toastMessage) return;
+          window.clearTimeout(toastTimer);
+          toastMessage.textContent = message;
+          toast.hidden = false;
+          toastTimer = window.setTimeout(() => {
+            toast.hidden = true;
+          }, 3600);
+        }
+
+        function getVisibleNotifications() {
+          return notifications.filter((item) => {
+            if (state.filter === "all") return true;
+            if (state.filter === "unread") return item.unread;
+            return item.type === state.filter;
+          });
+        }
+
+        function getCounts() {
+          return {
+            all: notifications.length,
+            unread: notifications.filter((item) => item.unread).length,
+            meal: notifications.filter((item) => item.type === "meal").length,
+            water: notifications.filter((item) => item.type === "water").length,
+            workout: notifications.filter((item) => item.type === "workout").length,
+            message: notifications.filter((item) => item.type === "message").length,
+          };
+        }
+
+        function renderHeader() {
+          const unread = notifications.filter((item) => item.unread).length;
+          unreadCounter.textContent = unread ? `${unread} اعلان خوانده‌نشده` : "همه اعلان‌ها خوانده شده‌اند";
+
+          const counts = getCounts();
+          filtersRoot.innerHTML = filters
+            .map((filter) => `
+              <button class="notification-filter" type="button" data-filter="${filter.id}" aria-pressed="${String(state.filter === filter.id)}">
+                <span>${filter.label}</span>
+                <span class="notification-filter__count">${counts[filter.id] || 0}</span>
+              </button>
+            `)
+            .join("");
+        }
+
+        function renderSkeleton() {
+          contentRoot.innerHTML = `
+            <section class="notifications-state" data-od-id="notifications-loading">
+              <div class="notifications-skeleton" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </section>
+          `;
+        }
+
+        function renderError() {
+          contentRoot.innerHTML = `
+            <section class="notifications-state" data-od-id="notifications-error">
+              <h2>اعلان‌ها فعلاً بارگذاری نشدند</h2>
+              <p>برای دیدن آخرین اعلان‌ها دوباره تلاش کنید.</p>
+              <button class="button button--secondary retry-button" type="button" id="retry-notifications">تلاش دوباره</button>
+            </section>
+          `;
+          document.getElementById("retry-notifications")?.addEventListener("click", () => {
+            state.error = false;
+            state.loading = true;
+            renderAll();
+            window.setTimeout(() => {
+              state.loading = false;
+              renderAll();
+            }, 260);
+          });
+        }
+
+        function renderEmpty() {
+          contentRoot.innerHTML = `
+            <section class="notifications-state" data-od-id="notifications-empty">
+              <h2>اعلان تازه‌ای برای این فیلتر ندارید</h2>
+              <p>وقتی اعلان جدیدی برسد یا فیلتر را تغییر دهید، همین‌جا دیده می‌شود.</p>
+            </section>
+          `;
+        }
+
+        function renderGroups() {
+          const visible = getVisibleNotifications();
+          if (!visible.length) {
+            renderEmpty();
+            return;
+          }
+
+          const labels = {
+            today: { title: "امروز", note: "اعلان‌های تازه و نیازمند اقدام" },
+            yesterday: { title: "دیروز", note: "موردهایی که هنوز می‌توانید برگردید" },
+            older: { title: "قدیمی‌تر", note: "اعلان‌هایی برای پیگیری بعدی" },
+          };
+
+          const groups = ["today", "yesterday", "older"]
+            .map((groupKey) => ({
+              key: groupKey,
+              label: labels[groupKey],
+              items: visible.filter((item) => item.group === groupKey),
+            }))
+            .filter((group) => group.items.length);
+
+          contentRoot.innerHTML = groups
+            .map((group) => `
+              <section class="notification-group" data-od-id="group-${group.key}">
+                <div class="notification-group__head">
+                  <h2>${group.label.title}</h2>
+                  <p>${group.label.note}</p>
+                </div>
+                <div class="notification-list">
+                  ${group.items.map((item) => renderRow(item)).join("")}
+                </div>
+              </section>
+            `)
+            .join("");
+        }
+
+        function renderRow(item) {
+          const meta = notificationMeta[item.type] || notificationMeta.meal;
+          const actionLabel = item.unread ? "علامت‌گذاری به‌عنوان خوانده‌شده" : "علامت‌گذاری به‌عنوان خوانده‌نشده";
+          return `
+            <article
+              class="notification-row ${item.unread ? "is-unread" : ""}"
+              data-notification-id="${item.id}"
+              style="--notification-accent:${meta.accent}; --notification-soft:${meta.soft};"
+            >
+              <div class="notification-swipe-actions" aria-hidden="true">
+                <button type="button" data-swipe-action="toggle-read" title="${actionLabel}">
+                  <svg class="icon icon--sm" aria-hidden="true">
+                    <use href="assets/icons.svg#icon-check" />
+                  </svg>
+                </button>
+                <button type="button" data-swipe-action="delete" title="حذف اعلان">
+                  <svg class="icon icon--sm" aria-hidden="true">
+                    <use href="assets/icons.svg#icon-trash" />
+                  </svg>
+                </button>
+              </div>
+              <div class="notification-main">
+                <span class="notification-icon">
+                  <svg class="icon" aria-hidden="true">
+                    <use href="assets/icons.svg#${meta.icon}" />
+                  </svg>
+                </span>
+                <div class="notification-copy">
+                  <div class="notification-title-line">
+                    <strong class="notification-title">${item.title}</strong>
+                    <span class="notification-dot" aria-hidden="true"></span>
+                  </div>
+                  <p class="notification-description">${item.description}</p>
+                </div>
+                <span class="notification-time">${item.relativeTime}</span>
+                <button class="notification-action" type="button" data-open-href="${item.href}" data-mark-read="${item.id}">
+                  ${item.actionLabel}
+                </button>
+              </div>
+              <details class="notification-kebab">
+                <summary aria-label="گزینه‌های بیشتر">⋯</summary>
+                <div class="notification-menu">
+                  <button type="button" data-toggle-read="${item.id}">${actionLabel}</button>
+                  <button type="button" data-delete-notification="${item.id}">حذف اعلان</button>
+                </div>
+              </details>
+            </article>
+          `;
+        }
+
+        function renderAll() {
+          renderHeader();
+          if (state.loading) {
+            renderSkeleton();
+            return;
+          }
+          if (state.error) {
+            renderError();
+            return;
+          }
+          renderGroups();
+          attachSwipeHandlers();
+        }
+
+        function toggleRead(id, nextValue) {
+          const target = notifications.find((item) => item.id === id);
+          if (!target) return;
+          target.unread = typeof nextValue === "boolean" ? nextValue : !target.unread;
+          renderAll();
+          showToast(target.unread ? "اعلان به خوانده‌نشده تغییر کرد." : "اعلان خوانده شد.");
+        }
+
+        function deleteNotification(id) {
+          const index = notifications.findIndex((item) => item.id === id);
+          if (index === -1) return;
+          notifications.splice(index, 1);
+          renderAll();
+          showToast("اعلان حذف شد.");
+        }
+
+        function openNotification(href, id) {
+          toggleRead(id, false);
+          window.location.href = href;
+        }
+
+        function attachSwipeHandlers() {
+          let startX = 0;
+          let activeRow = null;
+
+          contentRoot.querySelectorAll(".notification-row").forEach((row) => {
+            row.addEventListener("touchstart", (event) => {
+              startX = event.touches[0].clientX;
+              activeRow = row;
+            }, { passive: true });
+
+            row.addEventListener("touchmove", (event) => {
+              if (!activeRow) return;
+              const delta = event.touches[0].clientX - startX;
+              if (delta < -42) {
+                activeRow.classList.add("is-swipe-open");
+              } else if (delta > 28) {
+                activeRow.classList.remove("is-swipe-open");
+              }
+            }, { passive: true });
+
+            row.addEventListener("touchend", () => {
+              activeRow = null;
+            });
+          });
+        }
+
+        filtersRoot?.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-filter]");
+          if (!button) return;
+          state.filter = button.dataset.filter;
+          renderAll();
+        });
+
+        markAllReadButton?.addEventListener("click", () => {
+          notifications.forEach((item) => {
+            item.unread = false;
+          });
+          renderAll();
+          showToast("همه اعلان‌ها خوانده شد.");
+        });
+
+        contentRoot?.addEventListener("click", (event) => {
+          const openAction = event.target.closest("[data-open-href]");
+          if (openAction) {
+            openNotification(openAction.dataset.openHref, openAction.dataset.markRead);
+            return;
+          }
+
+          const toggleAction = event.target.closest("[data-toggle-read]");
+          if (toggleAction) {
+            toggleRead(toggleAction.dataset.toggleRead);
+            return;
+          }
+
+          const deleteAction = event.target.closest("[data-delete-notification]");
+          if (deleteAction) {
+            deleteNotification(deleteAction.dataset.deleteNotification);
+            return;
+          }
+
+          const swipeAction = event.target.closest("[data-swipe-action]");
+          if (swipeAction) {
+            const row = swipeAction.closest("[data-notification-id]");
+            if (!row) return;
+            if (swipeAction.dataset.swipeAction === "toggle-read") {
+              toggleRead(row.dataset.notificationId);
+            } else if (swipeAction.dataset.swipeAction === "delete") {
+              deleteNotification(row.dataset.notificationId);
+            }
+          }
+        });
+
+        toastClose?.addEventListener("click", () => {
+          toast.hidden = true;
+        });
+
+        renderAll();
+        window.setTimeout(() => {
+          state.loading = false;
+          renderAll();
+        }, 280);
+      })();
+    </script>
+  </body>
+</html>

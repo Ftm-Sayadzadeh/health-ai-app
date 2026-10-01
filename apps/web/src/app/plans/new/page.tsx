@@ -59,14 +59,28 @@ function NewPlanContent() {
   return (
     <PlansPageShell>
       <div>
-        <div className="mb-3 flex items-center justify-between gap-3 rounded-[1.2rem] border border-[#EFEAD9] bg-white px-4 py-2.5 shadow-[0_8px_22px_rgba(85,117,54,0.05)]"><div className="min-w-0"><p className="text-[0.68rem] font-extrabold text-[#86B93B]">ثبت برنامه</p><h1 className="mt-0.5 truncate text-lg font-extrabold sm:text-xl">{planType ? (planType === "nutrition" ? "افزودن برنامه متخصص" : "افزودن برنامه تمرینی") : "چه برنامه‌ای داری؟"}</h1></div><Link href="/plans" className="shrink-0 rounded-full border border-[#E9E5DC] bg-[#FFFDF8] px-4 py-2 text-xs font-extrabold text-[#557536]">بازگشت</Link></div>
-        {access.error ? <p role="alert" className="rounded-2xl bg-[#FFF6E8] p-4 text-sm text-[#7A3A27]">{access.error}</p> : null}
+        <div className="card mb-3 flex items-center justify-between gap-3 px-4 py-3">
+          <div className="min-w-0">
+            <p className="text-[0.68rem] font-bold text-[var(--brand-green)]">ثبت برنامه</p>
+            <h1 className="mt-0.5 truncate text-lg font-bold sm:text-xl">{planType ? (planType === "nutrition" ? "افزودن برنامه متخصص" : "افزودن برنامه تمرینی") : "چه برنامه‌ای داری؟"}</h1>
+          </div>
+          <Link href="/plans" className="btn btn-secondary btn-sm shrink-0">بازگشت</Link>
+        </div>
+        {access.error ? <p role="alert" className="notice notice-error">{access.error}</p> : null}
         {!planType ? (
           <div className="grid gap-4 sm:grid-cols-2">
-            <button type="button" onClick={() => setPlanType("nutrition")} className="rounded-[1.5rem] border border-[#DCE9B0] bg-white p-5 text-right shadow-[0_14px_32px_rgba(85,117,54,0.06)] hover:bg-[#F4FBE3]"><span className="text-lg font-extrabold">برنامه تغذیه</span><span className="mt-1 block text-sm leading-7 text-[#6B7A5A]">یادداشت برنامه‌ای که از متخصص خودت گرفتی</span></button>
-            <button type="button" onClick={() => setPlanType("workout")} className="rounded-[1.5rem] border border-[#F5D5C9] bg-white p-5 text-right shadow-[0_14px_32px_rgba(85,117,54,0.06)] hover:bg-[#FFF6E8]"><span className="text-lg font-extrabold">برنامه تمرین</span><span className="mt-1 block text-sm leading-7 text-[#6B7A5A]">یادداشت برنامه تمرینی ساده‌ای که خودت دنبال می‌کنی</span></button>
+            <button type="button" onClick={() => setPlanType("nutrition")} className="card flex items-start gap-3 p-5 text-right transition hover:border-[var(--border-lime)] hover:bg-[var(--brand-avocado-soft)]">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--brand-avocado-soft)] text-base font-bold text-[var(--brand-green)]" aria-hidden="true">ن</span>
+              <span><span className="block text-base font-bold">برنامه تغذیه</span><span className="mt-1 block text-sm leading-7 text-[var(--text-muted)]">یادداشت برنامه‌ای که از متخصص خودت گرفتی</span></span>
+            </button>
+            <button type="button" onClick={() => setPlanType("workout")} className="card flex items-start gap-3 p-5 text-right transition hover:border-[#ecdcb6] hover:bg-[#fbf0e0]">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fbf0e0] text-base font-bold text-[#8a5a32]" aria-hidden="true">ت</span>
+              <span><span className="block text-base font-bold">برنامه تمرین</span><span className="mt-1 block text-sm leading-7 text-[var(--text-muted)]">یادداشت برنامه تمرینی ساده‌ای که خودت دنبال می‌کنی</span></span>
+            </button>
           </div>
-        ) : <PlanForm planType={planType} value={value} onChange={setValue} submitLabel="ذخیره برنامه" isSaving={isSaving} error={error} onSubmit={save} />}
+        ) : (
+          <PlanForm planType={planType} value={value} onChange={setValue} submitLabel="ذخیره برنامه" isSaving={isSaving} error={error} onSubmit={save} />
+        )}
       </div>
     </PlansPageShell>
   );

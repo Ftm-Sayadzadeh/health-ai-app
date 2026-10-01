@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "reports-botanical.html",
+  "entry": "reports-botanical.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-12T11:47:22.164Z",
+  "updatedAt": "2026-07-12T11:47:22.164Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

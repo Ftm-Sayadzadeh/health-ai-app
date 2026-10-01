@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "dashboard-flow-index.html",
+  "entry": "dashboard-flow-index.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-12T13:28:16.477Z",
+  "updatedAt": "2026-07-12T13:28:16.477Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

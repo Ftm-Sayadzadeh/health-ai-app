@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#123f26" />
+    <title>اجرای جلسه تمرین — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="src/workout-flow.css" />
+    <script src="app.js" defer></script>
+    <script src="src/workout-flow.js" defer></script>
+  </head>
+  <body class="app-body workout-focus-mode" data-page="workout-session" data-theme="botanical">
+    <div class="workout-focus-shell">
+      <header class="workout-focus-header" data-od-id="workout-session-header">
+        <div class="workout-focus-header__top">
+          <div>
+            <span class="workout-page-hero__eyebrow">حالت اجرای جلسه</span>
+            <h1 id="session-title">زنجیره خلفی و ثبات</h1>
+            <p id="session-program-title">قدرت پایه</p>
+          </div>
+          <button class="button button--secondary" type="button" id="session-exit-button">خروج</button>
+        </div>
+        <div class="workout-focus-header__meta">
+          <div class="workout-focus-progress" style="min-inline-size: min(100%, 20rem);">
+            <div class="workout-compact-header">
+              <strong id="session-progress-text" aria-live="polite">حرکت ۱ از ۳</strong>
+              <span id="session-progress-percent" aria-live="polite">۰٪</span>
+            </div>
+            <div class="workout-progress-bar">
+              <span id="session-progress-bar" style="--progress: 0%"></span>
+            </div>
+          </div>
+          <div class="workout-meta-row">
+            <span class="workout-pill">زمان سپری‌شده <bdi id="session-elapsed">۰۰:۰۰</bdi></span>
+          </div>
+        </div>
+      </header>
+
+      <main class="workout-focus-main" data-od-id="workout-session-page">
+        <div class="workout-focus-layout">
+          <section class="workout-focus-card" data-od-id="current-exercise-card">
+            <div class="workout-focus-visual">
+              <div>
+                <strong id="current-exercise-name">ددلیفت رومانیایی دمبل</strong>
+                <p id="current-exercise-guide">شانه را عقب نگه دار و دامنه را تا جایی برو که کمر خنثی بماند.</p>
+              </div>
+            </div>
+
+            <div class="workout-focus-grid">
+              <div class="workout-focus-meta">
+                <span>شماره حرکت</span>
+                <strong id="current-exercise-order">حرکت ۱</strong>
+              </div>
+              <div class="workout-focus-meta">
+                <span>ست فعلی</span>
+                <strong id="current-exercise-sets">۱ از ۳ ست</strong>
+              </div>
+              <div class="workout-focus-meta">
+                <span>هدف این ست</span>
+                <strong id="current-exercise-target">۱۰ تکرار</strong>
+              </div>
+              <div class="workout-focus-meta">
+                <span>وزن پیشنهادی</span>
+                <strong id="current-exercise-weight">۸ کیلوگرم</strong>
+              </div>
+              <div class="workout-focus-meta">
+                <span>عضلات هدف</span>
+                <strong id="current-exercise-muscles">همسترینگ و باسن</strong>
+              </div>
+              <div class="workout-focus-meta">
+                <span>استراحت</span>
+                <strong id="current-exercise-rest">۷۰ ثانیه استراحت</strong>
+              </div>
+            </div>
+
+            <button class="button button--secondary" type="button" id="session-guide-button">مشاهده آموزش کامل</button>
+          </section>
+
+          <aside class="workout-tab-panel">
+            <section class="workout-focus-card" data-od-id="set-log-panel">
+              <div class="workout-card__header">
+                <div>
+                  <h2>ثبت ست</h2>
+                  <p>هر ست را ثبت کن، در صورت نیاز آخرین ست را اصلاح کن و سپس ادامه بده.</p>
+                </div>
+              </div>
+              <form class="workout-set-form" id="session-set-form" novalidate>
+                <div class="workout-set-fields">
+                  <label class="field">
+                    <span class="field__label" id="session-field-reps-label">تعداد تکرار</span>
+                    <input id="session-field-reps" type="number" min="0" step="1" value="10" />
+                  </label>
+                  <label class="field">
+                    <span class="field__label">وزن</span>
+                    <input id="session-field-weight" type="number" min="0" step="0.5" value="8" />
+                  </label>
+                </div>
+                <div class="workout-logged-sets" id="session-logged-sets"></div>
+              </form>
+            </section>
+
+            <section class="workout-focus-card" data-od-id="session-controls-card">
+              <div class="workout-card__header">
+                <div>
+                  <h3>کنترل جلسه</h3>
+                  <p>حرکت فعلی، مرور حرکت‌ها، جایگزینی و پایان جلسه از همین بخش در دسترس است.</p>
+                </div>
+              </div>
+              <div class="workout-session-stepper" id="session-stepper"></div>
+              <div class="workout-session-toolbar">
+                <button class="button button--secondary" type="button" id="session-prev-exercise">حرکت قبلی</button>
+                <button class="button button--secondary" type="button" id="session-next-exercise">حرکت بعدی</button>
+                <button class="button button--secondary" type="button" id="session-open-picker">فهرست حرکت‌ها</button>
+                <button class="button button--secondary" type="button" id="session-open-substitute">جایگزینی حرکت</button>
+              </div>
+              <div class="workout-control-grid">
+                <button class="button button--quiet" type="button" id="session-skip-exercise">ردکردن حرکت</button>
+                <button class="button button--quiet" type="button" id="session-complete-all">همشو انجام دادم</button>
+              </div>
+              <p class="workout-unsaved-note" id="session-unsaved-note">پیشرفت جلسه هنوز ذخیره نشده است.</p>
+              <div class="workout-summary-grid">
+                <div class="workout-mini-card">
+                  <span>خلاصه جلسه</span>
+                  <small id="session-summary-program">قدرت پایه · جلسه ۱</small>
+                  <strong id="session-summary-line">۰ حرکت کامل</strong>
+                </div>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </main>
+
+      <section class="workout-rest-overlay" id="session-rest-overlay" hidden data-od-id="rest-overlay">
+        <strong>استراحت بین ست‌ها</strong>
+        <div class="workout-rest-overlay__time" id="session-rest-time">۰۰:۴۵</div>
+        <p>حرکت بعدی: <strong id="session-rest-next">ددلیفت رومانیایی دمبل</strong></p>
+        <div class="workout-rest-actions">
+          <button class="button button--secondary" type="button" id="session-rest-toggle">مکث</button>
+          <button class="button button--secondary" type="button" id="session-rest-add">افزودن ۱۵ ثانیه</button>
+          <button class="button button--quiet" type="button" id="session-rest-skip">ردکردن استراحت</button>
+        </div>
+      </section>
+
+      <footer class="workout-session-footer">
+        <div class="workout-session-footer__grid">
+          <span class="workout-session-footer__hint">اقدام اصلی همیشه برای ثبت همین ست در دسترس می‌ماند.</span>
+          <div class="workout-session-footer__actions">
+            <button class="button button--secondary" type="button" id="session-skip-set">ردکردن ست</button>
+            <button class="button button--primary button--lg" type="button" id="session-complete-set">این ست انجام شد</button>
+          </div>
+          <div class="workout-control-grid">
+            <button class="button button--quiet" type="button" id="session-finish-button">پایان تمرین</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <dialog class="workout-sheet" id="session-picker-sheet" aria-labelledby="session-picker-title">
+      <div class="workout-sheet__body">
+        <div class="workout-sheet__handle" aria-hidden="true"></div>
+        <div class="workout-sheet__header">
+          <div>
+            <h2 id="session-picker-title">فهرست حرکت‌ها</h2>
+            <p>برای جابه‌جایی سریع بین حرکت‌های همین جلسه.</p>
+          </div>
+          <button class="icon-button" type="button" data-workout-close-dialog aria-label="بستن">
+            <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-close"></use></svg>
+          </button>
+        </div>
+        <div class="workout-sheet-list" id="session-exercise-picker"></div>
+        <div class="workout-sheet__actions">
+          <button class="button button--secondary" type="button" data-workout-close-dialog>بستن</button>
+          <button class="button button--primary" type="button" data-workout-close-dialog>بازگشت به جلسه</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="workout-sheet" id="session-substitute-sheet" aria-labelledby="session-substitute-title">
+      <div class="workout-sheet__body">
+        <div class="workout-sheet__handle" aria-hidden="true"></div>
+        <div class="workout-sheet__header">
+          <div>
+            <h2 id="session-substitute-title">حرکت جایگزین</h2>
+            <p>فقط جایگزین‌های مرتبط با عضلات هدف و وسیله موجود نمایش داده می‌شوند.</p>
+          </div>
+          <button class="icon-button" type="button" data-workout-close-dialog aria-label="بستن">
+            <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-close"></use></svg>
+          </button>
+        </div>
+        <div class="workout-substitute-grid" id="session-substitute-options"></div>
+        <div class="workout-sheet__actions">
+          <button class="button button--secondary" type="button" data-workout-close-dialog>انصراف</button>
+          <button class="button button--primary" type="button" id="session-substitute-confirm">تأیید جایگزینی</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="workout-modal" id="session-exit-dialog" aria-labelledby="session-exit-title">
+      <div class="workout-modal__body">
+        <div class="workout-sheet__header">
+          <div>
+            <h2 id="session-exit-title">خروج از جلسه</h2>
+            <p>اگر جلسه را رها کنی، پیشرفت فقط با ذخیره موقت حفظ می‌شود.</p>
+          </div>
+        </div>
+        <div class="workout-sheet-list">
+          <button class="button button--primary" type="button" id="session-save-exit">ذخیره و خروج</button>
+          <button class="button button--secondary" type="button" id="session-exit-continue">ادامه تمرین</button>
+          <button class="button button--quiet" type="button" id="session-exit-partial">پایان جلسه بدون تکمیل</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="workout-sheet" id="session-complete-all-dialog" aria-labelledby="session-complete-all-title">
+      <div class="workout-sheet__body">
+        <div class="workout-sheet__handle" aria-hidden="true"></div>
+        <div class="workout-sheet__header">
+          <div>
+            <h2 id="session-complete-all-title">همشو انجام دادم</h2>
+            <p>قبل از تکمیل، خلاصه‌ای از حرکت‌های ثبت‌نشده و ناقص را می‌بینی.</p>
+          </div>
+          <button class="icon-button" type="button" data-workout-close-dialog aria-label="بستن">
+            <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-close"></use></svg>
+          </button>
+        </div>
+        <div class="workout-option-card">
+          <strong id="session-complete-all-summary">۲ حرکت کامل · ۱ حرکت ناقص · ۱ حرکت ثبت‌نشده</strong>
+          <small>می‌توانی همه را انجام‌شده علامت بزنی یا جلسه را ناقص تمام کنی.</small>
+        </div>
+        <div class="workout-sheet__actions">
+          <button class="button button--secondary" type="button" id="session-complete-all-partial">جلسه را ناقص پایان بده</button>
+          <button class="button button--primary" type="button" id="session-complete-all-confirm">همه را انجام‌شده علامت بزن</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="workout-sheet" id="session-finish-dialog" aria-labelledby="session-finish-title">
+      <div class="workout-sheet__body">
+        <div class="workout-sheet__handle" aria-hidden="true"></div>
+        <div class="workout-sheet__header">
+          <div>
+            <h2 id="session-finish-title">پایان جلسه</h2>
+            <p>جمع‌بندی امروز را ثبت کن تا نتیجه مستقیم در تاریخچه هفتگی بنشیند.</p>
+          </div>
+          <button class="icon-button" type="button" data-workout-close-dialog aria-label="بستن">
+            <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-close"></use></svg>
+          </button>
+        </div>
+        <div class="workout-summary-grid">
+          <div class="workout-stat-card"><span>مدت کل</span><strong id="session-finish-duration">۳۴ دقیقه</strong></div>
+          <div class="workout-stat-card"><span>جمع‌بندی اجرا</span><strong id="session-finish-summary">۳ حرکت کامل</strong></div>
+          <div class="workout-stat-card"><span>کالری تقریبی</span><strong id="session-finish-calories">۱۷۰ کالری</strong></div>
+        </div>
+        <form class="workout-set-form" id="session-finish-form">
+          <div class="workout-set-fields">
+            <label class="field">
+              <span class="field__label">شدت احساس‌شده از ۱ تا ۵</span>
+              <select name="intensity">
+                <option value="1">۱</option>
+                <option value="2">۲</option>
+                <option value="3" selected>۳</option>
+                <option value="4">۴</option>
+                <option value="5">۵</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field__label">سطح انرژی بعد از تمرین</span>
+              <select name="energy">
+                <option value="بالا">بالا</option>
+                <option value="متعادل" selected>متعادل</option>
+                <option value="کم">کم</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field__label">حال بدن</span>
+              <select name="body">
+                <option value="آماده" selected>آماده</option>
+                <option value="خسته">خسته</option>
+                <option value="سنگین">سنگین</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field__label">درد یا ناراحتی اختیاری</span>
+              <input name="pain" type="text" placeholder="مثلاً کشش خفیف شانه" />
+            </label>
+          </div>
+          <label class="field">
+            <span class="field__label">یادداشت اختیاری</span>
+            <textarea name="note" placeholder="مثلاً ست آخر سنگین‌تر از انتظار بود."></textarea>
+          </label>
+          <div class="workout-sheet__actions">
+            <button class="button button--secondary" type="button" data-workout-close-dialog>بازگشت به تمرین</button>
+            <button class="button button--primary" type="submit">ثبت و پایان</button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+  </body>
+</html>

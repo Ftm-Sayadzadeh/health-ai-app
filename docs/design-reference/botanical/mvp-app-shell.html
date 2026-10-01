@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#123f26" />
+    <title>پوسته اصلی MVP — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <style>
+      @font-face { font-family: Kalameh; src: url("assets/fonts/kalameh/Kalameh-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+      @font-face { font-family: Kalameh; src: url("assets/fonts/kalameh/Kalameh-SemiBold.ttf") format("truetype"); font-weight: 650; font-display: swap; }
+      @font-face { font-family: Kalameh; src: url("assets/fonts/kalameh/Kalameh-Bold.ttf") format("truetype"); font-weight: 780; font-display: swap; }
+
+      :root {
+        --shell-rail: 15.5rem;
+        --shell-gutter: clamp(1rem, 3vw, 2rem);
+        --shell-max: 72rem;
+        --shell-bottom: 5.75rem;
+      }
+
+      * { box-sizing: border-box; }
+      html { min-inline-size: 20rem; background: var(--av-color-canvas); color: var(--av-color-ink); }
+      body { margin: 0; font-family: var(--av-font-body); font-size: 1rem; line-height: var(--av-leading-body); text-rendering: optimizeLegibility; }
+      button, input, textarea, select { font: inherit; }
+      button { color: inherit; }
+      a { color: inherit; text-decoration: none; }
+      img, svg { display: block; max-inline-size: 100%; }
+      :where(a, button, input, textarea, select):focus-visible { outline: 3px solid var(--av-color-focus); outline-offset: 3px; }
+      [hidden] { display: none !important; }
+
+      .skip-link {
+        position: fixed;
+        z-index: 1000;
+        inset-block-start: .75rem;
+        inset-inline-start: .75rem;
+        translate: 0 -160%;
+        border-radius: var(--av-radius-sm);
+        background: var(--av-color-ink-strong);
+        padding: .6rem 1rem;
+        color: white;
+      }
+      .skip-link:focus { translate: 0; }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: .65rem;
+        font-weight: 780;
+        color: var(--av-color-ink-strong);
+      }
+      .brand__mark {
+        inline-size: 2.2rem;
+        block-size: 2.2rem;
+        border: 1px solid var(--av-color-border);
+        border-radius: 1rem 1rem .45rem 1rem;
+        background: var(--av-color-surface);
+        padding: .3rem;
+      }
+      .brand__mark .plan { fill: none; stroke: var(--av-color-plan); stroke-width: 2.4; }
+      .brand__mark .actual { fill: var(--av-color-primary); }
+      .brand__mark .pulse { fill: var(--av-color-pulse); stroke: var(--av-color-pulse-ink); stroke-width: 1.2; }
+
+      .button {
+        min-block-size: 2.875rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: .5rem;
+        border: 1px solid transparent;
+        border-radius: 1rem 1rem .45rem 1rem;
+        padding: .72rem 1rem;
+        font-weight: 650;
+        cursor: pointer;
+      }
+      .button--primary { background: var(--av-color-primary); color: white; }
+      .button--secondary { border-color: var(--av-color-border-strong); background: var(--av-color-surface); color: var(--av-color-ink-strong); }
+      .button--ghost { background: transparent; color: var(--av-color-primary); }
+      .button--danger { background: var(--av-color-danger); color: white; }
+      .button:disabled, .button[aria-disabled="true"] { cursor: not-allowed; opacity: .52; }
+      .button__spinner {
+        inline-size: 1rem;
+        block-size: 1rem;
+        border: 2px solid currentColor;
+        border-inline-end-color: transparent;
+        border-radius: 50%;
+        animation: spin 900ms linear infinite;
+      }
+      @keyframes spin { to { rotate: 360deg; } }
+
+      .icon-button {
+        min-inline-size: 2.75rem;
+        min-block-size: 2.75rem;
+        display: inline-grid;
+        place-items: center;
+        border: 1px solid var(--av-color-border);
+        border-radius: 50%;
+        background: var(--av-color-surface);
+        cursor: pointer;
+      }
+
+      .public-header {
+        position: sticky;
+        z-index: var(--av-z-sticky);
+        inset-block-start: 0;
+        border-block-end: 1px solid var(--av-color-border);
+        background: color-mix(in oklch, var(--av-color-canvas) 94%, white);
+        backdrop-filter: blur(16px);
+      }
+      .public-header__inner {
+        max-inline-size: var(--shell-max);
+        min-block-size: 4.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-inline: auto;
+        padding-inline: var(--shell-gutter);
+      }
+
+      .app-frame {
+        min-block-size: 100svh;
+        display: grid;
+        background: var(--av-color-canvas);
+      }
+      .side-nav {
+        display: none;
+        background: linear-gradient(180deg, var(--av-color-primary-active), var(--av-color-ink-strong));
+        color: white;
+      }
+      .side-nav__inner {
+        position: sticky;
+        inset-block-start: 0;
+        min-block-size: 100svh;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 1.35rem 1rem;
+      }
+      .side-nav .brand { color: white; }
+      .side-nav nav {
+        display: grid;
+        gap: .35rem;
+      }
+      .side-nav a {
+        min-block-size: 3rem;
+        display: flex;
+        align-items: center;
+        gap: .7rem;
+        border-radius: 1rem 1rem .35rem 1rem;
+        padding-inline: .85rem;
+        color: color-mix(in oklch, white 78%, transparent);
+      }
+      .side-nav a[aria-current="page"] {
+        background: var(--av-color-pulse);
+        color: var(--av-color-pulse-ink);
+        font-weight: 650;
+      }
+      .side-nav__foot {
+        margin-block-start: auto;
+        border-block-start: 1px solid color-mix(in oklch, white 18%, transparent);
+        padding-block-start: 1rem;
+        color: color-mix(in oklch, white 76%, transparent);
+        font-size: var(--av-text-xs);
+      }
+
+      .app-main {
+        min-inline-size: 0;
+        padding-block-end: calc(var(--shell-bottom) + env(safe-area-inset-bottom));
+      }
+      .app-header {
+        position: sticky;
+        z-index: var(--av-z-sticky);
+        inset-block-start: 0;
+        border-block-end: 1px solid color-mix(in oklch, var(--av-color-primary) 10%, var(--av-color-border));
+        background: color-mix(in oklch, var(--av-color-canvas) 94%, white);
+        backdrop-filter: blur(16px);
+      }
+      .app-header__inner {
+        max-inline-size: var(--shell-max);
+        min-block-size: 4.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-inline: auto;
+        padding-inline: var(--shell-gutter);
+      }
+      .app-header__title span {
+        display: block;
+        color: var(--av-color-ink-muted);
+        font-size: var(--av-text-xs);
+      }
+      .app-header__title strong {
+        display: block;
+        color: var(--av-color-ink-strong);
+        font-size: var(--av-text-lg);
+      }
+      .avatar {
+        inline-size: 2.65rem;
+        block-size: 2.65rem;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--av-color-primary-soft);
+        color: var(--av-color-primary);
+        font-weight: 780;
+      }
+
+      .page {
+        max-inline-size: var(--shell-max);
+        margin-inline: auto;
+        padding: 1.25rem var(--shell-gutter) 2rem;
+      }
+      .page-title {
+        display: grid;
+        gap: .7rem;
+        margin-block-end: 1.2rem;
+      }
+      .page-title__back {
+        justify-self: start;
+        min-block-size: 2.5rem;
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        border: 0;
+        background: transparent;
+        color: var(--av-color-primary);
+        font-weight: 650;
+        cursor: pointer;
+      }
+      .page-title h1 {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+        font-size: clamp(1.55rem, 1.2rem + 1vw, 2.25rem);
+        line-height: 1.35;
+      }
+      .page-title p {
+        max-inline-size: 42rem;
+        margin: 0;
+        color: var(--av-color-ink-muted);
+      }
+
+      .offline-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        border: 1px solid color-mix(in oklch, var(--av-color-warning) 30%, var(--av-color-border));
+        border-radius: 1rem 1rem .45rem 1rem;
+        background: var(--av-color-warning-soft);
+        padding: .75rem .9rem;
+        color: var(--av-color-ink-strong);
+      }
+
+      .content-grid {
+        display: grid;
+        gap: 1rem;
+      }
+      .panel {
+        border: 1px solid var(--av-color-border);
+        border-radius: 1.25rem 1.25rem .6rem 1.25rem;
+        background: var(--av-color-surface);
+        padding: 1rem;
+      }
+      .panel h2, .panel h3 { margin: 0; color: var(--av-color-ink-strong); }
+      .panel p { margin: .45rem 0 0; color: var(--av-color-ink-muted); }
+      .panel__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .65rem;
+        margin-block-start: 1rem;
+      }
+
+      .sample-row {
+        display: grid;
+        gap: .75rem;
+      }
+      .shell-preview {
+        overflow: hidden;
+        border: 1px solid var(--av-color-border);
+        border-radius: 1.3rem;
+        background: var(--av-color-surface);
+      }
+      .shell-preview__chrome {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-block-end: 1px solid var(--av-color-border);
+        padding: .75rem;
+      }
+      .shell-preview__body {
+        display: grid;
+        gap: .7rem;
+        padding: .85rem;
+      }
+      .ghost-line {
+        block-size: .7rem;
+        border-radius: 999px;
+        background: var(--av-color-surface-subtle);
+      }
+      .ghost-line:nth-child(2) { inline-size: 76%; }
+      .ghost-line:nth-child(3) { inline-size: 54%; }
+      .device-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .65rem;
+      }
+      .device-card {
+        border: 1px solid var(--av-color-border);
+        border-radius: 1rem;
+        padding: .75rem;
+      }
+      .device-card strong { display: block; color: var(--av-color-ink-strong); font-variant-numeric: tabular-nums; }
+      .device-card span { display: block; color: var(--av-color-ink-muted); font-size: var(--av-text-xs); }
+
+      .track-card {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: .75rem;
+        align-items: start;
+        border: 1px solid var(--av-color-border);
+        border-radius: 1rem 1rem .45rem 1rem;
+        padding: .85rem;
+      }
+      .track-shape {
+        inline-size: .75rem;
+        block-size: 2rem;
+        border: 2px solid var(--av-color-plan);
+        border-radius: 999px;
+      }
+      .track-card[data-tone="actual"] {
+        border-color: color-mix(in oklch, var(--av-color-primary) 28%, var(--av-color-border));
+        background: var(--av-color-primary-soft);
+      }
+      .track-card[data-tone="actual"] .track-shape {
+        border-color: var(--av-color-primary);
+        background: var(--av-color-primary);
+      }
+      .track-card strong { color: var(--av-color-ink-strong); }
+      .track-card small { display: block; color: var(--av-color-ink-muted); }
+
+      .sticky-action {
+        position: sticky;
+        inset-block-end: calc(var(--shell-bottom) + .75rem);
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        margin-block-start: 1rem;
+        pointer-events: none;
+      }
+      .sticky-action .button {
+        inline-size: min(100%, 24rem);
+        box-shadow: var(--av-shadow-1);
+        pointer-events: auto;
+      }
+
+      .bottom-nav {
+        position: fixed;
+        z-index: var(--av-z-sticky);
+        inset-inline: .65rem;
+        inset-block-end: .6rem;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: .25rem;
+        border: 1px solid var(--av-color-border);
+        border-radius: 1.25rem 1.25rem .65rem 1.25rem;
+        background: color-mix(in oklch, var(--av-color-surface) 96%, transparent);
+        padding: .35rem;
+        padding-block-end: max(.35rem, env(safe-area-inset-bottom));
+        box-shadow: var(--av-shadow-2);
+        backdrop-filter: blur(18px);
+      }
+      .bottom-nav a {
+        min-block-size: 3.65rem;
+        display: grid;
+        place-items: center;
+        gap: .12rem;
+        border-radius: 1rem;
+        color: var(--av-color-ink-muted);
+        font-size: .72rem;
+      }
+      .bottom-nav a[aria-current="page"] {
+        background: var(--av-color-primary-soft);
+        color: var(--av-color-primary);
+        font-weight: 650;
+      }
+
+      dialog {
+        color: inherit;
+        font: inherit;
+      }
+      dialog::backdrop { background: var(--av-color-overlay); }
+      .modal, .sheet {
+        border: 0;
+        background: transparent;
+        padding: 0;
+      }
+      .modal__card, .sheet__card {
+        display: grid;
+        gap: 1rem;
+        border: 1px solid var(--av-color-border);
+        background: var(--av-color-surface);
+        box-shadow: var(--av-shadow-2);
+      }
+      .modal__card {
+        inline-size: min(calc(100vw - 2rem), 34rem);
+        border-radius: 1.6rem 1.6rem .7rem 1.6rem;
+        padding: 1rem;
+      }
+      .sheet {
+        margin: auto auto 0;
+        inline-size: min(100%, 42rem);
+        max-block-size: min(85svh, 48rem);
+      }
+      .sheet__card {
+        border-end-start-radius: 0;
+        border-end-end-radius: 0;
+        border-start-start-radius: 1.8rem;
+        border-start-end-radius: 1.8rem;
+        padding: 1rem;
+      }
+      .sheet__handle {
+        justify-self: center;
+        inline-size: 2.5rem;
+        block-size: .28rem;
+        border-radius: 999px;
+        background: var(--av-color-border-strong);
+      }
+      .dialog-header {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .dialog-header h2 { margin: 0; color: var(--av-color-ink-strong); }
+      .dialog-header p { margin: .3rem 0 0; color: var(--av-color-ink-muted); }
+
+      .toast {
+        position: fixed;
+        z-index: var(--av-z-toast);
+        inset-inline: 1rem;
+        inset-block-end: calc(var(--shell-bottom) + 1rem);
+        max-inline-size: 31rem;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: .65rem;
+        margin-inline: auto;
+        border-radius: 1.2rem 1.2rem .45rem 1.2rem;
+        background: var(--av-color-ink-strong);
+        padding: .75rem .85rem;
+        color: white;
+        box-shadow: var(--av-shadow-2);
+      }
+      .toast button { border: 0; background: transparent; color: var(--av-color-pulse); font-weight: 650; cursor: pointer; }
+
+      .session-card {
+        border: 1px solid color-mix(in oklch, var(--av-color-danger) 24%, var(--av-color-border));
+        border-radius: 1.25rem 1.25rem .55rem 1.25rem;
+        background: var(--av-color-danger-soft);
+        padding: 1rem;
+      }
+
+      @media (min-width: 40rem) {
+        .device-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .sample-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+
+      @media (min-width: 64rem) {
+        .app-frame { grid-template-columns: var(--shell-rail) minmax(0, 1fr); }
+        .side-nav { display: block; }
+        .bottom-nav { display: none; }
+        .app-main { padding-block-end: 0; }
+        .content-grid { grid-template-columns: minmax(0, 1.35fr) minmax(20rem, .65fr); align-items: start; }
+        .sticky-action { inset-block-end: 1.25rem; justify-content: flex-end; }
+        .toast { inset-block-end: 1rem; }
+      }
+
+      @media (min-width: 90rem) {
+        .page, .app-header__inner { max-inline-size: 76rem; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">پرش به محتوای اصلی</a>
+
+    <header class="public-header" data-od-id="public-page-header">
+      <div class="public-header__inner">
+        <a class="brand" href="/" aria-label="آووکادو">
+          <svg class="brand__mark" viewBox="0 0 48 48" aria-hidden="true">
+            <rect class="plan" x="7" y="9" width="29" height="11" rx="5.5" />
+            <rect class="actual" x="12" y="27" width="29" height="11" rx="5.5" />
+            <circle class="pulse" cx="39" cy="13" r="4" />
+          </svg>
+          <span>آووکادو</span>
+        </a>
+        <a class="button button--secondary" href="/login" data-od-id="public-login-link">ورود</a>
+      </div>
+    </header>
+
+    <div class="app-frame" data-od-id="authenticated-app-shell">
+      <aside class="side-nav" aria-label="ناوبری اصلی دسکتاپ" data-od-id="desktop-rtl-side-navigation">
+        <div class="side-nav__inner">
+          <a class="brand" href="/dashboard" aria-label="آووکادو">
+            <svg class="brand__mark" viewBox="0 0 48 48" aria-hidden="true">
+              <rect class="plan" x="7" y="9" width="29" height="11" rx="5.5" />
+              <rect class="actual" x="12" y="27" width="29" height="11" rx="5.5" />
+              <circle class="pulse" cx="39" cy="13" r="4" />
+            </svg>
+            <span>آووکادو</span>
+          </a>
+          <nav>
+            <a href="/dashboard" aria-current="page">امروز</a>
+            <a href="/nutrition">ثبت غذا</a>
+            <a href="/plans">برنامه‌ها</a>
+            <a href="/profile">من</a>
+          </nav>
+          <p class="side-nav__foot">برنامه و ثبت واقعی همیشه جدا نمایش داده می‌شوند.</p>
+        </div>
+      </aside>
+
+      <div class="app-main">
+        <header class="app-header" data-od-id="authenticated-app-header">
+          <div class="app-header__inner">
+            <button class="icon-button" type="button" aria-label="بازگشت" data-od-id="back-action">‹</button>
+            <div class="app-header__title">
+              <span>یکشنبه ۲۲ تیر</span>
+              <strong>امروز</strong>
+            </div>
+            <a class="avatar" href="/profile" aria-label="پروفایل سارا">س</a>
+          </div>
+        </header>
+
+        <main class="page" id="content" data-od-id="main-content-container">
+          <section class="page-title" data-od-id="page-title-region">
+            <button class="page-title__back" type="button">بازگشت به برنامه‌ها</button>
+            <h1 data-od-id="page-title">پوسته MVP آووکادو</h1>
+            <p data-od-id="page-supporting-text">این پوسته مسیر اصلی محصول را نشان می‌دهد: محتوای روز، ثبت واقعی، برنامه‌های قصدی، و پروفایل بدون آشفتگی یا ظاهر اداری.</p>
+          </section>
+
+          <div class="offline-banner" role="status" aria-live="polite" data-od-id="offline-banner">
+            <span>اتصال قطع است؛ تغییرهای ذخیره‌نشده نگه داشته می‌شوند.</span>
+            <button class="button button--ghost" type="button">تلاش دوباره</button>
+          </div>
+
+          <div class="content-grid">
+            <section class="panel" data-od-id="shell-layout-panel">
+              <h2>رفتار پوسته</h2>
+              <p>در موبایل، تمرکز روی یک ستون و ناوبری پایین است. از ۱۰۲۴px به بعد، ناوبری کناری RTL فقط وقتی فضای کافی وجود دارد فعال می‌شود.</p>
+              <div class="device-list" aria-label="نمونه‌های عرض واکنش‌گرا">
+                <div class="device-card"><strong dir="ltr">360px</strong><span>یک ستون، CTA نزدیک انگشت</span></div>
+                <div class="device-card"><strong dir="ltr">390px</strong><span>فرم‌ها تک‌ستونه</span></div>
+                <div class="device-card"><strong dir="ltr">430px</strong><span>شیت تمام‌عرض امن</span></div>
+                <div class="device-card"><strong dir="ltr">768px</strong><span>کارت‌های دوتایی محدود</span></div>
+                <div class="device-card"><strong dir="ltr">1024px</strong><span>ریل RTL آرام</span></div>
+                <div class="device-card"><strong dir="ltr">1440px</strong><span>عرض کنترل‌شده</span></div>
+              </div>
+            </section>
+
+            <section class="panel" data-od-id="planned-actual-contract">
+              <h2>قرارداد برنامه و ثبت</h2>
+              <div class="sample-row">
+                <article class="track-card" data-tone="plan">
+                  <span class="track-shape" aria-hidden="true"></span>
+                  <div><strong>برنامه غذایی</strong><small>قصد برای وعده؛ فقط فرم ثبت را پیش‌پر می‌کند.</small></div>
+                </article>
+                <article class="track-card" data-tone="actual">
+                  <span class="track-shape" aria-hidden="true"></span>
+                  <div><strong>ثبت‌شده امروز</strong><small>مصرف واقعی بعد از تایید مقدار و کالری.</small></div>
+                </article>
+              </div>
+            </section>
+
+            <section class="panel" data-od-id="overlay-controls-panel">
+              <h2>لایه‌های موقت</h2>
+              <p>شیت، مودال، تایید، توست و نشست منقضی‌شده از همین رفتار پایه استفاده می‌کنند.</p>
+              <div class="panel__actions">
+                <button class="button button--primary" type="button" data-open="sheet">باز کردن شیت</button>
+                <button class="button button--secondary" type="button" data-open="modal">نمایش مودال</button>
+                <button class="button button--danger" type="button" data-open="confirm">تایید حذف</button>
+                <button class="button button--ghost" type="button" data-toast>نمایش توست</button>
+              </div>
+            </section>
+
+            <section class="session-card" data-od-id="session-expired-state">
+              <h2>نشست منقضی شد</h2>
+              <p>برای ادامه، دوباره وارد شوید. مسیر فعلی بعد از ورود حفظ می‌شود.</p>
+              <div class="panel__actions">
+                <a class="button button--primary" href="/login">ورود دوباره</a>
+                <a class="button button--secondary" href="/">بازگشت به صفحه عمومی</a>
+              </div>
+            </section>
+          </div>
+
+          <div class="sticky-action" data-od-id="sticky-action-area">
+            <button class="button button--primary" type="button">ثبت خوراک</button>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <nav class="bottom-nav" aria-label="ناوبری اصلی موبایل" data-od-id="mobile-bottom-navigation">
+      <a href="/dashboard" aria-current="page">امروز</a>
+      <a href="/nutrition">ثبت غذا</a>
+      <a href="/plans">برنامه‌ها</a>
+      <a href="/profile">من</a>
+    </nav>
+
+    <dialog class="sheet" id="sheet" aria-labelledby="sheet-title" data-od-id="bottom-sheet">
+      <div class="sheet__card">
+        <span class="sheet__handle" aria-hidden="true"></span>
+        <div class="dialog-header">
+          <div>
+            <h2 id="sheet-title">افزودن خوراک</h2>
+            <p>شیت موبایل تمام عرض امن دارد و در دسکتاپ باریک می‌ماند.</p>
+          </div>
+          <button class="icon-button" type="button" data-close aria-label="بستن">×</button>
+        </div>
+        <button class="button button--primary" type="button" data-close>افزودن به ثبت امروز</button>
+      </div>
+    </dialog>
+
+    <dialog class="modal" id="modal" aria-labelledby="modal-title" data-od-id="desktop-modal">
+      <div class="modal__card">
+        <div class="dialog-header">
+          <div>
+            <h2 id="modal-title">جزئیات فایل</h2>
+            <p>مودال در دسکتاپ خوانا می‌ماند و روی موبایل به اندازه صفحه فشار نمی‌آورد.</p>
+          </div>
+          <button class="icon-button" type="button" data-close aria-label="بستن">×</button>
+        </div>
+        <p>نام فایل: <bdi dir="auto">plan-1405-04.pdf</bdi></p>
+      </div>
+    </dialog>
+
+    <dialog class="modal" id="confirm" aria-labelledby="confirm-title" data-od-id="confirmation-dialog">
+      <div class="modal__card">
+        <div class="dialog-header">
+          <div>
+            <h2 id="confirm-title">این مورد حذف شود؟</h2>
+            <p>حذف برنامه بایگانی‌شده قابل بازگردانی نیست.</p>
+          </div>
+        </div>
+        <div class="panel__actions">
+          <button class="button button--danger" type="button" data-close>حذف</button>
+          <button class="button button--secondary" type="button" data-close>انصراف</button>
+        </div>
+      </div>
+    </dialog>
+
+    <div class="toast" role="status" aria-live="polite" id="toast" hidden data-od-id="toast">
+      <span aria-hidden="true">✓</span>
+      <span>میان‌وعده به ثبت امروز اضافه شد.</span>
+      <button type="button" data-hide-toast>برگردان</button>
+    </div>
+
+    <script>
+      const dialogs = {
+        sheet: document.getElementById("sheet"),
+        modal: document.getElementById("modal"),
+        confirm: document.getElementById("confirm")
+      };
+      document.addEventListener("click", (event) => {
+        const opener = event.target.closest("[data-open]");
+        if (opener) dialogs[opener.dataset.open]?.showModal();
+        if (event.target.closest("[data-close]")) event.target.closest("dialog")?.close();
+        if (event.target.closest("[data-toast]")) document.getElementById("toast").hidden = false;
+        if (event.target.closest("[data-hide-toast]")) document.getElementById("toast").hidden = true;
+      });
+    </script>
+  </body>
+</html>

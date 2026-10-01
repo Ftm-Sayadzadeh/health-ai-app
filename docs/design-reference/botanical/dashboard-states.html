@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="botanical">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0d685d" />
+    <title>حالت‌های داشبورد MVP — آووکادو</title>
+    <link rel="icon" type="image/png" href="4-2.png" />
+    <link rel="stylesheet" href="tokens/tokens.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        background: var(--av-color-bg);
+      }
+      .state-shell {
+        min-block-size: 100dvh;
+        padding: max(1rem, env(safe-area-inset-top)) 1rem
+          max(2rem, env(safe-area-inset-bottom));
+      }
+      .state-page {
+        inline-size: min(100%, 72rem);
+        margin-inline: auto;
+        display: grid;
+        gap: 1rem;
+      }
+      .state-hero {
+        border: 1px solid var(--av-color-border);
+        border-radius: 1.4rem 1.4rem 0.7rem 1.4rem;
+        background: var(--av-color-surface);
+        padding: clamp(1rem, 4vw, 2rem);
+        display: grid;
+        gap: 0.75rem;
+      }
+      .state-hero h1 {
+        margin: 0;
+        color: var(--av-color-ink-strong);
+        font-size: clamp(1.65rem, 5vw, 2.5rem);
+        line-height: 1.2;
+      }
+      .state-hero p {
+        max-inline-size: 48rem;
+        margin: 0;
+        color: var(--av-color-ink-muted);
+      }
+      .state-set {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .state-set > h2 {
+        margin: 1rem 0 0;
+        color: var(--av-color-ink-strong);
+        font-size: 1.15rem;
+      }
+      .state-card-grid {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .dashboard-state-card {
+        min-inline-size: 0;
+        display: grid;
+        gap: 0.65rem;
+        align-content: start;
+        border: 1px solid var(--av-color-border);
+        border-radius: 1.15rem 1.15rem 0.55rem 1.15rem;
+        background: var(--av-color-surface);
+        padding: 1rem;
+      }
+      .dashboard-state-card[data-kind="actual"] {
+        border-color: color-mix(in oklch, var(--av-color-primary) 28%, var(--av-color-border));
+        background: var(--av-color-primary-soft);
+      }
+      .dashboard-state-card[data-kind="plan"] {
+        border-color: color-mix(in oklch, var(--av-color-plan) 30%, var(--av-color-border));
+        background: var(--av-color-plan-soft);
+      }
+      .dashboard-state-card[data-kind="alert"] {
+        border-color: color-mix(in oklch, var(--av-color-danger) 28%, var(--av-color-border));
+      }
+      .dashboard-state-card h3,
+      .dashboard-state-card p {
+        margin: 0;
+      }
+      .dashboard-state-card h3 {
+        color: var(--av-color-ink-strong);
+        font-size: 1rem;
+      }
+      .dashboard-state-card p,
+      .dashboard-state-card small {
+        color: var(--av-color-ink-muted);
+        line-height: 1.8;
+      }
+      .state-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .state-skeleton {
+        display: grid;
+        gap: 0.55rem;
+      }
+      .state-skeleton span {
+        display: block;
+        block-size: 0.85rem;
+        border-radius: 999px;
+        background: linear-gradient(
+          90deg,
+          var(--av-color-surface-subtle),
+          var(--av-color-border),
+          var(--av-color-surface-subtle)
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s linear infinite;
+      }
+      .state-skeleton span:nth-child(2) {
+        inline-size: 76%;
+      }
+      .state-skeleton span:nth-child(3) {
+        inline-size: 54%;
+      }
+      @media (min-width: 48rem) {
+        .state-card-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (min-width: 64rem) {
+        .state-shell {
+          padding-inline: 2rem;
+        }
+        .state-card-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .state-skeleton span {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="app-body" data-page="dashboard-states" data-theme="botanical">
+    <main class="state-shell" data-od-id="dashboard-states-page">
+      <div class="state-page">
+        <header class="state-hero" data-od-id="dashboard-states-hero">
+          <a class="button button--secondary button--sm" href="dashboard-flow-index.html">بازگشت به فهرست جریان</a>
+          <h1>حالت‌های فشرده داشبورد Current MVP</h1>
+          <p>
+            این فایل نمونه‌های کوچک و قابل ترکیب را نشان می‌دهد. هیچ‌کدام جایگزین کامل
+            <bdi dir="ltr">dashboard-botanical.html</bdi> نیستند.
+          </p>
+        </header>
+
+        <section class="state-set" aria-labelledby="profile-states-title" data-od-id="dashboard-profile-states">
+          <h2 id="profile-states-title">پروفایل سلامت</h2>
+          <div class="state-card-grid">
+            <article class="dashboard-state-card" id="incomplete-profile-state" data-od-id="incomplete-profile-state">
+              <span class="status-chip">اطلاعات ناقص</span>
+              <h3>تکمیل اطلاعات سلامت</h3>
+              <p>دو بخش دیگر باقی مانده است. این عدد پیشرفت تکمیل است، نه امتیاز سلامت.</p>
+              <a class="button button--primary button--sm" href="settings-botanical.html">ادامه تکمیل</a>
+            </article>
+            <article class="dashboard-state-card" id="complete-profile-state" data-od-id="complete-profile-state">
+              <span class="status-chip">تکمیل‌شده</span>
+              <h3>پروفایل آماده استفاده است</h3>
+              <p>کاربر می‌تواند اطلاعات سلامت را مرور یا ویرایش کند؛ داشبورد روی ثبت خوراک تمرکز می‌ماند.</p>
+              <a class="button button--secondary button--sm" href="settings-botanical.html">مشاهده صفحه من</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="state-set" aria-labelledby="food-states-title" data-od-id="dashboard-food-states">
+          <h2 id="food-states-title">ثبت خوراک امروز</h2>
+          <div class="state-card-grid">
+            <article class="dashboard-state-card" id="empty-food-day-state" data-od-id="empty-food-day-state">
+              <span class="semantic-label"><i class="track-marker" aria-hidden="true"></i>ثبت واقعی</span>
+              <h3>هنوز چیزی برای امروز ثبت نشده است.</h3>
+              <p>حالت خالی باید آرام باشد و کاربر را به یک اقدام روشن هدایت کند.</p>
+              <button class="button button--primary button--sm" type="button">ثبت خوراک</button>
+            </article>
+            <article class="dashboard-state-card" id="populated-food-day-state" data-kind="actual" data-od-id="populated-food-day-state">
+              <span class="semantic-label semantic-label--actual"><i class="track-marker track-marker--actual" aria-hidden="true"></i>ثبت واقعی امروز</span>
+              <h3>۴ خوراک در ۲ وعده ثبت شده</h3>
+              <p>کالری دستی: <bdi dir="ltr">560 kcal</bdi>. این مقدار هدف یا توصیه نیست.</p>
+              <a class="button button--secondary button--sm" href="food-log-botanical.html">دیدن تغذیه امروز</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="state-set" aria-labelledby="plan-states-title" data-od-id="dashboard-plan-states">
+          <h2 id="plan-states-title">برنامه‌ها و پرسش‌نامه‌ها</h2>
+          <div class="state-card-grid">
+            <article class="dashboard-state-card" id="no-plans-state" data-od-id="no-plans-state">
+              <span class="status-chip">بدون برنامه فعال</span>
+              <h3>برنامه فعالی برای امروز وجود ندارد</h3>
+              <p>داشبورد نباید برنامه ساختگی نمایش دهد. کاربر به مسیر ساخت یا تکمیل پرسش‌نامه هدایت می‌شود.</p>
+              <a class="button button--secondary button--sm" href="plans-botanical.html">رفتن به برنامه‌ها</a>
+            </article>
+            <article class="dashboard-state-card" id="active-nutrition-plan-state" data-kind="plan" data-od-id="active-nutrition-plan-state">
+              <span class="semantic-label"><i class="track-marker" aria-hidden="true"></i>برنامه غذایی</span>
+              <h3>ناهار برنامه‌ریزی‌شده</h3>
+              <p>برنامه یعنی قصد. با انتخاب آن فقط فرم ثبت خوراک پر می‌شود و هنوز مصرف‌شده نیست.</p>
+              <button class="button button--plan button--sm" type="button">پیش‌پرکردن فرم ثبت</button>
+            </article>
+            <article class="dashboard-state-card" id="active-workout-plan-state" data-kind="plan" data-od-id="active-workout-plan-state">
+              <span class="semantic-label"><i class="track-marker" aria-hidden="true"></i>برنامه تمرینی</span>
+              <h3>جلسه تمرینی فعال</h3>
+              <p>در Current MVP این فقط پیش‌نمایش برنامه است و فعالیت انجام‌شده یا تایمر تمرین نیست.</p>
+              <a class="button button--secondary button--sm" href="plans-botanical.html">مشاهده برنامه</a>
+            </article>
+            <article class="dashboard-state-card" id="unfinished-nutrition-intake-state" data-od-id="unfinished-nutrition-intake-state">
+              <span class="status-chip">نیمه‌کاره</span>
+              <h3>پرسش‌نامه تغذیه</h3>
+              <p>از پرسش چهارم ادامه دهید. پاسخ‌های قبلی باید حفظ شوند.</p>
+              <a class="button button--primary button--sm" href="onboarding-botanical.html">ادامه پرسش‌نامه</a>
+            </article>
+            <article class="dashboard-state-card" id="unfinished-workout-intake-state" data-od-id="unfinished-workout-intake-state">
+              <span class="status-chip">نیمه‌کاره</span>
+              <h3>پرسش‌نامه برنامه تمرینی</h3>
+              <p>داشبورد فقط مسیر ادامه را نشان می‌دهد؛ اجرای تمرین در صفحه امروز فعال نمی‌شود.</p>
+              <a class="button button--secondary button--sm" href="onboarding-botanical.html">ادامه</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="state-set" aria-labelledby="global-states-title" data-od-id="dashboard-global-states">
+          <h2 id="global-states-title">حالت‌های سیستمی</h2>
+          <div class="state-card-grid">
+            <article class="dashboard-state-card" id="partial-loading-state" aria-live="polite" data-od-id="partial-loading-state">
+              <span class="status-chip">در حال دریافت</span>
+              <h3>بارگذاری بخشی از داشبورد</h3>
+              <div class="state-skeleton" aria-hidden="true"><span></span><span></span><span></span></div>
+              <small>بخش‌های آماده نمایش داده می‌شوند و فقط کارت در حال دریافت اسکلتون دارد.</small>
+            </article>
+            <article class="dashboard-state-card" id="api-error-state" data-kind="alert" role="alert" data-od-id="api-error-state">
+              <span class="status-chip">خطای دریافت</span>
+              <h3>اطلاعات کامل دریافت نشد</h3>
+              <p>ثبت‌های محلی و مقدارهای واردشده حفظ می‌شوند. پیام خطا فقط با رنگ منتقل نمی‌شود.</p>
+              <button class="button button--secondary button--sm" type="button">تلاش دوباره</button>
+            </article>
+            <article class="dashboard-state-card" id="offline-state" role="status" aria-live="polite" data-od-id="offline-state">
+              <span class="status-chip">آفلاین</span>
+              <h3>اتصال برقرار نیست</h3>
+              <p>کاربر می‌تواند پیش‌نویس امن را نگه دارد، اما ارسال نهایی تا بازگشت اتصال انجام نمی‌شود.</p>
+            </article>
+            <article class="dashboard-state-card" id="session-expired-state" role="alert" data-od-id="session-expired-state">
+              <span class="status-chip">نشست پایان یافت</span>
+              <h3>برای ادامه دوباره وارد شوید</h3>
+              <p>مسیر مقصد و پیش‌نویس امن تا حد ممکن حفظ می‌شود.</p>
+              <a class="button button--primary button--sm" href="auth-session-expired.html">ورود دوباره</a>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
