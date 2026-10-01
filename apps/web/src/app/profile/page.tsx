@@ -22,6 +22,7 @@ import {
   activityOptions,
   dateYearsAgo,
   formatHealthProfileApiError,
+  formatPersianDate,
   goalOptions,
   ProfileValidationErrors,
   validateHealthProfile,
@@ -339,8 +340,14 @@ export default function ProfilePage() {
                   max={dateYearsAgo(18)}
                   onChange={(event) => updateField("birth_date", event.target.value)}
                   dir="ltr"
+                  lang="fa-IR"
+                  aria-describedby="profile-birth-date-help"
                   className="field-input mt-2"
                 />
+                <span id="profile-birth-date-help" className="mt-2 block text-xs leading-6 text-[var(--text-subtle)]">
+                  تاریخ انتخاب‌شده به فارسی نمایش داده می‌شود؛ انتخاب تاریخ با تقویم مرورگر انجام می‌شود.
+                  {profile.birth_date ? ` ${formatPersianDate(profile.birth_date)}` : ""}
+                </span>
                 <FieldError message={fieldErrors.birth_date} />
               </label>
             </div>

@@ -62,6 +62,15 @@ export function dateYearsAgo(years: number) {
   ].join("-");
 }
 
+export function formatPersianDate(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  if (!year || !month || !day) return "";
+
+  return new Intl.DateTimeFormat("fa-IR", { dateStyle: "full" }).format(
+    new Date(year, month - 1, day),
+  );
+}
+
 export function validateHealthProfile(profile: ProfileDraft): ProfileValidationErrors {
   const errors: ProfileValidationErrors = {};
   const height = Number(profile.height_cm);

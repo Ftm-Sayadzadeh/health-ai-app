@@ -21,6 +21,7 @@ import {
   dateYearsAgo,
   emptyProfileDraft,
   formatHealthProfileApiError,
+  formatPersianDate,
   goalOptions,
   ProfileDraft,
   validateHealthProfile,
@@ -285,8 +286,15 @@ export default function OnboardingPage() {
                       max={dateYearsAgo(18)}
                       onChange={(event) => updateField("birth_date", event.target.value)}
                       dir="ltr"
+                      lang="fa-IR"
+                      aria-describedby="birth-date-help"
                       className="field-input mt-2"
                     />
+                    <span id="birth-date-help" className="mt-2 block text-xs leading-6 text-[var(--text-subtle)]">
+                      {profile.birth_date
+                        ? `تاریخ انتخاب‌شده: ${formatPersianDate(profile.birth_date)}`
+                        : "تاریخ را از تقویم انتخاب کن؛ حداقل سن ۱۸ سال است."}
+                    </span>
                   </label>
                 </div>
               ) : null}
